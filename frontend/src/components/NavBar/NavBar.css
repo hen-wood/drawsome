@@ -1,0 +1,60 @@
+#nav-bar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 80px;
+    height: fit-content;
+    background-color: rgba(0, 0, 0, 0.527);
+}
+
+#nav-bar h1 {
+    cursor: pointer;
+    color: white;
+    margin: 10px 0;
+}
+
+#user-icon {
+    color: white;
+    border: 3px solid white;
+    height: fit-content;
+    font-size: 25px;
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+#user-icon:hover{
+    color: rgba(255, 255, 255, 0.671);
+    border-color: rgba(255, 255, 255, 0.671);
+}
+
+.user-menu{
+    position: absolute;
+    right: 0;
+    top: 100%;
+    width: 200px;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.527);
+}
+
+.user-menu-hidden{
+    display: none;
+}
+
+
+.user-options{
+    margin: 8px 0;
+    cursor: pointer;
+    color: white;
+}
+
+.user-options:hover{
+    color: rgba(255, 255, 255, 0.671);
+}
+
+.divider{
+    width: 100%;
+    border-bottom: 1px solid white;
+    margin: 15px 0;
+}

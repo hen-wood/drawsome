@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro&display=swap');
+
+body {
+    margin: 0;
+    font-family: 'Be Vietnam Pro', sans-serif;
+    color: white;
+}
+
+a {
+    color:#0150b4;
+    font-weight: bolder;
+    text-decoration: none;
+}
+
+a:hover{
+    color: #4a8ee7;
+}
+
+h1 {
+    margin: 8px;
+}
+
+#main-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-image: url('./images/darkmode-wavy.svg');
+    background-color: #180bc5;
+    background-position: center;
+    background-size: 160%;
+}
+
+#inner-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

@@ -1,0 +1,74 @@
+#form-container {
+    margin-bottom: 20vh;
+    padding: 10px;
+    background-color: #110896;
+    box-shadow: 0px 10px 10px -5px rgb(1, 2, 53);
+    border-radius: 10px;
+    padding: 10px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+::placeholder{
+    color: rgba(255, 255, 255, 0.651);
+}
+
+.input-errors::placeholder{
+    color: rgba(255, 0, 0, 0.664);
+}
+
+.backend-errors{
+
+    color: rgba(255, 0, 0, 0.664);
+}
+
+input[type="text"],
+input[type="password"] {
+    border-radius: 5px;
+    padding: 10px;
+    margin: 8px;
+    border: none;
+    background-color: #0b055a;
+    color: white;
+    font-size: 14px;
+    box-shadow: 0px 7px 5px -5px black;
+    font-family: 'Be Vietnam Pro', sans-serif;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+input:focus {
+    background-color: #0b055a;
+    outline: none;
+}
+
+form button{
+    border-radius: 5px;
+    padding: 10px;
+    margin: 8px;
+    border: none;
+    background-color: #0150b4;
+    color: white;
+    font-family: 'Be Vietnam Pro', sans-serif;
+    box-shadow: 0px 7px 5px -5px black;
+}
+
+form button:hover{
+    cursor: pointer;
+    background-color: #0b055a;
+}
+
+#form-container p{
+    text-align: center;
+}
