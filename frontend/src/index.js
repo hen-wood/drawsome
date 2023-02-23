@@ -6,7 +6,6 @@ import "./index.css";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
-import { ModalProvider, Modal } from "./context/Modal";
 import App from "./App";
 
 import configureStore from "./store";
@@ -27,14 +26,11 @@ document.querySelector("head > link:nth-child(4)");
 // HTML elements on top of the all the other HTML elements:
 function Root() {
 	return (
-		<ModalProvider>
-			<Provider store={store}>
-				<BrowserRouter>
-					<App />
-					<Modal />
-				</BrowserRouter>
-			</Provider>
-		</ModalProvider>
+		<Provider store={store}>
+			<BrowserRouter>
+				<App />
+			</BrowserRouter>
+		</Provider>
 	);
 }
 
