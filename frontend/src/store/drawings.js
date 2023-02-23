@@ -2,6 +2,7 @@ import { csrfFetch } from "./csrf";
 
 const SET_USER_DRAWINGS = "drawings/SET_USER_DRAWINGS";
 const ADD_DRAWING = "drawings/ADD_DRAWING";
+const EDIT_DRAWING_TITLE = "drawings/EDIT_DRAWING_TITLE";
 
 // Actions
 
@@ -18,6 +19,13 @@ const actionAddDrawing = drawing => {
 	return {
 		type: ADD_DRAWING,
 		payload: drawing
+	};
+};
+
+const actionEditDrawingTitle = (drawingId, newTitle) => {
+	return {
+		type: EDIT_DRAWING_TITLE,
+		payload: { drawingId, newTitle }
 	};
 };
 
@@ -44,6 +52,20 @@ export const thunkAddDrawing = formData => async dispatch => {
 	return data;
 };
 
+export const thunkEditDrawingTitle =
+	(drawingId, newTitle) => async dispatch => {
+		const res = await csrfFetch(`/api/drawings/${drawingId}/edit`, {
+			method: "PUT",
+			body: JSON.stringify({
+				newTitle
+			})
+		});
+
+		const data = await res.json();
+		dispatch(actionEditDrawingTitle(drawingId, newTitle));
+		return data;
+	};
+
 const initialState = {
 	allDrawings: {},
 	singleDrawing: {}
@@ -62,6 +84,11 @@ const drawingReducer = (state = initialState, action) => {
 				...newState.allDrawings,
 				[action.payload.id]: action.payload
 			};
+			return newState;
+		case EDIT_DRAWING_TITLE:
+			newState = { ...state };
+			newState.allDrawings[action.payload.drawingId].title =
+				action.payload.newTitle;
 			return newState;
 		default:
 			return state;

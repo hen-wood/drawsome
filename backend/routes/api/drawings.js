@@ -28,4 +28,19 @@ router.post(
 	}
 );
 
+// PUT edit drawing title
+router.put(
+	"/:drawingId/edit",
+	requireAuthentication,
+	async (req, res, next) => {
+		const { drawingId } = req.params;
+		const { newTitle } = req.body;
+		const drawingToEdit = await Drawing.findByPk(+drawingId);
+
+		drawingToEdit.title = newTitle;
+		await drawingToEdit.save();
+		return res.json(drawingToEdit);
+	}
+);
+
 module.exports = router;
