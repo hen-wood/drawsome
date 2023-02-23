@@ -34,6 +34,7 @@ export default function SoloCanvas() {
 		context.lineWidth = 5;
 		context.fillStyle = "white";
 		context.fillRect(0, 0, canvas.width, canvas.height);
+		context.canvas.style.touchAction = "none";
 		contextRef.current = context;
 	}, []);
 
@@ -103,6 +104,9 @@ export default function SoloCanvas() {
 				onMouseDown={startDrawing}
 				onMouseUp={endDrawing}
 				onMouseMove={draw}
+				onPointerDown={startDrawing}
+				onPointerUp={endDrawing}
+				onPointerMove={draw}
 			></canvas>
 			<div id="tool-kit">
 				<i
