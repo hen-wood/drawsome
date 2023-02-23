@@ -1,19 +1,21 @@
 // frontend/src/App.js
 import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Route, Switch } from "react-router-dom";
-import DrawingTest from "./components/DrawingTest";
+import * as sessionActions from "./store/session";
+import { thunkGetUserDrawings } from "./store/drawings";
+import SoloCanvas from "./components/SoloCanvas";
 import NavBar from "./components/NavBar";
 import Login from "./components/Forms/Login.js";
-import * as sessionActions from "./store/session";
 import JoinGame from "./components/Forms/JoinGame";
 import CreateGame from "./components/Forms/CreateGame";
 import Signup from "./components/Forms/Signup";
 import NotFound from "./components/NotFound";
+import UserDrawings from "./components/UserDrawings";
 
 function App() {
 	const dispatch = useDispatch();
-
+	const user = useSelector(state => state.session.user);
 	const [isLoaded, setIsLoaded] = useState(false);
 
 	useEffect(() => {
@@ -21,6 +23,10 @@ function App() {
 			setIsLoaded(true);
 		});
 	}, [dispatch]);
+
+	useEffect(() => {
+		if (user) dispatch(thunkGetUserDrawings(user.id));
+	}, [user]);
 
 	return (
 		<div id="main-container">
@@ -44,7 +50,10 @@ function App() {
 							<CreateGame />
 						</Route>
 						<Route path="/draw">
-							<DrawingTest />
+							<SoloCanvas />
+						</Route>
+						<Route path="/user-drawings">
+							<UserDrawings />
 						</Route>
 						<Route>
 							<NotFound />

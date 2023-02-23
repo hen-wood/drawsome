@@ -1,14 +1,31 @@
 // backend/routes/api/users.js
 const express = require("express");
 
-const { setTokenCookie, checkIfUserExists } = require("../../utils/auth");
+const {
+	setTokenCookie,
+	checkIfUserExists,
+	requireAuthentication
+} = require("../../utils/auth");
 const { validateSignup } = require("../../utils/validation-chains");
-const { User } = require("../../db/models");
+const { User, Drawing } = require("../../db/models");
 const { token } = require("morgan");
 
 const router = express.Router();
 
-// Sign up
+// GET - Get all drawings for a single user
+router.get(
+	"/:userId/drawings",
+	requireAuthentication,
+	async (req, res, next) => {
+		const { userId } = req.params;
+		const drawings = await Drawing.findAll({
+			where: { userId }
+		});
+		return res.json(drawings);
+	}
+);
+
+// POST - Sign up
 router.post("/", checkIfUserExists, validateSignup, async (req, res, next) => {
 	const { email, password, username } = req.body;
 	const user = await User.signup({

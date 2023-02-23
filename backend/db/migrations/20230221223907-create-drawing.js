@@ -20,6 +20,9 @@ module.exports = {
 				userId: {
 					type: Sequelize.INTEGER
 				},
+				title: {
+					type: Sequelize.STRING
+				},
 				drawingUrl: {
 					type: Sequelize.STRING
 				},

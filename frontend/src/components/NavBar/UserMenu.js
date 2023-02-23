@@ -6,6 +6,16 @@ export default function UserMenu({ isOpen, setIsOpen, setIsLoggedIn }) {
 	const dispatch = useDispatch();
 	const history = useHistory();
 
+	const handleDrawSolo = () => {
+		setIsOpen(false);
+		history.push("/draw");
+	};
+
+	const handleViewDrawings = () => {
+		setIsOpen(false);
+		history.push("/user-drawings");
+	};
+
 	const handleCreateGame = () => {
 		setIsOpen(false);
 		history.push("/create-game");
@@ -26,7 +36,12 @@ export default function UserMenu({ isOpen, setIsOpen, setIsLoggedIn }) {
 
 	return (
 		<div className={isOpen ? "user-menu" : "user-menu-hidden"}>
-			<p className="user-options">View Past Drawings</p>
+			<p className="user-options" onClick={handleDrawSolo}>
+				Draw solo
+			</p>
+			<p className="user-options" onClick={handleViewDrawings}>
+				View Past Drawings
+			</p>
 			<p className="user-options" onClick={handleCreateGame}>
 				Create Game
 			</p>

@@ -14,6 +14,9 @@ module.exports = (sequelize, DataTypes) => {
 	Drawing.init(
 		{
 			userId: { type: DataTypes.INTEGER, references: "User" },
+			title: {
+				type: DataTypes.STRING
+			},
 			drawingUrl: { type: DataTypes.STRING, allowNull: false }
 		},
 		{
