@@ -8,6 +8,7 @@ export default function UserDrawings() {
 			{Object.values(drawings).map(drawing => {
 				return (
 					<div key={drawing.id} className="indiv-drawing-container">
+						<h2 className="drawing-title">{`"${drawing.title}"`}</h2>
 						<img src={drawing.drawingUrl} alt={drawing.title} />
 					</div>
 				);
