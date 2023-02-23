@@ -73,3 +73,8 @@ input[type="text"].edit-title-field{
     left: 200px;
     cursor: pointer;
 }
+
+#no-drawings-title{
+    text-align: center;
+    width: 100%;
+}

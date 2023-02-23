@@ -43,4 +43,17 @@ router.put(
 	}
 );
 
+// DELETE delete drawing
+router.delete(
+	"/:drawingId/delete",
+	requireAuthentication,
+	async (req, res, next) => {
+		const { drawingId } = req.params;
+		const drawingToDelete = await Drawing.findByPk(+drawingId);
+
+		await drawingToDelete.destroy();
+		return res.json({ message: `Deleted drawing #${drawingId}` });
+	}
+);
+
 module.exports = router;

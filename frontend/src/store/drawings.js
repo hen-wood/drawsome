@@ -3,6 +3,7 @@ import { csrfFetch } from "./csrf";
 const SET_USER_DRAWINGS = "drawings/SET_USER_DRAWINGS";
 const ADD_DRAWING = "drawings/ADD_DRAWING";
 const EDIT_DRAWING_TITLE = "drawings/EDIT_DRAWING_TITLE";
+const DELETE_DRAWING = "drawings/DELETE_DRAWING";
 
 // Actions
 
@@ -26,6 +27,13 @@ const actionEditDrawingTitle = (drawingId, newTitle) => {
 	return {
 		type: EDIT_DRAWING_TITLE,
 		payload: { drawingId, newTitle }
+	};
+};
+
+const actionDeleteDrawing = drawingId => {
+	return {
+		type: DELETE_DRAWING,
+		payload: { drawingId }
 	};
 };
 
@@ -66,6 +74,16 @@ export const thunkEditDrawingTitle =
 		return data;
 	};
 
+export const thunkDeleteDrawing = drawingId => async dispatch => {
+	const res = await csrfFetch(`/api/drawings/${drawingId}/delete`, {
+		method: "DELETE"
+	});
+
+	const data = await res.json();
+	dispatch(actionDeleteDrawing(drawingId));
+	return data;
+};
+
 const initialState = {
 	allDrawings: {},
 	singleDrawing: {}
@@ -89,6 +107,10 @@ const drawingReducer = (state = initialState, action) => {
 			newState = { ...state };
 			newState.allDrawings[action.payload.drawingId].title =
 				action.payload.newTitle;
+			return newState;
+		case DELETE_DRAWING:
+			newState = { ...state };
+			delete newState[action.payload.drawingId];
 			return newState;
 		default:
 			return state;
