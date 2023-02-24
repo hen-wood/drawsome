@@ -12,6 +12,7 @@ import CreateGame from "./components/Forms/CreateGame";
 import Signup from "./components/Forms/Signup";
 import NotFound from "./components/NotFound";
 import UserDrawings from "./components/UserDrawings";
+import Lobby from "./components/Game/Lobby";
 
 function App() {
 	const dispatch = useDispatch();
@@ -54,6 +55,9 @@ function App() {
 						</Route>
 						<Route path="/user-drawings">
 							<UserDrawings />
+						</Route>
+						<Route path="/lobby/:gameCode">
+							<Lobby />
 						</Route>
 						<Route>
 							<NotFound />

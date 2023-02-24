@@ -16,7 +16,6 @@ router.get("/:gameCode", requireAuthentication, async (req, res, next) => {
 			[Op.and]: [{ code: gameCode }, { hasStarted: false }, { hasEnded: false }]
 		}
 	});
-	console.log(game);
 	if (!game) {
 		return res.json({
 			message: "game not found. it may have ended or started without you"
@@ -30,7 +29,6 @@ router.get("/:gameCode", requireAuthentication, async (req, res, next) => {
 router.post("/", requireAuthentication, async (req, res, next) => {
 	const creatorId = req.user.id;
 	const { code, numRounds, timeLimit, numPlayers, rounds } = req.body;
-	console.log(req.body);
 	const newGame = await Game.create({
 		code,
 		creatorId,

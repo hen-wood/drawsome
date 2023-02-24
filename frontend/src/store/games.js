@@ -16,7 +16,7 @@ export const actionSetCurrentGame = game => {
 // Thunks
 
 export const thunkCreateGame = game => async dispatch => {
-	const response = csrfFetch(`/api/games`, {
+	const response = await csrfFetch(`/api/games`, {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json"
@@ -24,7 +24,14 @@ export const thunkCreateGame = game => async dispatch => {
 		body: JSON.stringify(game)
 	});
 
-	const data = await response;
+	const data = await response.json();
+	dispatch(actionSetCurrentGame(data));
+	return data;
+};
+
+export const thunkLoadGame = gameCode => async dispatch => {
+	const response = await csrfFetch(`/api/games/${gameCode}`);
+	const data = await response.json();
 	dispatch(actionSetCurrentGame(data));
 	return data;
 };
