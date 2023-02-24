@@ -1,4 +1,4 @@
-// backend/routes/api/users.js
+// backend/routes/api/drawings.js
 const express = require("express");
 const { singleMulterUpload, uploadDrawingToS3 } = require("../../awsS3.js");
 const { requireAuthentication } = require("../../utils/auth");

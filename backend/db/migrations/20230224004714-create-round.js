@@ -1,4 +1,5 @@
 "use strict";
+/** @type {import('sequelize-cli').Migration} */
 
 let options = {};
 if (process.env.NODE_ENV === "production") {
@@ -8,7 +9,7 @@ if (process.env.NODE_ENV === "production") {
 module.exports = {
 	async up(queryInterface, Sequelize) {
 		await queryInterface.createTable(
-			"Users",
+			"Rounds",
 			{
 				id: {
 					allowNull: false,
@@ -16,19 +17,14 @@ module.exports = {
 					primaryKey: true,
 					type: Sequelize.INTEGER
 				},
-				username: {
-					type: Sequelize.STRING(30),
-					allowNull: false,
-					unique: true
+				gameId: {
+					type: Sequelize.INTEGER
 				},
-				email: {
-					type: Sequelize.STRING(256),
-					allowNull: false,
-					unique: true
+				prompt: {
+					type: Sequelize.STRING
 				},
-				hashedPassword: {
-					type: Sequelize.STRING.BINARY,
-					allowNull: false
+				roundNumber: {
+					type: Sequelize.INTEGER
 				},
 				createdAt: {
 					allowNull: false,
@@ -45,7 +41,6 @@ module.exports = {
 		);
 	},
 	async down(queryInterface, Sequelize) {
-		options.tableName = "Users";
-		await queryInterface.dropTable(options);
+		await queryInterface.dropTable("Rounds");
 	}
 };
