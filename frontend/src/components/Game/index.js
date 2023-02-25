@@ -13,6 +13,7 @@ import { io } from "socket.io-client";
 
 import "./Game.css";
 import Lobby from "./Lobby";
+import GameRound from "./Round";
 
 let socket;
 export default function Game() {
@@ -23,6 +24,8 @@ export default function Game() {
 	const players = useSelector(state => state.games.currentPlayers);
 	const { gameCode } = useParams();
 	const [isLoaded, setIsLoaded] = useState(false);
+	const [gameStarted, setGameStarted] = useState(false);
+	const [roundNumber, setRoundNumber] = useState(1);
 	const [playerCount, setPlayerCount] = useState(0);
 
 	useEffect(() => {
@@ -44,6 +47,8 @@ export default function Game() {
 				gameCode
 			});
 		});
+
+		socket.on("creator started game");
 
 		socket.on("player joined", player => {
 			// add new player to state
@@ -80,10 +85,14 @@ export default function Game() {
 		};
 	}, [gameCode]);
 
+	useEffect(() => {
+		if (game.hasStarted) {
+			setGameStarted(true);
+		}
+	}, [game.hasStarted]);
+
 	return isLoaded ? (
-		<div id="game-container">
-			<Lobby />
-		</div>
+		<div id="game-container">{!gameStarted ? <Lobby /> : <GameRound />}</div>
 	) : (
 		<div id="game-container">
 			<p>Loading...</p>
