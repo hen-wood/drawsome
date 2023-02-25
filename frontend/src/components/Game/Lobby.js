@@ -6,22 +6,18 @@ export default function Lobby({ connectedPlayers, playerCount }) {
 	const game = useSelector(state => state.games.currentGame);
 
 	const waitingMessage = (count, limit) => {
-		const numRemaing = limit - count;
+		const numRemaining = limit - count;
+		const gameFull = limit - count === 0;
 		const isCreator = user.id === game.creator.id;
+		const message = `Waiting for ${
+			gameFull && isCreator
+				? "you to start the game"
+				: gameFull
+				? game.creator.username + " to start the game"
+				: numRemaining + " more players to join the game"
+		}...`;
 
-		if (numRemaing === 0)
-			return (
-				<p>
-					Waiting for {isCreator ? "you" : game.creator.username} to start the
-					game
-				</p>
-			);
-
-		return (
-			<p>
-				Waiting for {numRemaing} more player{numRemaing > 1 ? "s" : ""}
-			</p>
-		);
+		return <p>{message}</p>;
 	};
 
 	const copyCode = () => {
@@ -41,12 +37,17 @@ export default function Lobby({ connectedPlayers, playerCount }) {
 				const isCreator = player.user.id === game.creator.id;
 				return (
 					<p className="lobby-player" key={key}>
-						{`${isCreator ? "👑" : "✅"} ${player.user.username} ${
-							isCreator ? "started the game" : "joined the game"
-						}`}
+						{`${isCreator ? "👑" : "✅"} ${
+							isCreator && user.id === game.creator.id
+								? "You"
+								: player.user.username
+						} ${isCreator ? "started the game" : "joined the game"}`}
 					</p>
 				);
 			})}
+			{playerCount >= 3 && user.id === game.creator.id && (
+				<button>Start the game!</button>
+			)}
 		</div>
 	);
 }

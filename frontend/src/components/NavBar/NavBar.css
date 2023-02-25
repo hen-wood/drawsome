@@ -31,6 +31,7 @@
 
 .user-menu{
     position: absolute;
+    z-index: 1;
     right: 0;
     top: 100%;
     width: 200px;
@@ -57,4 +58,9 @@
     width: 100%;
     border-bottom: 1px solid white;
     margin: 15px 0;
+}
+
+#menu-username{
+    margin: 0;
+    font-size: 22px;
 }

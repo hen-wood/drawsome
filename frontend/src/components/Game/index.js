@@ -41,6 +41,7 @@ export default function Game() {
 		});
 
 		socket.on("all players", players => {
+			console.log({ players });
 			// update state with all players in game
 			const updatedPlayers = {};
 			players.forEach(player => {

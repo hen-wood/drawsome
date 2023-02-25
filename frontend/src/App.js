@@ -1,7 +1,7 @@
 // frontend/src/App.js
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, useHistory } from "react-router-dom";
 import * as sessionActions from "./store/session";
 import { thunkGetUserDrawings } from "./store/drawings";
 import SoloCanvas from "./components/SoloCanvas";
@@ -15,6 +15,7 @@ import UserDrawings from "./components/UserDrawings";
 import Game from "./components/Game";
 
 function App() {
+	const history = useHistory();
 	const dispatch = useDispatch();
 	const user = useSelector(state => state.session.user);
 	const [isLoaded, setIsLoaded] = useState(false);
@@ -26,7 +27,12 @@ function App() {
 	}, [dispatch]);
 
 	useEffect(() => {
-		if (user) dispatch(thunkGetUserDrawings(user.id));
+		if (user) {
+			dispatch(thunkGetUserDrawings(user.id));
+			history.push("/join-game");
+		} else {
+			history.push("/login");
+		}
 	}, [user]);
 
 	return (
@@ -35,9 +41,6 @@ function App() {
 			<div id="inner-container">
 				{isLoaded && (
 					<Switch>
-						<Route exact path="/">
-							<JoinGame />
-						</Route>
 						<Route path="/join-game">
 							<JoinGame />
 						</Route>

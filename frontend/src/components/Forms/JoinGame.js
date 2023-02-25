@@ -14,7 +14,6 @@ export default function JoinGame() {
 
 	const handleJoinGame = e => {
 		e.preventDefault();
-		console.log(gameCode);
 		if (gameCode.length !== 5) {
 			setError("Code must be 5 characters long");
 			setGameCode("");

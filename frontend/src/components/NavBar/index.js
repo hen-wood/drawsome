@@ -40,6 +40,7 @@ export default function NavBar() {
 				isOpen={isOpen}
 				setIsOpen={setIsOpen}
 				setIsLoggedIn={setIsLoggedIn}
+				user={user}
 			/>
 		</div>
 	);

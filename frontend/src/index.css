@@ -26,8 +26,8 @@ h1 {
     height: 100vh;
     background-image: url('./images/darkmode-wavy.svg');
     background-color: #180bc5;
-    background-position: center;
-    background-size: 160%;
+    /* background-position: center; */
+    background-size: 100% 100%;
 }
 
 #inner-container {

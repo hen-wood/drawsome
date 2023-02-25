@@ -6,6 +6,17 @@
     border-radius: 10px;
 }
 
+#lobby-container h1{
+    margin-left: 0;
+    margin-bottom: 20px;
+    padding: 0;
+}
+
+#lobby-container button{
+    width: 100%;
+    margin: 0;
+}
+
 #copy-code{
     margin: 0;
     border-radius: 5px;
@@ -16,6 +27,14 @@
     cursor: pointer;
 }
 
+#copy-code:hover{
+    background-color: #4c3cb6;
+}
+
+#copy-code:active{
+    background-color: #685abe;
+}
+
 .lobby-player{
-    margin-left: 15px;
+    /* margin-left: 15px; */
 }
