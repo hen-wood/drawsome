@@ -92,12 +92,9 @@ app.use((err, _req, res, _next) => {
 const connectedPlayers = {};
 
 io.on("connect", socket => {
-	console.log(`Socket ${socket.id} connected`);
-
 	socket.on("joined", data => {
 		const player = { user: data, socketId: socket.id };
 		connectedPlayers[socket.id] = player;
-		console.log(connectedPlayers);
 		io.emit("player joined", player);
 		io.emit("all players", connectedPlayers);
 	});

@@ -26,8 +26,6 @@ router.get("/:gameCode", requireAuthentication, async (req, res, next) => {
 		});
 	}
 
-	console.log(game);
-
 	return res.json(game);
 });
 
