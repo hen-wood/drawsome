@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
 import { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
-import { thunkEditDrawingTitle } from "../../store/drawings";
+import {
+	thunkEditDrawingTitle,
+	thunkDeleteDrawing
+} from "../../store/drawings";
 import "./UserDrawings.css";
 
 export default function UserDrawings() {
@@ -42,45 +46,55 @@ export default function UserDrawings() {
 	};
 
 	const handleDelete = drawingId => {
-		console.log(drawingId);
+		dispatch(thunkDeleteDrawing(drawingId)).then(() => {
+			const updatedDrawings = { ...drawings };
+			delete updatedDrawings[drawingId];
+			setDrawings(updatedDrawings);
+		});
 	};
 
 	return isLoaded ? (
 		<div id="user-drawings-container" ref={galleryRef}>
-			{Object.values(drawings).map(drawing => {
-				return (
-					<div key={drawing.id} className="indiv-drawing-container">
-						{editId === drawing.id ? (
-							<form
-								className="edit-title-form"
-								onSubmit={e => handleEditSubmit(e, drawing.id)}
-							>
-								<input
-									className="edit-title-field"
-									type="text"
-									value={editedTitle}
-									onChange={e => setEditedTitle(e.target.value)}
-									autoFocus
-								/>
-								<i
-									className="fa-solid fa-circle-xmark edit-close"
-									onClick={handleEditClose}
-								></i>
-							</form>
-						) : (
-							<h2
-								className="drawing-title"
-								onClick={e => handleEditOpen(drawing)}
-							>{`"${drawing.title}"`}</h2>
-						)}
-						<i
-							className="fa-solid fa-trash-can delete-button"
-							onClick={() => handleDelete(drawing.id)}
-						></i>
-						<img src={drawing.drawingUrl} alt={drawing.title} />
-					</div>
-				);
-			})}
+			{Object.values(drawings).length > 0 ? (
+				Object.values(drawings).map(drawing => {
+					return (
+						<div key={drawing.id} className="indiv-drawing-container">
+							{editId === drawing.id ? (
+								<form
+									className="edit-title-form"
+									onSubmit={e => handleEditSubmit(e, drawing.id)}
+								>
+									<input
+										className="edit-title-field"
+										type="text"
+										value={editedTitle}
+										onChange={e => setEditedTitle(e.target.value)}
+										autoFocus
+									/>
+									<i
+										className="fa-solid fa-circle-xmark edit-close"
+										onClick={handleEditClose}
+									></i>
+								</form>
+							) : (
+								<h2
+									className="drawing-title"
+									onClick={e => handleEditOpen(drawing)}
+								>{`"${drawing.title}"`}</h2>
+							)}
+							<i
+								className="fa-solid fa-trash-can delete-button"
+								onClick={() => handleDelete(drawing.id)}
+							></i>
+							<img src={drawing.drawingUrl} alt={drawing.title} />
+						</div>
+					);
+				})
+			) : (
+				<h1 id="no-drawings-title">
+					No Drawings yet 😭 Click <Link to="/draw">here</Link> to make one!
+				</h1>
+			)}
 		</div>
 	) : (
 		<div id="user-drawings-container" ref={galleryRef}>

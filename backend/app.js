@@ -8,10 +8,14 @@ const cookieParser = require("cookie-parser");
 const routes = require("./routes");
 const { ValidationError } = require("sequelize");
 const { environment } = require("./config");
+const http = require("http"); // import Node's http module
+const socketIo = require("socket.io"); // import socket.io
 
 const isProduction = environment === "production";
 
 const app = express();
+const server = http.createServer(app); // create an http server using the Express app
+const io = socketIo(server); // initialize socket.io and pass in the http server
 
 app.use(morgan("dev"));
 
@@ -40,6 +44,13 @@ app.use(
 		}
 	})
 );
+
+// add a socket.io middleware that logs incoming socket connections
+io.use((socket, next) => {
+	console.log(`Socket connected: ${socket.id}`);
+	next();
+});
+
 app.use(routes); // Connect all the routes
 
 app.use((_req, _res, next) => {
@@ -76,4 +87,30 @@ app.use((err, _req, res, _next) => {
 	});
 });
 
-module.exports = app;
+// socket.io stuff
+
+const connectedPlayers = {};
+
+io.on("connect", socket => {
+	socket.on("joined", data => {
+		const player = { user: data, socketId: socket.id };
+		connectedPlayers[socket.id] = player;
+		io.emit("player joined", player);
+		io.emit("all players", connectedPlayers);
+	});
+
+	socket.on("disconnect", () => {
+		const player = connectedPlayers[socket.id];
+		if (player) {
+			delete connectedPlayers[socket.id];
+			io.emit("player left", player);
+			io.emit("all users", Object.values(connectedPlayers));
+		}
+	});
+
+	socket.on("getConnectedPlayers", cb => {
+		cb(Object.values(connectedPlayers));
+	});
+});
+
+module.exports = { app, server };

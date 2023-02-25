@@ -15,18 +15,18 @@ module.exports = {
 				// Group Organizers
 				{
 					email: "demo@user.io",
-					username: "Demo-lition",
+					username: "demouser",
 					hashedPassword: bcrypt.hashSync("password")
 				},
 				{
-					email: "john@user.io",
-					username: "JohnFakeman",
-					hashedPassword: bcrypt.hashSync("password2")
+					email: "henry@user.io",
+					username: "henry",
+					hashedPassword: bcrypt.hashSync("password")
 				},
 				{
-					email: "don@user.io",
-					username: "DonManfake",
-					hashedPassword: bcrypt.hashSync("password3")
+					email: "fahd@user.io",
+					username: "fahd",
+					hashedPassword: bcrypt.hashSync("password")
 				},
 				{
 					email: "jane@user.io",

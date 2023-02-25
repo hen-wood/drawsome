@@ -1,4 +1,4 @@
-// backend/routes/api/users.js
+// backend/routes/api/drawings.js
 const express = require("express");
 const { singleMulterUpload, uploadDrawingToS3 } = require("../../awsS3.js");
 const { requireAuthentication } = require("../../utils/auth");
@@ -40,6 +40,19 @@ router.put(
 		drawingToEdit.title = newTitle;
 		await drawingToEdit.save();
 		return res.json(drawingToEdit);
+	}
+);
+
+// DELETE delete drawing
+router.delete(
+	"/:drawingId/delete",
+	requireAuthentication,
+	async (req, res, next) => {
+		const { drawingId } = req.params;
+		const drawingToDelete = await Drawing.findByPk(+drawingId);
+
+		await drawingToDelete.destroy();
+		return res.json({ message: `Deleted drawing #${drawingId}` });
 	}
 );
 
