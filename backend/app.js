@@ -101,7 +101,6 @@ io.on("connect", socket => {
 	socket.on("request current players", data => {
 		const { players, gameCode } = data;
 		socket.join(gameCode);
-		console.log(data.players);
 		io.to(gameCode).emit("updating all players", players);
 	});
 

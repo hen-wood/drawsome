@@ -39,19 +39,31 @@ export default function Game() {
 			if (gameCode) {
 				socket.emit("joined", { user, gameCode });
 			}
-			socket.emit("request current players", { players, gameCode });
+			socket.emit("request current players", {
+				players,
+				gameCode
+			});
 		});
 
 		socket.on("player joined", player => {
 			// add new player to state
 			dispatch(actionAddPlayer(player));
-			socket.emit("request current players", { players, gameCode });
+			const updatedPlayers = { ...players, [player.user.id]: player };
+			socket.emit("request current players", {
+				players: updatedPlayers,
+				gameCode
+			});
 		});
 
 		socket.on("updating all players", updatedPlayers => {
-			console.log(players);
-			console.log(updatedPlayers);
-			dispatch(actionSetPlayers(updatedPlayers));
+			if (Object.keys(updatedPlayers).length) {
+				dispatch(actionSetPlayers(updatedPlayers));
+			} else {
+				socket.emit("request current players", {
+					players: updatedPlayers,
+					gameCode
+				});
+			}
 			// socket.emit();
 		});
 
