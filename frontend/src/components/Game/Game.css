@@ -1,0 +1,40 @@
+#lobby-container{
+    margin-bottom: 20vh;
+    padding: 20px;
+    background-color: #110896;
+    box-shadow: 0px 10px 10px -5px rgb(1, 2, 53);
+    border-radius: 10px;
+}
+
+#lobby-container h1{
+    margin-left: 0;
+    margin-bottom: 20px;
+    padding: 0;
+}
+
+#lobby-container button{
+    width: 100%;
+    margin: 0;
+}
+
+#copy-code{
+    margin: 0;
+    border-radius: 5px;
+    box-shadow: 0px 10px 10px -5px rgb(1, 2, 53);
+    background-color: #40348f;
+    padding: 10px;
+    width: fit-content;
+    cursor: pointer;
+}
+
+#copy-code:hover{
+    background-color: #4c3cb6;
+}
+
+#copy-code:active{
+    background-color: #685abe;
+}
+
+.lobby-player{
+    /* margin-left: 15px; */
+}

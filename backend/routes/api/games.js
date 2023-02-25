@@ -21,8 +21,8 @@ router.get("/:gameCode", requireAuthentication, async (req, res, next) => {
 		}
 	});
 	if (!game) {
-		return res.json({
-			message: "game not found. it may have ended or started without you"
+		return res.status(404).json({
+			message: "Game not found"
 		});
 	}
 

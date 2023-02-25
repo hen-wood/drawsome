@@ -27,7 +27,9 @@ export default function CreateGame() {
 			rounds
 		};
 
-		dispatch(thunkCreateGame(data)).then(res => console.log(res));
+		dispatch(thunkCreateGame(data)).then(res =>
+			history.push(`/game/${res.code}`)
+		);
 	};
 
 	const handleUpdateRounds = e => {

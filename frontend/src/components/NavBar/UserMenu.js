@@ -1,8 +1,8 @@
 import { useHistory } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../store/session";
 
-export default function UserMenu({ isOpen, setIsOpen, setIsLoggedIn }) {
+export default function UserMenu({ isOpen, setIsOpen, setIsLoggedIn, user }) {
 	const dispatch = useDispatch();
 	const history = useHistory();
 
@@ -36,6 +36,8 @@ export default function UserMenu({ isOpen, setIsOpen, setIsLoggedIn }) {
 
 	return (
 		<div className={isOpen ? "user-menu" : "user-menu-hidden"}>
+			<p id="menu-username">{user && user.username} 🧑‍🎨</p>
+			<div className="divider"></div>
 			<p className="user-options" onClick={handleDrawSolo}>
 				Draw solo
 			</p>

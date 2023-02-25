@@ -89,27 +89,24 @@ app.use((err, _req, res, _next) => {
 
 // socket.io stuff
 
-const connectedPlayers = {};
-
 io.on("connect", socket => {
 	socket.on("joined", data => {
-		const player = { user: data, socketId: socket.id };
-		connectedPlayers[socket.id] = player;
-		io.emit("player joined", player);
-		io.emit("all players", connectedPlayers);
+		const player = { user: data.user, socketId: socket.id };
+		const gamecode = data.gamecode;
+		socket.join(gamecode);
+
+		io.to(gamecode).emit("player joined", player);
+	});
+
+	socket.on("request current players", data => {
+		const { players, gameCode } = data;
+		socket.join(gameCode);
+		console.log(data.players);
+		io.to(gameCode).emit("updating all players", players);
 	});
 
 	socket.on("disconnect", () => {
-		const player = connectedPlayers[socket.id];
-		if (player) {
-			delete connectedPlayers[socket.id];
-			io.emit("player left", player);
-			io.emit("all users", Object.values(connectedPlayers));
-		}
-	});
-
-	socket.on("getConnectedPlayers", cb => {
-		cb(Object.values(connectedPlayers));
+		io.emit("player left", socket.id);
 	});
 });
 
