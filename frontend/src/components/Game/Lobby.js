@@ -1,46 +1,44 @@
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Link, useHistory } from "react-router-dom";
-import { thunkLoadGame } from "../../store/games";
-import { useParams } from "react-router-dom";
-import { io } from "socket.io-client";
+import { useSelector } from "react-redux";
 
-import "./Lobby.css";
-
-let socket;
-export default function Lobby() {
-	const dispatch = useDispatch();
-	const history = useHistory();
+import "./Game.css";
+export default function Lobby({ connectedPlayers, playerCount }) {
 	const user = useSelector(state => state.session.user);
 	const game = useSelector(state => state.games.currentGame);
-	const { gameCode } = useParams();
-	const [isLoaded, setIsLoaded] = useState(false);
 
-	useEffect(() => {
-		if (gameCode)
-			dispatch(thunkLoadGame(gameCode)).then(() => {
-				setIsLoaded(true);
-			});
-	}, [gameCode]);
+	const waitingMessage = (count, limit) => {
+		const numRemaing = limit - count;
+		const isCreator = user.id === game.creator.id;
 
-	useEffect(() => {
-		socket = io("http://localhost:4000");
-		socket.on("connect", () => {
-			console.log("Connected to socket.io server");
-		});
+		if (numRemaing === 0)
+			return (
+				<p>
+					Waiting for {isCreator ? "you" : game.creator.username} to start the
+					game
+				</p>
+			);
 
-		socket.on("disconnect", () => {
-			console.log("Disconnected from socket.io server");
-		});
-
-		return () => {
-			socket.disconnect();
-		};
-	}, []);
+		return (
+			<p>
+				Waiting for {numRemaing} more player{numRemaing > 1 ? "s" : ""}
+			</p>
+		);
+	};
 
 	return (
 		<div id="lobby-container">
-			<h1>Hello From Lobby! 👑</h1>
+			<h1>Let's play Drawsome! 🧑‍🎨</h1>
+			{waitingMessage(playerCount, game.numPlayers)}
+			{Object.keys(connectedPlayers).map(key => {
+				const player = connectedPlayers[key];
+				const isCreator = player.user.id === game.creator.id;
+				return (
+					<p key={key}>
+						{`${isCreator ? "👑" : "✅"} ${player.user.username} ${
+							isCreator ? "started the game" : "joined the game"
+						}`}
+					</p>
+				);
+			})}
 		</div>
 	);
 }
