@@ -24,7 +24,7 @@ module.exports = {
 					creatorId: 1,
 					numRounds: 2,
 					timeLimit: 2,
-					numPlayers: 4
+					numPlayers: 3
 				},
 				{
 					code: hashNumberToCode(2),

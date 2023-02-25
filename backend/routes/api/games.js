@@ -1,7 +1,7 @@
 // backend/routes/api/games.js
 const express = require("express");
 const { requireAuthentication } = require("../../utils/auth");
-const { Drawing, Game, Round } = require("../../db/models");
+const { Drawing, Game, Round, User } = require("../../db/models");
 const { codeGen } = require("../../utils/codeGen");
 const { Op } = require("sequelize");
 
@@ -14,6 +14,10 @@ router.get("/:gameCode", requireAuthentication, async (req, res, next) => {
 	const game = await Game.findOne({
 		where: {
 			[Op.and]: [{ code: gameCode }, { hasStarted: false }, { hasEnded: false }]
+		},
+		include: {
+			model: User,
+			as: "creator"
 		}
 	});
 	if (!game) {
@@ -21,6 +25,8 @@ router.get("/:gameCode", requireAuthentication, async (req, res, next) => {
 			message: "game not found. it may have ended or started without you"
 		});
 	}
+
+	console.log(game);
 
 	return res.json(game);
 });
