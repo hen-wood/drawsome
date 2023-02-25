@@ -31,9 +31,12 @@ export const thunkCreateGame = game => async dispatch => {
 
 export const thunkLoadGame = gameCode => async dispatch => {
 	const response = await csrfFetch(`/api/games/${gameCode}`);
-	const data = await response.json();
-	dispatch(actionSetCurrentGame(data));
-	return data;
+	if (response.ok) {
+		const data = await response.json();
+		dispatch(actionSetCurrentGame(data));
+	} else {
+		return response;
+	}
 };
 
 const initialState = {

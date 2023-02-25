@@ -24,15 +24,23 @@ export default function Lobby({ connectedPlayers, playerCount }) {
 		);
 	};
 
+	const copyCode = () => {
+		navigator.clipboard.writeText(game.code);
+	};
+
 	return (
 		<div id="lobby-container">
 			<h1>Let's play Drawsome! 🧑‍🎨</h1>
+			<p id="copy-code" onClick={copyCode}>
+				copy game code: {game.code} 🔗
+			</p>
+			<div className="divider"></div>
 			{waitingMessage(playerCount, game.numPlayers)}
 			{Object.keys(connectedPlayers).map(key => {
 				const player = connectedPlayers[key];
 				const isCreator = player.user.id === game.creator.id;
 				return (
-					<p key={key}>
+					<p className="lobby-player" key={key}>
 						{`${isCreator ? "👑" : "✅"} ${player.user.username} ${
 							isCreator ? "started the game" : "joined the game"
 						}`}
