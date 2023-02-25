@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
-import { thunkLoadGame } from "../../store/games";
+import {
+	actionAddPlayer,
+	actionExitGame,
+	actionRemovePlayer,
+	actionSetPlayers,
+	thunkLoadGame
+} from "../../store/games";
 import { useParams } from "react-router-dom";
 import { io } from "socket.io-client";
 
@@ -14,9 +20,9 @@ export default function Game() {
 	const history = useHistory();
 	const user = useSelector(state => state.session.user);
 	const game = useSelector(state => state.games.currentGame);
+	const players = useSelector(state => state.games.currentPlayers);
 	const { gameCode } = useParams();
 	const [isLoaded, setIsLoaded] = useState(false);
-	const [connectedPlayers, setConnectedPlayers] = useState({});
 	const [playerCount, setPlayerCount] = useState(0);
 
 	useEffect(() => {
@@ -30,50 +36,41 @@ export default function Game() {
 		socket = io();
 
 		socket.on("connect", () => {
-			console.log("Connected to socket.io server");
 			if (gameCode) {
-				socket.emit("joined", { user, gamecode: gameCode });
+				socket.emit("joined", { user, gameCode });
 			}
-		});
-
-		socket.on("disconnect", () => {
-			console.log("Disconnected from socket.io server");
-		});
-
-		socket.on("all players", players => {
-			console.log({ players });
-			// update state with all players in game
-			const updatedPlayers = {};
-			players.forEach(player => {
-				updatedPlayers[player.user.id] = player;
-			});
-			setPlayerCount(players.length);
-			setConnectedPlayers(updatedPlayers);
+			socket.emit("request current players", { players, gameCode });
 		});
 
 		socket.on("player joined", player => {
 			// add new player to state
-			setPlayerCount(prev => prev + 1);
-			setConnectedPlayers(prev => ({ ...prev, [player.user.id]: player }));
+			dispatch(actionAddPlayer(player));
+			socket.emit("request current players", { players, gameCode });
 		});
 
-		socket.on("player left", player => {
+		socket.on("updating all players", updatedPlayers => {
+			console.log(players);
+			console.log(updatedPlayers);
+			dispatch(actionSetPlayers(updatedPlayers));
+			// socket.emit();
+		});
+
+		socket.on("player left", socketId => {
 			// remove player from state
-			setPlayerCount(prev => prev - 1);
-			const updatedPlayers = { ...connectedPlayers };
-			if (connectedPlayers[player.user.id])
-				delete connectedPlayers[player.user.id];
-			setConnectedPlayers(updatedPlayers);
+			setIsLoaded(false);
+			dispatch(actionRemovePlayer(socketId));
+			setIsLoaded(true);
 		});
 
 		return () => {
 			socket.disconnect();
+			dispatch(actionExitGame());
 		};
 	}, [gameCode]);
 
 	return isLoaded ? (
 		<div id="game-container">
-			<Lobby connectedPlayers={connectedPlayers} playerCount={playerCount} />
+			<Lobby />
 		</div>
 	) : (
 		<div id="game-container">

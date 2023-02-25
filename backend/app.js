@@ -89,39 +89,25 @@ app.use((err, _req, res, _next) => {
 
 // socket.io stuff
 
-const connectedPlayers = {};
-
 io.on("connect", socket => {
 	socket.on("joined", data => {
 		const player = { user: data.user, socketId: socket.id };
 		const gamecode = data.gamecode;
-		connectedPlayers[socket.id] = { player, gamecode };
 		socket.join(gamecode);
 
 		io.to(gamecode).emit("player joined", player);
-		io.to(gamecode).emit("all players", getPlayersInGame(gamecode));
+	});
+
+	socket.on("request current players", data => {
+		const { players, gameCode } = data;
+		socket.join(gameCode);
+		console.log(data.players);
+		io.to(gameCode).emit("updating all players", players);
 	});
 
 	socket.on("disconnect", () => {
-		const player = connectedPlayers[socket.id];
-		if (player) {
-			const gamecode = player.gamecode;
-			delete connectedPlayers[socket.id];
-			io.to(gamecode).emit("player left", player.player);
-			io.to(gamecode).emit("all users", getPlayersInGame(gamecode));
-		}
+		io.emit("player left", socket.id);
 	});
-
-	socket.on("getConnectedPlayers", cb => {
-		cb(Object.values(connectedPlayers));
-	});
-
-	function getPlayersInGame(gamecode) {
-		const players = Object.values(connectedPlayers)
-			.filter(player => player.gamecode === gamecode)
-			.map(player => player.player);
-		return players;
-	}
 });
 
 module.exports = { app, server };

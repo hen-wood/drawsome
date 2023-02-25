@@ -4,6 +4,10 @@ import { csrfFetch } from "./csrf";
 
 const SET_CURRENT_GAME = "games/SET_CURRENT_GAME";
 const UPDATE_CURRENT_GAME = "games/UPDATE_CURRENT_GAME";
+const ADD_PLAYER = "games/ADD_PLAYER";
+const REMOVE_PLAYER = "games/REMOVE_PLAYER";
+const SET_CURRENT_PLAYERS = "games/SET_ALL_PLAYERS";
+const EXIT_GAME = "games/EXIT_GAME";
 // Actions
 
 export const actionSetCurrentGame = game => {
@@ -13,6 +17,32 @@ export const actionSetCurrentGame = game => {
 	};
 };
 
+export const actionExitGame = () => {
+	return {
+		type: EXIT_GAME
+	};
+};
+
+export const actionAddPlayer = player => {
+	return {
+		type: ADD_PLAYER,
+		payload: player
+	};
+};
+
+export const actionRemovePlayer = socketId => {
+	return {
+		type: REMOVE_PLAYER,
+		payload: socketId
+	};
+};
+
+export const actionSetPlayers = players => {
+	return {
+		type: SET_CURRENT_PLAYERS,
+		payload: players
+	};
+};
 // Thunks
 
 export const thunkCreateGame = game => async dispatch => {
@@ -40,7 +70,8 @@ export const thunkLoadGame = gameCode => async dispatch => {
 };
 
 const initialState = {
-	currentGame: null
+	currentGame: null,
+	currentPlayers: {}
 };
 
 const gamesReducer = (state = initialState, action) => {
@@ -50,6 +81,33 @@ const gamesReducer = (state = initialState, action) => {
 			newState = { ...state };
 			newState.currentGame = action.payload;
 			return newState;
+		case ADD_PLAYER:
+			newState = { ...state };
+			newState.currentPlayers[action.payload.user.id] = action.payload;
+			return newState;
+		case REMOVE_PLAYER:
+			newState = { ...state };
+			const deleteKey = Object.keys(newState.currentPlayers).find(
+				key => newState.currentPlayers[key].socketId === action.payload
+			);
+			if (deleteKey) {
+				delete newState.currentPlayers[deleteKey];
+			}
+			return newState;
+		case SET_CURRENT_PLAYERS:
+			newState = { ...state };
+			console.log("my current players", newState.currentPlayers);
+			console.log("incoming current players", action.payload);
+			newState.currentPlayers = {
+				...newState.currentPlayers,
+				...action.payload
+			};
+			return newState;
+		case EXIT_GAME:
+			return {
+				currentGame: null,
+				currentPlayers: {}
+			};
 		default:
 			return state;
 	}
