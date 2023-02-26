@@ -23,7 +23,7 @@ export default function NavBar() {
 	};
 
 	const handleHomeClick = () => {
-		history.push("/");
+		history.push("/join-game");
 	};
 
 	return (

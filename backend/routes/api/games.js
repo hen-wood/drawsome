@@ -39,9 +39,9 @@ router.get("/:gameCode", requireAuthentication, async (req, res, next) => {
 // POST create new game
 router.post("/", requireAuthentication, async (req, res, next) => {
 	const creatorId = req.user.id;
-	const { code, numRounds, timeLimit, numPlayers, rounds } = req.body;
+	const { numRounds, timeLimit, numPlayers, rounds } = req.body;
 	const newGame = await Game.create({
-		code,
+		code: "dfalt",
 		creatorId,
 		numRounds,
 		timeLimit,

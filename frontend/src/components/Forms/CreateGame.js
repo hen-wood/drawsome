@@ -10,16 +10,26 @@ export default function CreateGame() {
 	const history = useHistory();
 	const user = useSelector(state => state.session.user);
 	const [numPlayers, setNumPlayers] = useState(3);
-	const [timeLimit, setTimeLimit] = useState(1);
+	const [timeLimit, setTimeLimit] = useState(3);
 	const [errors, setErrors] = useState({});
 	const [backendError, setBackendError] = useState("");
-	const [rounds, setRounds] = useState([undefined]);
-	const [roundsData, setRoundsData] = useState([]);
+	const [rounds, setRounds] = useState([undefined, undefined, undefined]);
 
 	const handleCreateGame = e => {
 		e.preventDefault();
+		console.log({ rounds });
+		const inputErrors = {};
+		rounds.forEach((round, i) => {
+			if (!round) {
+				inputErrors[i] = true;
+			}
+		});
 
-		if (!rounds.every(round => round)) return;
+		if (Object.values(inputErrors).some(val => val === true)) {
+			setErrors(inputErrors);
+			return;
+		}
+
 		const data = {
 			numRounds: rounds.length,
 			timeLimit,
@@ -42,7 +52,7 @@ export default function CreateGame() {
 	};
 
 	return (
-		<div id="form-container">
+		<div id="create-game-form-container">
 			<h1>Create a Drawsome Game</h1>
 			{backendError && <p className="backend-errors">{backendError}</p>}
 			<form onSubmit={handleCreateGame}>
@@ -55,29 +65,6 @@ export default function CreateGame() {
 					max={8}
 					onChange={e => setNumPlayers(e.target.value)}
 				/>
-				<label htmlFor="num-rounds">Number of Rounds</label>
-				<input
-					name="num-rounds"
-					type="number"
-					value={rounds.length}
-					min={1}
-					max={5}
-					onChange={handleUpdateRounds}
-				/>
-				{rounds.map((r, i) => {
-					return (
-						<input
-							key={i}
-							type="text"
-							placeholder={`Enter prompt for round ${i + 1}`}
-							onChange={e => {
-								const newRounds = [...rounds];
-								newRounds[i] = { prompt: e.target.value, roundNumber: i + 1 };
-								setRounds(newRounds);
-							}}
-						></input>
-					);
-				})}
 				<label htmlFor="num-minutes">Minutes per round</label>
 				<input
 					name="num-minutes"
@@ -87,6 +74,32 @@ export default function CreateGame() {
 					max={5}
 					onChange={e => setTimeLimit(e.target.value)}
 				/>
+				<label htmlFor="num-rounds">Number of Rounds</label>
+				<input
+					name="num-rounds"
+					type="number"
+					value={+rounds.length}
+					min={1}
+					max={5}
+					onChange={handleUpdateRounds}
+				/>
+				{rounds.map((r, i) => {
+					return (
+						<input
+							key={i}
+							type="text"
+							className={errors[i] ? "input-errors" : ""}
+							placeholder={`Enter prompt for round ${i + 1}`}
+							onChange={e => {
+								const newRounds = [...rounds];
+								newRounds[i] = { prompt: e.target.value, roundNumber: i + 1 };
+								setRounds(newRounds);
+							}}
+							onFocus={() => setErrors(prev => ({ ...prev, [i]: false }))}
+						></input>
+					);
+				})}
+
 				<button type="submit">Create Game</button>
 			</form>
 			<p>
