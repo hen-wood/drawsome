@@ -7,7 +7,8 @@ import {
 	actionRemovePlayer,
 	actionSetPlayers,
 	actionStartGame,
-	thunkLoadGame
+	thunkLoadGame,
+	thunkStartGame
 } from "../../store/games";
 import { useParams } from "react-router-dom";
 import { io } from "socket.io-client";
@@ -21,8 +22,10 @@ export default function Game() {
 	const dispatch = useDispatch();
 	const history = useHistory();
 	const user = useSelector(state => state.session.user);
-	const game = useSelector(state => state.games.currentGame);
-	const players = useSelector(state => state.games.currentPlayers);
+	const { currentGame: game, currentPlayers: players } = useSelector(
+		state => state.games
+	);
+
 	const { gameCode } = useParams();
 	const [isLoaded, setIsLoaded] = useState(false);
 	const [gameStarted, setGameStarted] = useState(false);
@@ -90,8 +93,9 @@ export default function Game() {
 		});
 
 		socketState.on("game has started", () => {
-			setGameStarted(true);
-			dispatch(actionStartGame());
+			dispatch(thunkStartGame()).then(() => {
+				setGameStarted(true);
+			});
 		});
 
 		if (game && game.hasStarted) {
