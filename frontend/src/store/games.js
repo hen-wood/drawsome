@@ -3,7 +3,7 @@
 import { csrfFetch } from "./csrf";
 
 const SET_CURRENT_GAME = "games/SET_CURRENT_GAME";
-const UPDATE_CURRENT_GAME = "games/UPDATE_CURRENT_GAME";
+const START_GAME = "games/START_GAME";
 const ADD_PLAYER = "games/ADD_PLAYER";
 const REMOVE_PLAYER = "games/REMOVE_PLAYER";
 const SET_CURRENT_PLAYERS = "games/SET_ALL_PLAYERS";
@@ -11,6 +11,11 @@ const EXIT_GAME = "games/EXIT_GAME";
 // Actions
 
 export const actionSetCurrentGame = game => {
+	const roundsObj = {};
+	if (game.gameRounds) {
+		game.gameRounds.forEach(round => (roundsObj[round.roundNumber] = round));
+		game.gameRounds = roundsObj;
+	}
 	return {
 		type: SET_CURRENT_GAME,
 		payload: game
@@ -20,6 +25,12 @@ export const actionSetCurrentGame = game => {
 export const actionExitGame = () => {
 	return {
 		type: EXIT_GAME
+	};
+};
+
+export const actionStartGame = () => {
+	return {
+		type: START_GAME
 	};
 };
 
@@ -81,6 +92,10 @@ const gamesReducer = (state = initialState, action) => {
 			newState = { ...state };
 			newState.currentGame = action.payload;
 			return newState;
+		case START_GAME:
+			newState = { ...state };
+			newState.currentGame.hasStarted = true;
+			return newState;
 		case ADD_PLAYER:
 			newState = { ...state };
 			newState.currentPlayers[action.payload.user.id] = action.payload;
@@ -96,8 +111,6 @@ const gamesReducer = (state = initialState, action) => {
 			return newState;
 		case SET_CURRENT_PLAYERS:
 			newState = { ...state };
-			console.log("my current players", newState.currentPlayers);
-			console.log("incoming current players", action.payload);
 			newState.currentPlayers = {
 				...newState.currentPlayers,
 				...action.payload

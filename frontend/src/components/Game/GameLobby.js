@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
+import { actionStartGame } from "../../store/games";
 import "./Game.css";
-export default function Lobby() {
+export default function GameLobby({ socket }) {
+	const dispatch = useDispatch();
 	const user = useSelector(state => state.session.user);
 	const game = useSelector(state => state.games.currentGame);
 	const currentPlayers = useSelector(state => state.games.currentPlayers);
@@ -34,6 +36,11 @@ export default function Lobby() {
 		navigator.clipboard.writeText(code);
 	};
 
+	const startGame = () => {
+		dispatch(actionStartGame());
+		socket.emit("creator started game", gameCode);
+	};
+
 	return (
 		game && (
 			<div id="lobby-container">
@@ -51,13 +58,15 @@ export default function Lobby() {
 							{`${isCreator ? "👑" : "✅"} ${
 								isCreator && user.id === game.creator.id
 									? "You"
+									: user.id === player.user.id
+									? "You"
 									: player.user.username
-							} ${isCreator ? "started the game" : "joined the game"}`}
+							} ${isCreator ? "created the game" : "joined the game"}`}
 						</p>
 					);
 				})}
-				{playerCount >= 3 && user.id === game.creator.id && (
-					<button>Start the game!</button>
+				{playerCount >= 2 && user.id === game.creator.id && (
+					<button onClick={startGame}>Start the game!</button>
 				)}
 			</div>
 		)

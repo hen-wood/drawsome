@@ -101,8 +101,12 @@ io.on("connect", socket => {
 	socket.on("request current players", data => {
 		const { players, gameCode } = data;
 		socket.join(gameCode);
-		console.log(data.players);
 		io.to(gameCode).emit("updating all players", players);
+	});
+
+	socket.on("creator started game", gameCode => {
+		socket.join(gameCode);
+		io.to(gameCode).emit("game has started");
 	});
 
 	socket.on("disconnect", () => {
