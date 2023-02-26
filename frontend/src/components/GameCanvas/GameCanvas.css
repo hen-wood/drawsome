@@ -1,0 +1,80 @@
+#canvas-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border-radius: 5px;
+    padding: 20px;
+    margin: 8px;
+    border: none;
+    background-color: #110896;
+    color: white;
+    font-size: 14px;
+    box-shadow: 0px 7px 5px -5px black;
+}
+
+canvas {
+    margin: 10px;
+    border-radius: 5px;
+    cursor: crosshair
+}
+
+#tool-kit {
+    position: absolute;
+    display: flex;
+    left: 35px;
+    top: 90px;
+    background-color: #110896c4;
+    box-shadow: 0px 5px 5px -3px rgb(0, 0, 0);
+    border-radius: 5px;
+}
+
+#tool-kit i {
+    padding: 10px;
+    cursor: pointer;
+}
+
+#tool-kit i.selected {
+    padding: 5px;
+    margin: 5px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px 0px rgb(255, 255, 255);
+}
+
+#red-color-selector {
+    color: red;
+}
+
+#orange-color-selector {
+    color: orange;
+}
+
+#yellow-color-selector {
+    color: yellow;
+}
+
+#green-color-selector {
+    color: green;
+}
+
+#blue-color-selector {
+    color: blue;
+}
+
+#black-color-selector {
+    color: black
+}
+
+#white-color-selector {
+    color: white;
+}
+
+.canvas-error {
+    color: red;
+    top: 50%;
+    left: 20%;
+    position: absolute;
+}
+
+.canvas-error-hidden {
+    display: none;
+}

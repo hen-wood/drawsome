@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { thunkLoadGame } from "../../store/games";
+import { actionStartGame, thunkLoadGame } from "../../store/games";
 import { useParams } from "react-router-dom";
 import { io } from "socket.io-client";
 
@@ -72,9 +72,7 @@ export default function Game() {
 			});
 
 			socket.on("broadcast creator started game", () => {
-				dispatch(thunkLoadGame(gameCode)).then(() => {
-					setGameStarted(true);
-				});
+				setGameStarted(true);
 			});
 
 			socket.on("times up broadcast", roundEndNumber => {

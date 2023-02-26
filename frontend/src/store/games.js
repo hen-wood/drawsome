@@ -77,11 +77,11 @@ export const thunkLoadGame = gameCode => async dispatch => {
 	const response = await csrfFetch(`/api/games/${gameCode}`);
 	const game = await response.json();
 	if (response.ok) {
-		if (game.hasStarted) {
-			throw new Error("That game has already started 😭");
-		} else {
-			dispatch(actionSetCurrentGame(game));
-		}
+		// if (game.hasStarted) {
+		// 	throw new Error("That game has already started 😭");
+		// } else {
+		dispatch(actionSetCurrentGame(game));
+		// }
 	} else {
 		return response;
 	}

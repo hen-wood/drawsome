@@ -35,11 +35,12 @@ export default function GameLobby({
 
 	const startGame = (gameCode, gameId, socket) => {
 		dispatch(thunkStartGame(gameId))
-			.then(startedGame => {
+			.then(() => {
 				socket.emit("creator started game", gameCode);
 			})
 			.catch(async res => {
 				const error = await res.json();
+				console.log(error);
 			});
 	};
 
