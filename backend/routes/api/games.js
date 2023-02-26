@@ -13,7 +13,7 @@ router.get("/:gameCode", requireAuthentication, async (req, res, next) => {
 
 	const game = await Game.findOne({
 		where: {
-			[Op.and]: [{ code: gameCode }, { hasStarted: false }, { hasEnded: false }]
+			code: gameCode
 		},
 		include: [
 			{
@@ -57,6 +57,15 @@ router.post("/", requireAuthentication, async (req, res, next) => {
 	});
 
 	return res.json(newGame);
+});
+
+// PUT start game
+router.put("/:gameId/start", requireAuthentication, async (req, res, next) => {
+	const { gameId } = req.params;
+	const gameToStart = await Game.findByPk(gameId);
+	gameToStart.hasStarted = true;
+	const resBody = await gameToStart.save();
+	return res.json(resBody);
 });
 
 module.exports = router;

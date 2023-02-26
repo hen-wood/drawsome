@@ -119,6 +119,17 @@ io.on("connect", socket => {
 		});
 	});
 
+	socket.on("creator started game", gameCode => {
+		socket.join(gameCode);
+		io.to(gameCode).emit("broadcast creator started game");
+	});
+
+	socket.on("times up", data => {
+		const { gameCode, roundNumber } = data;
+		socket.join(gameCode);
+		io.to(gameCode).emit("times up broadcast", roundNumber);
+	});
+
 	socket.on("disconnecting", () => {
 		io.emit("player leaving", socket.id); // the Set contains at least the socket ID
 	});

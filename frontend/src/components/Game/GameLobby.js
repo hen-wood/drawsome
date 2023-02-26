@@ -1,19 +1,18 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
-import { actionStartGame } from "../../store/games";
+import { actionStartGame, thunkStartGame } from "../../store/games";
 import "./Game.css";
 export default function GameLobby({
 	user,
 	game,
 	connectedPlayers,
+	playerCount,
 	socket,
 	exitSocketId
 }) {
 	const dispatch = useDispatch();
 	const { gameCode } = useParams();
-
-	const [playerCount, setPlayerCount] = useState(0);
 
 	const waitingMessage = (count, limit) => {
 		const numRemaining = limit - count;
@@ -34,9 +33,14 @@ export default function GameLobby({
 		navigator.clipboard.writeText(code);
 	};
 
-	const startGame = () => {
-		dispatch(actionStartGame());
-		socket.emit("creator started game", gameCode);
+	const startGame = (gameCode, gameId, socket) => {
+		dispatch(thunkStartGame(gameId))
+			.then(startedGame => {
+				socket.emit("creator started game", gameCode);
+			})
+			.catch(async res => {
+				const error = await res.json();
+			});
 	};
 
 	return (
@@ -75,7 +79,9 @@ export default function GameLobby({
 					}
 				})}
 				{playerCount >= 2 && user.id === game.creator.id && (
-					<button onClick={startGame}>Start the game!</button>
+					<button onClick={() => startGame(game.code, game.id, socket)}>
+						Start the game!
+					</button>
 				)}
 			</div>
 		)

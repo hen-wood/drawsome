@@ -16,11 +16,14 @@ export default function Game() {
 	const user = useSelector(state => state.session.user);
 	const game = useSelector(state => state.games.currentGame);
 
-	const [connectedPlayers, setConnectedPlayers] = useState({});
 	const { gameCode } = useParams();
 	const [isLoaded, setIsLoaded] = useState(false);
 	const [socketState, setSocketState] = useState(null);
+	const [connectedPlayers, setConnectedPlayers] = useState({});
 	const [exitSocketId, setExitSocketId] = useState(null);
+	const [playerCount, setPlayerCount] = useState(0);
+	const [gameStarted, setGameStarted] = useState(false);
+	const [roundNumber, setRoundNumber] = useState(1);
 
 	useEffect(() => {
 		if (gameCode)
@@ -68,6 +71,16 @@ export default function Game() {
 				}
 			});
 
+			socket.on("broadcast creator started game", () => {
+				dispatch(thunkLoadGame(gameCode)).then(() => {
+					setGameStarted(true);
+				});
+			});
+
+			socket.on("times up broadcast", roundEndNumber => {
+				setRoundNumber(roundEndNumber + 1);
+			});
+
 			socket.on("player leaving", socketId => {
 				setExitSocketId(socketId);
 			});
@@ -91,15 +104,29 @@ export default function Game() {
 		}
 	}, [exitSocketId]);
 
+	useEffect(() => {
+		setPlayerCount(Object.keys(connectedPlayers).length);
+	}, [connectedPlayers]);
+
 	return isLoaded && socketState ? (
 		<div id="game-container">
-			<GameLobby
-				user={user}
-				game={game}
-				connectedPlayers={connectedPlayers}
-				socket={socketState}
-				exitSocketId={exitSocketId}
-			/>
+			{gameStarted ? (
+				<GameRound
+					game={game}
+					socket={socketState}
+					roundNumber={roundNumber}
+					gameCode={gameCode}
+				/>
+			) : (
+				<GameLobby
+					user={user}
+					game={game}
+					connectedPlayers={connectedPlayers}
+					playerCount={playerCount}
+					socket={socketState}
+					exitSocketId={exitSocketId}
+				/>
+			)}
 		</div>
 	) : (
 		<div id="game-container">

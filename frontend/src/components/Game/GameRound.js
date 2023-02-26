@@ -1,39 +1,32 @@
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import Timer from "./Timer";
 
-export default function GameRound({ roundNumber }) {
-	const game = useSelector(state => state.games.currentGame);
-	const [currentRound, setCurrentRound] = useState(null);
-	const [secondsLeft, setSecondsLeft] = useState(0);
+export default function GameRound({ roundNumber, game, socket, gameCode }) {
 	const [timesUp, setTimesUp] = useState(false);
+	const [currentRound, setCurrentRound] = useState(null);
 
 	useEffect(() => {
-		if (game) {
-			setCurrentRound(game.gameRounds[roundNumber]);
-			setSecondsLeft(game.timeLimit * 60);
-		}
-	}, [game, roundNumber]);
+		if (game) setCurrentRound(game.gameRounds[roundNumber]);
+	}, [game]);
 
 	useEffect(() => {
-		let timer;
-		if (secondsLeft > 0) {
-			timer = setInterval(() => {
-				setSecondsLeft(prev => prev - 1);
-			}, 1000);
-		} else {
-			setTimesUp(true);
+		if (timesUp) {
+			socket.emit("times up", { gameCode, roundNumber });
+			setTimesUp(false);
 		}
-		return () => {
-			clearInterval(timer);
-		};
-	}, []);
+	}, [timesUp]);
 
-	return (
-		currentRound && (
-			<div>
-				<p>{currentRound.prompt}</p>
-				<p>{secondsLeft}</p>
-			</div>
-		)
+	return currentRound ? (
+		<div>
+			<h1>Round {roundNumber}</h1>
+			<p>Prompt: {currentRound.prompt}</p>
+			<Timer
+				timeLimit={game.timeLimit * 60}
+				timesUp={timesUp}
+				setTimesUp={setTimesUp}
+			/>
+		</div>
+	) : (
+		<h1>loading...</h1>
 	);
 }

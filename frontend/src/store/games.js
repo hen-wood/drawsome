@@ -67,6 +67,7 @@ export const thunkCreateGame = game => async dispatch => {
 	if (response.ok) {
 		const data = await response.json();
 		dispatch(actionSetCurrentGame(data));
+		return data;
 	} else {
 		return response;
 	}
@@ -74,16 +75,20 @@ export const thunkCreateGame = game => async dispatch => {
 
 export const thunkLoadGame = gameCode => async dispatch => {
 	const response = await csrfFetch(`/api/games/${gameCode}`);
+	const game = await response.json();
 	if (response.ok) {
-		const data = await response.json();
-		dispatch(actionSetCurrentGame(data));
+		if (game.hasStarted) {
+			throw new Error("That game has already started 😭");
+		} else {
+			dispatch(actionSetCurrentGame(game));
+		}
 	} else {
 		return response;
 	}
 };
 
-export const thunkStartGame = gameCode => async dispatch => {
-	const response = await csrfFetch(`/api/games/${gameCode}/start`, {
+export const thunkStartGame = gameId => async dispatch => {
+	const response = await csrfFetch(`/api/games/${gameId}/start`, {
 		method: "PUT",
 		headers: {
 			"Content-Type": "application/json"
@@ -91,7 +96,9 @@ export const thunkStartGame = gameCode => async dispatch => {
 	});
 
 	if (response.ok) {
+		const startedGame = await response.json();
 		dispatch(actionStartGame());
+		return startedGame;
 	} else {
 		return response;
 	}

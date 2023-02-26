@@ -20,7 +20,17 @@ module.exports = (sequelize, DataTypes) => {
 			creatorId: DataTypes.INTEGER,
 			numRounds: DataTypes.INTEGER,
 			timeLimit: DataTypes.INTEGER,
-			numPlayers: DataTypes.INTEGER
+			numPlayers: DataTypes.INTEGER,
+			hasStarted: {
+				type: DataTypes.BOOLEAN,
+				allowNull: true,
+				defaultValue: false
+			},
+			hasEnded: {
+				type: DataTypes.BOOLEAN,
+				allowNull: true,
+				defaultValue: false
+			}
 		},
 		{
 			sequelize,
