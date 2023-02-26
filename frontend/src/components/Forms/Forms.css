@@ -12,6 +12,10 @@ form {
     flex-direction: column;
 }
 
+#form-container form label{
+    padding: 5px 10px;
+}
+
 ::placeholder{
     color: rgba(255, 255, 255, 0.651);
 }
@@ -40,11 +44,11 @@ input[type="number"] {
     font-family: 'Be Vietnam Pro', sans-serif;
 }
 
-input[type="number"]::-webkit-outer-spin-button,
+/* input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
-}
+} */
 
 input[type="number"] {
     -moz-appearance: textfield;

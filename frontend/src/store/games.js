@@ -64,10 +64,12 @@ export const thunkCreateGame = game => async dispatch => {
 		},
 		body: JSON.stringify(game)
 	});
-
-	const data = await response.json();
-	dispatch(actionSetCurrentGame(data));
-	return data;
+	if (response.ok) {
+		const data = await response.json();
+		dispatch(actionSetCurrentGame(data));
+	} else {
+		return response;
+	}
 };
 
 export const thunkLoadGame = gameCode => async dispatch => {
@@ -89,7 +91,6 @@ export const thunkStartGame = gameCode => async dispatch => {
 	});
 
 	if (response.ok) {
-		// const data = await response.json();
 		dispatch(actionStartGame());
 	} else {
 		return response;

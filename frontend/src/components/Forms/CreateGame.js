@@ -11,7 +11,7 @@ export default function CreateGame() {
 	const user = useSelector(state => state.session.user);
 	const [numPlayers, setNumPlayers] = useState(3);
 	const [timeLimit, setTimeLimit] = useState(1);
-	const [errors, setErrors] = useState({});
+	const [error, setError] = useState("");
 	const [backendError, setBackendError] = useState("");
 	const [rounds, setRounds] = useState([undefined]);
 	const [roundsData, setRoundsData] = useState([]);
@@ -19,7 +19,11 @@ export default function CreateGame() {
 	const handleCreateGame = e => {
 		e.preventDefault();
 
-		if (!rounds.every(round => round)) return;
+		if (!rounds.every(round => round)) {
+			setError("All rounds must have a prompt");
+			return;
+		}
+
 		const data = {
 			numRounds: rounds.length,
 			timeLimit,
@@ -27,9 +31,12 @@ export default function CreateGame() {
 			rounds
 		};
 
-		dispatch(thunkCreateGame(data)).then(res =>
-			history.push(`/game/${res.code}`)
-		);
+		dispatch(thunkCreateGame(data))
+			.then(res => history.push(`/game/${res.code}`))
+			.catch(async res => {
+				const err = await res.json();
+				console.log(err);
+			});
 	};
 
 	const handleUpdateRounds = e => {
@@ -38,6 +45,7 @@ export default function CreateGame() {
 		for (let i = 0; i < +e.target.value; i++) {
 			newArr.push(rounds[i] || undefined);
 		}
+		setError("");
 		setRounds(newArr);
 	};
 
@@ -69,12 +77,14 @@ export default function CreateGame() {
 						<input
 							key={i}
 							type="text"
-							placeholder={`Enter prompt for round ${i + 1}`}
+							className={error ? "input-errors" : ""}
+							placeholder={error ? error : `Enter prompt for round ${i + 1}`}
 							onChange={e => {
 								const newRounds = [...rounds];
 								newRounds[i] = { prompt: e.target.value, roundNumber: i + 1 };
-								setRounds(newRounds);
+								setError("");
 							}}
+							onFocus={() => setError("")}
 						></input>
 					);
 				})}
