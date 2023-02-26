@@ -5,8 +5,12 @@ module.exports = (sequelize, DataTypes) => {
 		static associate(models) {
 			Game.belongsTo(models.User, {
 				foreignKey: "creatorId",
-				as: "creator",
-				onDelete: "CASCADE"
+				as: "creator"
+			});
+
+			Game.hasMany(models.Round, {
+				foreignKey: "gameId",
+				as: "gameRounds"
 			});
 		}
 	}

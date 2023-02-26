@@ -104,6 +104,11 @@ io.on("connect", socket => {
 		io.to(gameCode).emit("updating all players", players);
 	});
 
+	socket.on("creator started game", gameCode => {
+		socket.join(gameCode);
+		io.to(gameCode).emit("game has started");
+	});
+
 	socket.on("disconnect", () => {
 		io.emit("player left", socket.id);
 	});

@@ -11,6 +11,11 @@ const EXIT_GAME = "games/EXIT_GAME";
 // Actions
 
 export const actionSetCurrentGame = game => {
+	const roundsObj = {};
+	if (game.gameRounds) {
+		game.gameRounds.forEach(round => (roundsObj[round.roundNumber] = round));
+		game.gameRounds = roundsObj;
+	}
 	return {
 		type: SET_CURRENT_GAME,
 		payload: game
@@ -106,8 +111,6 @@ const gamesReducer = (state = initialState, action) => {
 			return newState;
 		case SET_CURRENT_PLAYERS:
 			newState = { ...state };
-			console.log("my current players", newState.currentPlayers);
-			console.log("incoming current players", action.payload);
 			newState.currentPlayers = {
 				...newState.currentPlayers,
 				...action.payload

@@ -15,10 +15,17 @@ router.get("/:gameCode", requireAuthentication, async (req, res, next) => {
 		where: {
 			[Op.and]: [{ code: gameCode }, { hasStarted: false }, { hasEnded: false }]
 		},
-		include: {
-			model: User,
-			as: "creator"
-		}
+		include: [
+			{
+				model: User,
+				as: "creator"
+			},
+			{
+				model: Round,
+				as: "gameRounds",
+				attributes: ["id", "gameId", "prompt", "roundNumber"]
+			}
+		]
 	});
 	if (!game) {
 		return res.status(404).json({

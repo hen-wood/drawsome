@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { actionStartGame } from "../../store/games";
 import "./Game.css";
-export default function Lobby() {
+export default function GameLobby({ socket }) {
 	const dispatch = useDispatch();
 	const user = useSelector(state => state.session.user);
 	const game = useSelector(state => state.games.currentGame);
@@ -38,6 +38,7 @@ export default function Lobby() {
 
 	const startGame = () => {
 		dispatch(actionStartGame());
+		socket.emit("creator started game", gameCode);
 	};
 
 	return (
@@ -64,7 +65,7 @@ export default function Lobby() {
 						</p>
 					);
 				})}
-				{playerCount >= 3 && user.id === game.creator.id && (
+				{playerCount >= 2 && user.id === game.creator.id && (
 					<button onClick={startGame}>Start the game!</button>
 				)}
 			</div>
