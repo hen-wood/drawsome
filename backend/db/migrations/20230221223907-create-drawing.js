@@ -18,13 +18,25 @@ module.exports = {
 					type: Sequelize.INTEGER
 				},
 				userId: {
-					type: Sequelize.INTEGER
+					type: Sequelize.INTEGER,
+					references: {
+						model: "Users"
+					}
 				},
 				title: {
-					type: Sequelize.STRING
+					type: Sequelize.STRING,
+					allowNull: false
 				},
 				drawingUrl: {
-					type: Sequelize.STRING
+					type: Sequelize.STRING,
+					allowNull: false
+				},
+				roundId: {
+					type: Sequelize.INTEGER,
+					references: {
+						model: "Rounds"
+					},
+					allowNull: true
 				},
 				createdAt: {
 					allowNull: false,

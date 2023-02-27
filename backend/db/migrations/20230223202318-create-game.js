@@ -22,16 +22,22 @@ module.exports = {
 					unique: true
 				},
 				creatorId: {
-					type: Sequelize.INTEGER
+					type: Sequelize.INTEGER,
+					references: {
+						model: "Users"
+					}
 				},
 				numRounds: {
-					type: Sequelize.INTEGER
+					type: Sequelize.INTEGER,
+					allowNull: false
 				},
 				timeLimit: {
-					type: Sequelize.INTEGER
+					type: Sequelize.INTEGER,
+					allowNull: false
 				},
 				numPlayers: {
-					type: Sequelize.INTEGER
+					type: Sequelize.INTEGER,
+					allowNull: false
 				},
 				hasStarted: {
 					allowNull: false,

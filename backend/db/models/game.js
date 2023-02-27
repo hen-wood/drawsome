@@ -16,11 +16,25 @@ module.exports = (sequelize, DataTypes) => {
 	}
 	Game.init(
 		{
-			code: DataTypes.STRING,
-			creatorId: DataTypes.INTEGER,
-			numRounds: DataTypes.INTEGER,
-			timeLimit: DataTypes.INTEGER,
-			numPlayers: DataTypes.INTEGER
+			code: { type: DataTypes.STRING, allowNull: false },
+			creatorId: {
+				type: DataTypes.INTEGER,
+				allowNull: false,
+				references: { model: "Users" }
+			},
+			numRounds: { type: DataTypes.INTEGER, allowNull: false },
+			timeLimit: { type: DataTypes.INTEGER, allowNull: false },
+			numPlayers: { type: DataTypes.INTEGER, allowNull: false },
+			hasStarted: {
+				type: DataTypes.BOOLEAN,
+				allowNull: true,
+				defaultValue: false
+			},
+			hasEnded: {
+				type: DataTypes.BOOLEAN,
+				allowNull: true,
+				defaultValue: false
+			}
 		},
 		{
 			sequelize,

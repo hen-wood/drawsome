@@ -18,13 +18,18 @@ module.exports = {
 					type: Sequelize.INTEGER
 				},
 				gameId: {
-					type: Sequelize.INTEGER
+					type: Sequelize.INTEGER,
+					references: {
+						model: "Games"
+					}
 				},
 				prompt: {
-					type: Sequelize.STRING
+					type: Sequelize.STRING,
+					allowNull: false
 				},
 				roundNumber: {
-					type: Sequelize.INTEGER
+					type: Sequelize.INTEGER,
+					allowNull: false
 				},
 				createdAt: {
 					allowNull: false,
