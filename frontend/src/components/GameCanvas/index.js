@@ -3,17 +3,16 @@ import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { thunkAddDrawing } from "../../store/drawings";
 import isCanvasBlank from "../../utils/isCanvasBlank";
-import "./SoloCanvas.css";
+import "./GameCanvas.css";
 
-export default function SoloCanvas() {
+export default function GameCanvas({ prompt }) {
 	const user = useSelector(state => state.session.user);
 	const dispatch = useDispatch();
 	const history = useHistory();
 	const canvasRef = useRef(null);
 	const contextRef = useRef(null);
-	const [disableButton, setDisableButton] = useState(false);
 	const [isDrawing, setIsDrawing] = useState(false);
-	const [title, setTitle] = useState("");
+	const [brushSize, setBrushSize] = useState(5);
 
 	const [errors, setErrors] = useState({});
 	const [color, setColor] = useState("black");
@@ -25,18 +24,20 @@ export default function SoloCanvas() {
 	}, [user]);
 
 	useEffect(() => {
-		const canvas = canvasRef.current;
-		canvas.width = 600;
-		canvas.height = 400;
+		if (canvasRef.current) {
+			const canvas = canvasRef.current;
+			canvas.width = 600;
+			canvas.height = 400;
 
-		const context = canvas.getContext("2d");
-		context.lineCap = "round";
-		context.strokeStyle = color;
-		context.lineWidth = 5;
-		context.fillStyle = "white";
-		context.fillRect(0, 0, canvas.width, canvas.height);
-		context.canvas.style.touchAction = "none";
-		contextRef.current = context;
+			const context = canvas.getContext("2d");
+			context.lineCap = "round";
+			context.strokeStyle = color;
+			context.lineWidth = brushSize;
+			context.fillStyle = "white";
+			context.fillRect(0, 0, canvas.width, canvas.height);
+			context.canvas.style.touchAction = "none";
+			contextRef.current = context;
+		}
 	}, []);
 
 	const handleColorClick = selectedColor => {
@@ -68,43 +69,31 @@ export default function SoloCanvas() {
 	};
 
 	const handleSaveDrawing = async () => {
-		setDisableButton(true);
-		const newErrors = {
-			canvas: isCanvasBlank(canvasRef),
-			title: title.length < 1
-		};
-		if (newErrors.canvas || newErrors.title) {
-			setErrors(newErrors);
-			setDisableButton(false);
-			return;
-		}
+		// const newErrors = {
+		// 	canvas: isCanvasBlank(canvasRef),
+		// 	title: title.length < 1
+		// };
+		// if (newErrors.canvas || newErrors.title) {
+		// 	setErrors(newErrors);
+		// 	return;
+		// }
 
 		const dataURL = canvasRef.current.toDataURL("image/png");
 		const formData = new FormData();
 		formData.append("image", dataURL);
-		formData.append("title", title);
+		formData.append("title", prompt);
 
 		dispatch(thunkAddDrawing(formData)).then(() => {
 			history.push("/user-drawings");
-			setDisableButton(false);
 		});
 	};
 
 	return (
-		<div id="canvas-container">
-			<input
-				type="text"
-				placeholder={
-					errors.title
-						? "Please enter a title"
-						: "Enter a title for your drawing"
-				}
-				className={errors.title ? "input-errors" : ""}
-				onChange={e => setTitle(e.target.value)}
-			></input>
+		<div id="game-canvas-container">
+			<h2 id="round-prompt">{`"${prompt}"`}</h2>
 			<canvas
 				ref={canvasRef}
-				id="canvas"
+				id="game-canvas"
 				onMouseDown={startDrawing}
 				onMouseUp={endDrawing}
 				onMouseMove={draw}
@@ -112,7 +101,7 @@ export default function SoloCanvas() {
 				onPointerUp={endDrawing}
 				onPointerMove={draw}
 			></canvas>
-			<div id="tool-kit">
+			<div id="game-tool-kit">
 				<i
 					id="black-color-selector"
 					className={
@@ -180,9 +169,7 @@ export default function SoloCanvas() {
 			<h1 className={errors.canvas ? "canvas-error" : "canvas-error-hidden"}>
 				Canvas cannot be blank
 			</h1>
-			<button onClick={handleSaveDrawing} disabled={disableButton}>
-				Save Drawing
-			</button>
+			<button onClick={handleSaveDrawing}>Save Drawing</button>
 		</div>
 	);
 }

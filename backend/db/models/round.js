@@ -16,9 +16,13 @@ module.exports = (sequelize, DataTypes) => {
 	}
 	Round.init(
 		{
-			gameId: DataTypes.INTEGER,
-			prompt: DataTypes.STRING,
-			roundNumber: DataTypes.INTEGER
+			gameId: {
+				type: DataTypes.INTEGER,
+				allowNull: false,
+				references: { model: "Game" }
+			},
+			prompt: { type: DataTypes.STRING, allowNull: false },
+			roundNumber: { type: DataTypes.INTEGER, allowNull: false }
 		},
 		{
 			sequelize,

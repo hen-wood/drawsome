@@ -1,0 +1,94 @@
+#game-canvas-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    padding: 20px;
+    border: none;
+    background-color: rgba(0, 0, 0, 0.527);
+    color: white;
+    font-size: 14px;
+    box-shadow: 0px 7px 5px -5px black;
+}
+
+#game-canvas {
+    margin: 10px;
+    border-radius: 5px;
+    cursor: crosshair
+}
+
+#game-tool-kit {
+    position: absolute;
+    display: flex;
+    right: 2%;
+    top: 2%;
+    background-color: rgba(255, 255, 255, 0.527);
+    box-shadow: 0px 5px 5px -3px rgb(0, 0, 0);
+    border-radius: 5px;
+    width: fit-content;
+}
+
+#game-tool-kit i {
+    padding: 10px;
+    cursor: pointer;
+}
+
+#game-tool-kit i.selected {
+    padding: 5px;
+    margin: 5px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px 0px rgb(255, 255, 255);
+}
+#game-tool-kit
+#red-color-selector {
+    color: red;
+}
+
+#game-tool-kit
+#orange-color-selector {
+    color: orange;
+}
+
+#game-tool-kit
+#yellow-color-selector {
+    color: yellow;
+}
+
+#game-tool-kit
+#green-color-selector {
+    color: green;
+}
+
+#game-tool-kit
+#blue-color-selector {
+    color: blue;
+}
+
+#game-tool-kit
+#black-color-selector {
+    color: black
+}
+
+#game-tool-kit
+#white-color-selector {
+    color: white;
+}
+
+.canvas-error {
+    color: red;
+    top: 50%;
+    left: 20%;
+    position: absolute;
+}
+
+.canvas-error-hidden {
+    display: none;
+}
+
+#round-prompt{
+    width: fit-content;
+    padding: 10px;
+    margin: 0;
+    box-sizing: border-box;
+    border-radius: 10px;
+}
