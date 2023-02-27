@@ -42,7 +42,7 @@ module.exports = (sequelize, DataTypes) => {
 		static associate(models) {
 			User.hasMany(models.Game, {
 				foreignKey: "creatorId",
-				as: "creator"
+				as: "host"
 			});
 		}
 	}

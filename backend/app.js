@@ -15,7 +15,11 @@ const isProduction = environment === "production";
 
 const app = express();
 const server = http.createServer(app); // create an http server using the Express app
-const io = socketIo(server); // initialize socket.io and pass in the http server
+const io = socketIo(server, {
+	cors: {
+		origin: "*"
+	}
+}); // initialize socket.io and pass in the http server
 
 app.use(morgan("dev"));
 
@@ -89,50 +93,53 @@ app.use((err, _req, res, _next) => {
 
 // socket.io stuff
 
-io.on("connect", socket => {
+io.on("connection", socket => {
 	socket.on("joined", newPlayer => {
+		// New player joins, isHost boolean value is set on frontend
 		const { gameCode } = newPlayer;
+		// console.log({ newPlayer });
+		// Join the room with the gameCode
 		socket.join(gameCode);
-
-		io.to(gameCode).emit("new player broadcast", newPlayer);
+		socket.to(gameCode).emit("new player joined", newPlayer);
 	});
 
-	socket.on("current connected player data", data => {
-		const { currentUser, gameCode, newPlayerId, socketId } = data;
-
-		socket.join(gameCode);
-		io.to(gameCode).emit("broadcast for new player", {
-			currentUser,
-			gameCode,
-			newPlayerId,
-			socketId
-		});
+	socket.on("update from host", data => {
+		// 'update from host' event sent from host to update a new player with current gameState
+		const { gameState, socketId } = data;
+		// Server emits 'sync gameState for new player' event directly to the new client
+		io.to(socketId).emit("sync new player", gameState);
 	});
-
-	socket.on("update for player leaving", data => {
-		const { currentUser, gameCode, socketId } = data;
-		socket.join(gameCode);
-		io.to(gameCode).emit("broadcast player data for player leaving", {
-			currentUser,
-			gameCode,
-			socketId
-		});
-	});
-
-	socket.on("creator started game", gameCode => {
-		socket.join(gameCode);
-		io.to(gameCode).emit("broadcast creator started game");
-	});
-
-	socket.on("times up", data => {
-		const { gameCode, roundNumber } = data;
-		socket.join(gameCode);
-		io.to(gameCode).emit("times up broadcast", roundNumber);
-	});
-
-	socket.on("disconnecting", () => {
-		io.emit("player leaving", socket.id); // the Set contains at least the socket ID
-	});
+	// socket.on("current connected player data", data => {
+	// 	const { currentUser, gameCode, newPlayerId, socketId } = data;
+	// 	socket.join(gameCode);
+	// 	io.to(gameCode).emit("broadcast for new player", {
+	// 		currentUser,
+	// 		gameCode,
+	// 		newPlayerId,
+	// 		socketId
+	// 	});
+	// });
+	// socket.on("update for player leaving", data => {
+	// 	const { currentUser, gameCode, socketId } = data;
+	// 	socket.join(gameCode);
+	// 	io.to(gameCode).emit("broadcast player data for player leaving", {
+	// 		currentUser,
+	// 		gameCode,
+	// 		socketId
+	// 	});
+	// });
+	// socket.on("creator started game", gameCode => {
+	// 	socket.join(gameCode);
+	// 	io.to(gameCode).emit("broadcast creator started game");
+	// });
+	// socket.on("times up", data => {
+	// 	const { gameCode, roundNumber } = data;
+	// 	socket.join(gameCode);
+	// 	io.to(gameCode).emit("times up broadcast", roundNumber);
+	// });
+	// socket.on("disconnecting", () => {
+	// 	io.emit("player leaving", socket.id); // the Set contains at least the socket ID
+	// });
 });
 
 module.exports = { app, server };

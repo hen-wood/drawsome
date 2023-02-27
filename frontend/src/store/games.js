@@ -9,6 +9,17 @@ const REMOVE_PLAYER = "games/REMOVE_PLAYER";
 const SET_CURRENT_PLAYERS = "games/SET_ALL_PLAYERS";
 const EXIT_GAME = "games/EXIT_GAME";
 // Actions
+export const actionCreateGame = game => {
+	const roundsObj = {};
+	if (game.gameRounds) {
+		game.gameRounds.forEach(round => (roundsObj[round.roundNumber] = round));
+		game.gameRounds = roundsObj;
+	}
+	return {
+		type: SET_CURRENT_GAME,
+		payload: game
+	};
+};
 
 export const actionSetCurrentGame = game => {
 	const roundsObj = {};
@@ -66,7 +77,7 @@ export const thunkCreateGame = game => async dispatch => {
 	});
 	if (response.ok) {
 		const data = await response.json();
-		dispatch(actionSetCurrentGame(data));
+		dispatch(actionCreateGame(data));
 		return data;
 	} else {
 		return response;
@@ -77,11 +88,7 @@ export const thunkLoadGame = gameCode => async dispatch => {
 	const response = await csrfFetch(`/api/games/${gameCode}`);
 	const game = await response.json();
 	if (response.ok) {
-		// if (game.hasStarted) {
-		// 	throw new Error("That game has already started 😭");
-		// } else {
 		dispatch(actionSetCurrentGame(game));
-		// }
 	} else {
 		return response;
 	}
