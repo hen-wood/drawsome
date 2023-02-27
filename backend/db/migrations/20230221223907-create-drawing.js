@@ -38,11 +38,6 @@ module.exports = {
 					},
 					allowNull: true
 				},
-				roundId: {
-					references: {
-						model: "Rounds"
-					}
-				},
 				createdAt: {
 					allowNull: false,
 					type: Sequelize.DATE,
