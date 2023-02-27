@@ -90,27 +90,48 @@ app.use((err, _req, res, _next) => {
 // socket.io stuff
 
 io.on("connect", socket => {
-	socket.on("joined", data => {
-		const player = { user: data.user, socketId: socket.id };
-		const gamecode = data.gamecode;
-		socket.join(gamecode);
+	socket.on("joined", newPlayer => {
+		const { gameCode } = newPlayer;
+		socket.join(gameCode);
 
-		io.to(gamecode).emit("player joined", player);
+		io.to(gameCode).emit("new player broadcast", newPlayer);
 	});
 
-	socket.on("request current players", data => {
-		const { players, gameCode } = data;
+	socket.on("current connected player data", data => {
+		const { currentUser, gameCode, newPlayerId, socketId } = data;
+
 		socket.join(gameCode);
-		io.to(gameCode).emit("updating all players", players);
+		io.to(gameCode).emit("broadcast for new player", {
+			currentUser,
+			gameCode,
+			newPlayerId,
+			socketId
+		});
+	});
+
+	socket.on("update for player leaving", data => {
+		const { currentUser, gameCode, socketId } = data;
+		socket.join(gameCode);
+		io.to(gameCode).emit("broadcast player data for player leaving", {
+			currentUser,
+			gameCode,
+			socketId
+		});
 	});
 
 	socket.on("creator started game", gameCode => {
 		socket.join(gameCode);
-		io.to(gameCode).emit("game has started");
+		io.to(gameCode).emit("broadcast creator started game");
 	});
 
-	socket.on("disconnect", () => {
-		io.emit("player left", socket.id);
+	socket.on("times up", data => {
+		const { gameCode, roundNumber } = data;
+		socket.join(gameCode);
+		io.to(gameCode).emit("times up broadcast", roundNumber);
+	});
+
+	socket.on("disconnecting", () => {
+		io.emit("player leaving", socket.id); // the Set contains at least the socket ID
 	});
 });
 

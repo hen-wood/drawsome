@@ -24,10 +24,19 @@ module.exports = {
 					}
 				},
 				title: {
-					type: Sequelize.STRING
+					type: Sequelize.STRING,
+					allowNull: false
 				},
 				drawingUrl: {
-					type: Sequelize.STRING
+					type: Sequelize.STRING,
+					allowNull: false
+				},
+				roundId: {
+					type: Sequelize.INTEGER,
+					references: {
+						model: "Rounds"
+					},
+					allowNull: true
 				},
 				roundId: {
 					references: {

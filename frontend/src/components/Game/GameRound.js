@@ -1,39 +1,39 @@
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import GameCanvas from "../GameCanvas";
+import Timer from "./Timer";
 
-export default function GameRound({ roundNumber }) {
-	const game = useSelector(state => state.games.currentGame);
+export default function GameRound({
+	roundNumber,
+	game,
+	setTimesUp,
+	timesUp,
+	setDrawingSubmitted
+}) {
 	const [currentRound, setCurrentRound] = useState(null);
-	const [secondsLeft, setSecondsLeft] = useState(0);
-	const [timesUp, setTimesUp] = useState(false);
 
 	useEffect(() => {
-		if (game) {
-			setCurrentRound(game.gameRounds[roundNumber]);
-			setSecondsLeft(game.timeLimit * 60);
-		}
-	}, [game, roundNumber]);
+		if (game) setCurrentRound(game.gameRounds[roundNumber]);
+	}, [game]);
 
 	useEffect(() => {
-		let timer;
-		if (secondsLeft > 0) {
-			timer = setInterval(() => {
-				setSecondsLeft(prev => prev - 1);
-			}, 1000);
-		} else {
+		if (timesUp) {
 			setTimesUp(true);
 		}
-		return () => {
-			clearInterval(timer);
-		};
-	}, []);
+	}, [timesUp]);
 
-	return (
-		currentRound && (
-			<div>
-				<p>{currentRound.prompt}</p>
-				<p>{secondsLeft}</p>
-			</div>
-		)
+	return currentRound ? (
+		<div id="round-container">
+			<Timer
+				roundNumber={roundNumber}
+				timeLimit={game.timeLimit * 60}
+				setTimesUp={setTimesUp}
+			/>
+			<GameCanvas
+				prompt={currentRound.prompt}
+				setDrawingSubmitted={setDrawingSubmitted}
+			/>
+		</div>
+	) : (
+		<h1>loading...</h1>
 	);
 }

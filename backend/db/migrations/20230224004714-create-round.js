@@ -24,10 +24,12 @@ module.exports = {
 					}
 				},
 				prompt: {
-					type: Sequelize.STRING
+					type: Sequelize.STRING,
+					allowNull: false
 				},
 				roundNumber: {
-					type: Sequelize.INTEGER
+					type: Sequelize.INTEGER,
+					allowNull: false
 				},
 				createdAt: {
 					allowNull: false,

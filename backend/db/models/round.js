@@ -2,15 +2,13 @@
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
 	class Round extends Model {
-		/**
-		 * Helper method for defining associations.
-		 * This method is not a part of Sequelize lifecycle.
-		 * The `models/index` file will call this method automatically.
-		 */
 		static associate(models) {
 			Round.belongsTo(models.User, {
 				foreignKey: "gameId",
 				as: "gameRounds"
+			});
+			Round.hasMany(models.Drawing, {
+				foreignKey: "roundId"
 			});
 		}
 	}
@@ -18,12 +16,11 @@ module.exports = (sequelize, DataTypes) => {
 		{
 			gameId: {
 				type: DataTypes.INTEGER,
-				references: {
-					model: "Games"
-				}
+				allowNull: false,
+				references: { model: "Games" }
 			},
-			prompt: DataTypes.STRING,
-			roundNumber: DataTypes.INTEGER
+			prompt: { type: DataTypes.STRING, allowNull: false },
+			roundNumber: { type: DataTypes.INTEGER, allowNull: false }
 		},
 		{
 			sequelize,

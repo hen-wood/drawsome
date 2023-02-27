@@ -33,7 +33,7 @@ const actionEditDrawingTitle = (drawingId, newTitle) => {
 const actionDeleteDrawing = drawingId => {
 	return {
 		type: DELETE_DRAWING,
-		payload: { drawingId }
+		payload: drawingId
 	};
 };
 
@@ -110,7 +110,7 @@ const drawingReducer = (state = initialState, action) => {
 			return newState;
 		case DELETE_DRAWING:
 			newState = { ...state };
-			delete newState[action.payload.drawingId];
+			delete newState.allDrawings[action.payload];
 			return newState;
 		default:
 			return state;

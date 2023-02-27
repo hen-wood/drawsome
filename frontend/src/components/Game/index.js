@@ -1,15 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useHistory } from "react-router-dom";
-import {
-	actionAddPlayer,
-	actionExitGame,
-	actionRemovePlayer,
-	actionSetPlayers,
-	actionStartGame,
-	thunkLoadGame,
-	thunkStartGame
-} from "../../store/games";
+import { useHistory } from "react-router-dom";
+import { actionStartGame, thunkLoadGame } from "../../store/games";
 import { useParams } from "react-router-dom";
 import { io } from "socket.io-client";
 
@@ -22,93 +14,121 @@ export default function Game() {
 	const dispatch = useDispatch();
 	const history = useHistory();
 	const user = useSelector(state => state.session.user);
-	const { currentGame: game, currentPlayers: players } = useSelector(
-		state => state.games
-	);
+	const game = useSelector(state => state.games.currentGame);
 
 	const { gameCode } = useParams();
 	const [isLoaded, setIsLoaded] = useState(false);
+	const [socketState, setSocketState] = useState(null);
+	const [connectedPlayers, setConnectedPlayers] = useState({});
+	const [exitSocketId, setExitSocketId] = useState(null);
+	const [playerCount, setPlayerCount] = useState(0);
 	const [gameStarted, setGameStarted] = useState(false);
 	const [roundNumber, setRoundNumber] = useState(1);
-	const [playerCount, setPlayerCount] = useState(0);
-	const [socketState, setSocketState] = useState(null);
+	const [drawingSubmitted, setDrawingSubmitted] = useState(false);
+	const [timesUp, setTimesUp] = useState(false);
 
 	useEffect(() => {
 		if (gameCode)
 			dispatch(thunkLoadGame(gameCode)).then(() => {
 				setIsLoaded(true);
 			});
-	}, [gameCode]);
-
-	useEffect(() => {
-		socket = io();
-
-		socket.on("connect", () => {
-			setSocketState(socket);
-			if (gameCode) {
-				socket.emit("joined", { user, gameCode });
-			}
-			socket.emit("request current players", {
-				players,
-				gameCode
-			});
-		});
-
-		return () => {
-			socket.disconnect();
-			dispatch(actionExitGame());
-		};
 	}, []);
 
 	useEffect(() => {
-		if (!socketState) return;
-
-		socketState.on("player joined", player => {
-			// add new player to state
-			dispatch(actionAddPlayer(player));
-			const updatedPlayers = { ...players, [player.user.id]: player };
-			socket.emit("request current players", {
-				players: updatedPlayers,
-				gameCode
-			});
-		});
-
-		socketState.on("updating all players", updatedPlayers => {
-			if (Object.keys(updatedPlayers).length) {
-				dispatch(actionSetPlayers(updatedPlayers));
-			} else {
-				socket.emit("request current players", {
-					players: updatedPlayers,
-					gameCode
+		socket = io();
+		if (isLoaded) {
+			socket.on("connect", () => {
+				setSocketState(socket);
+				const newPlayer = {
+					user,
+					gameCode,
+					socketId: socket.id
+				};
+				setConnectedPlayers({
+					[user.id]: newPlayer
 				});
-			}
-			// socket.emit();
-		});
+				socket.emit("joined", newPlayer);
+			});
 
-		socketState.on("player left", socketId => {
-			// remove player from state
-			setIsLoaded(false);
-			dispatch(actionRemovePlayer(socketId));
-			setIsLoaded(true);
-		});
+			socket.on("new player broadcast", newPlayer => {
+				const newPlayerId = newPlayer.user.id;
+				setConnectedPlayers(prev => ({ ...prev, [newPlayerId]: newPlayer }));
+				if (newPlayerId !== user.id) {
+					socket.emit("current connected player data", {
+						currentUser: user,
+						gameCode,
+						newPlayerId,
+						socketId: socket.id
+					});
+				}
+			});
 
-		socketState.on("game has started", () => {
-			dispatch(thunkStartGame()).then(() => {
+			socket.on("broadcast for new player", data => {
+				const { currentUser, gameCode, newPlayerId, socketId } = data;
+				if (user.id === newPlayerId) {
+					setConnectedPlayers(prev => ({
+						...prev,
+						[currentUser.id]: { user: currentUser, gameCode, socketId }
+					}));
+				}
+			});
+
+			socket.on("broadcast creator started game", () => {
 				setGameStarted(true);
 			});
-		});
 
-		if (game && game.hasStarted) {
-			socketState.emit("creator started game", gameCode);
+			socket.on("times up broadcast", roundEndNumber => {
+				setRoundNumber(roundEndNumber + 1);
+			});
+
+			socket.on("player leaving", socketId => {
+				setExitSocketId(socketId);
+			});
 		}
-	}, [socketState]);
+
+		return () => {
+			socket.disconnect();
+		};
+	}, [isLoaded]);
+
+	useEffect(() => {
+		if (exitSocketId) {
+			const exitPlayerId = Object.keys(connectedPlayers).find(
+				key => connectedPlayers[key].socketId === exitSocketId
+			);
+			if (exitPlayerId) {
+				const updatedPlayers = { ...connectedPlayers };
+				delete updatedPlayers[exitSocketId];
+				setConnectedPlayers({ ...updatedPlayers });
+			}
+		}
+	}, [exitSocketId]);
+
+	useEffect(() => {
+		setPlayerCount(Object.keys(connectedPlayers).length);
+	}, [connectedPlayers]);
 
 	return isLoaded && socketState ? (
 		<div id="game-container">
-			{!gameStarted ? (
-				<GameLobby socket={socketState} />
+			{gameStarted ? (
+				<GameRound
+					game={game}
+					socket={socketState}
+					roundNumber={roundNumber}
+					gameCode={gameCode}
+					timesUp={timesUp}
+					setTimesUp={setTimesUp}
+					setDrawingSubmitted={setDrawingSubmitted}
+				/>
 			) : (
-				<GameRound roundNumber={roundNumber} />
+				<GameLobby
+					user={user}
+					game={game}
+					connectedPlayers={connectedPlayers}
+					playerCount={playerCount}
+					socket={socketState}
+					exitSocketId={exitSocketId}
+				/>
 			)}
 		</div>
 	) : (
