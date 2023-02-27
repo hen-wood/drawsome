@@ -20,15 +20,17 @@
 #game-tool-kit {
     position: absolute;
     display: flex;
-    right: 2%;
-    top: 2%;
-    background-color: rgba(255, 255, 255, 0.527);
+    /* flex-direction: column; */
+    right: 30px;
+    top: 10px;
+    background-color: #094170;
     box-shadow: 0px 5px 5px -3px rgb(0, 0, 0);
     border-radius: 5px;
     width: fit-content;
 }
 
 #game-tool-kit i {
+    font-size: 20px;
     padding: 10px;
     cursor: pointer;
 }
@@ -88,6 +90,7 @@
 #round-prompt{
     width: fit-content;
     padding: 10px;
+    padding-top: 0;
     margin: 0;
     box-sizing: border-box;
     border-radius: 10px;
