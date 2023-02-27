@@ -35,6 +35,19 @@
     background-color: #685abe;
 }
 
-.lobby-player{
-    /* margin-left: 15px; */
+#round-container{
+    width: 100%;
+}
+#timer-container{
+    align-items: center;
+    overflow: none;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    border-radius: 10px;
+    box-sizing: border-box;
+    z-index: 1;
+}
+#timer-container p{
+    margin: 5px 0;
 }

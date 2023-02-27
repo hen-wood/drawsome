@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import formatTime from "../../utils/formatTime";
-export default function Timer({ timeLimit, setTimesUp }) {
+export default function Timer({ timeLimit, setTimesUp, roundNumber }) {
 	const [time, setTime] = useState(timeLimit);
 
 	useEffect(() => {
@@ -19,8 +19,9 @@ export default function Timer({ timeLimit, setTimesUp }) {
 	}, [time]);
 
 	return (
-		<div>
-			<p>Time remaining: {formatTime(time)}</p>
+		<div id="timer-container">
+			<p>Round {roundNumber}</p>
+			<p>Time Remaining: {formatTime(time)}</p>
 		</div>
 	);
 }

@@ -19,11 +19,10 @@ export default function GameRound({ roundNumber, game, socket, gameCode }) {
 	}, [timesUp]);
 
 	return currentRound ? (
-		<div>
-			<h1>Round {roundNumber}</h1>
+		<div id="round-container">
 			<Timer
+				roundNumber={roundNumber}
 				timeLimit={game.timeLimit * 60}
-				timesUp={timesUp}
 				setTimesUp={setTimesUp}
 			/>
 			<GameCanvas

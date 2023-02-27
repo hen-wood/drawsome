@@ -26,8 +26,7 @@ h1 {
     height: 100vh;
     background-image: url('./images/circle-background.svg');
     background-color: #180bc5;
-    background-position: cover;
-    background-size: 100%;
+    background-size:cover;
     overflow-y: auto;
 }
 

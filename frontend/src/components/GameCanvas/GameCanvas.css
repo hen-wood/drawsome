@@ -1,69 +1,75 @@
-#canvas-container {
+#game-canvas-container {
     position: relative;
     display: flex;
     flex-direction: column;
-    border-radius: 5px;
+    border-radius: 10px;
     padding: 20px;
-    margin: 8px;
     border: none;
-    background-color: #110896;
+    background-color: rgba(0, 0, 0, 0.527);
     color: white;
     font-size: 14px;
     box-shadow: 0px 7px 5px -5px black;
 }
 
-canvas {
+#game-canvas {
     margin: 10px;
     border-radius: 5px;
     cursor: crosshair
 }
 
-#tool-kit {
+#game-tool-kit {
     position: absolute;
     display: flex;
-    left: 35px;
-    top: 90px;
-    background-color: #110896c4;
+    right: 2%;
+    top: 2%;
+    background-color: rgba(255, 255, 255, 0.527);
     box-shadow: 0px 5px 5px -3px rgb(0, 0, 0);
     border-radius: 5px;
+    width: fit-content;
 }
 
-#tool-kit i {
+#game-tool-kit i {
     padding: 10px;
     cursor: pointer;
 }
 
-#tool-kit i.selected {
+#game-tool-kit i.selected {
     padding: 5px;
     margin: 5px;
     border-radius: 5px;
     box-shadow: 0px 0px 10px 0px rgb(255, 255, 255);
 }
-
+#game-tool-kit
 #red-color-selector {
     color: red;
 }
 
+#game-tool-kit
 #orange-color-selector {
     color: orange;
 }
 
+#game-tool-kit
 #yellow-color-selector {
     color: yellow;
 }
 
+#game-tool-kit
 #green-color-selector {
     color: green;
 }
 
+#game-tool-kit
 #blue-color-selector {
     color: blue;
 }
 
+#game-tool-kit
 #black-color-selector {
     color: black
 }
 
+#game-tool-kit
 #white-color-selector {
     color: white;
 }
@@ -77,4 +83,12 @@ canvas {
 
 .canvas-error-hidden {
     display: none;
+}
+
+#round-prompt{
+    width: fit-content;
+    padding: 10px;
+    margin: 0;
+    box-sizing: border-box;
+    border-radius: 10px;
 }
