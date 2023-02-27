@@ -24,6 +24,8 @@ export default function Game() {
 	const [playerCount, setPlayerCount] = useState(0);
 	const [gameStarted, setGameStarted] = useState(false);
 	const [roundNumber, setRoundNumber] = useState(1);
+	const [drawingSubmitted, setDrawingSubmitted] = useState(false);
+	const [timesUp, setTimesUp] = useState(false);
 
 	useEffect(() => {
 		if (gameCode)
@@ -114,6 +116,9 @@ export default function Game() {
 					socket={socketState}
 					roundNumber={roundNumber}
 					gameCode={gameCode}
+					timesUp={timesUp}
+					setTimesUp={setTimesUp}
+					setDrawingSubmitted={setDrawingSubmitted}
 				/>
 			) : (
 				<GameLobby

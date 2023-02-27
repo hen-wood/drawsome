@@ -2,10 +2,14 @@ import { useState, useEffect } from "react";
 import GameCanvas from "../GameCanvas";
 import Timer from "./Timer";
 
-export default function GameRound({ roundNumber, game, socket, gameCode }) {
-	const [timesUp, setTimesUp] = useState(false);
+export default function GameRound({
+	roundNumber,
+	game,
+	setTimesUp,
+	timesUp,
+	setDrawingSubmitted
+}) {
 	const [currentRound, setCurrentRound] = useState(null);
-	const [drawingSubmitted, setDrawingSubmitted] = useState(false);
 
 	useEffect(() => {
 		if (game) setCurrentRound(game.gameRounds[roundNumber]);
@@ -13,8 +17,7 @@ export default function GameRound({ roundNumber, game, socket, gameCode }) {
 
 	useEffect(() => {
 		if (timesUp) {
-			socket.emit("times up", { gameCode, roundNumber });
-			setTimesUp(false);
+			setTimesUp(true);
 		}
 	}, [timesUp]);
 
