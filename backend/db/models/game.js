@@ -17,7 +17,12 @@ module.exports = (sequelize, DataTypes) => {
 	Game.init(
 		{
 			code: DataTypes.STRING,
-			creatorId: DataTypes.INTEGER,
+			creatorId: {
+				type: DataTypes.INTEGER,
+				references: {
+					model: "Users"
+				}
+			},
 			numRounds: DataTypes.INTEGER,
 			timeLimit: DataTypes.INTEGER,
 			numPlayers: DataTypes.INTEGER

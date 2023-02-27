@@ -16,7 +16,12 @@ module.exports = (sequelize, DataTypes) => {
 	}
 	Round.init(
 		{
-			gameId: DataTypes.INTEGER,
+			gameId: {
+				type: DataTypes.INTEGER,
+				references: {
+					model: "Games"
+				}
+			},
 			prompt: DataTypes.STRING,
 			roundNumber: DataTypes.INTEGER
 		},

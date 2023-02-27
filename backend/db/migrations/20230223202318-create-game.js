@@ -22,7 +22,10 @@ module.exports = {
 					unique: true
 				},
 				creatorId: {
-					type: Sequelize.INTEGER
+					type: Sequelize.INTEGER,
+					references: {
+						model: "Users"
+					}
 				},
 				numRounds: {
 					type: Sequelize.INTEGER

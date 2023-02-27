@@ -13,11 +13,21 @@ module.exports = (sequelize, DataTypes) => {
 	}
 	Drawing.init(
 		{
-			userId: { type: DataTypes.INTEGER, references: "User" },
+			userId: {
+				type: DataTypes.INTEGER,
+				references: {
+					model: "Users"
+				}
+			},
 			title: {
 				type: DataTypes.STRING
 			},
-			drawingUrl: { type: DataTypes.STRING, allowNull: false }
+			drawingUrl: { type: DataTypes.STRING, allowNull: false },
+			roundId: {
+				references: {
+					model: "Rounds"
+				}
+			}
 		},
 		{
 			sequelize,
