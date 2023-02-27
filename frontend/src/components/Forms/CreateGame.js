@@ -24,6 +24,13 @@ export default function CreateGame() {
 				inputErrors[i] = true;
 			}
 		});
+		if (+numPlayers < 3 || +numPlayers > 8) {
+			inputErrors["numPlayers"] = "Number of players must be 3-8";
+		}
+
+		if (+timeLimit < 1 || +timeLimit > 5) {
+			inputErrors["timeLimit"] = "Rounds must be 1-5 minutes long";
+		}
 
 		if (Object.values(inputErrors).some(val => val === true)) {
 			setErrors(inputErrors);
@@ -58,30 +65,39 @@ export default function CreateGame() {
 			<form onSubmit={handleCreateGame}>
 				<label htmlFor="num-players">Number of players</label>
 				<input
+					className={errors["numPlayers"] ? "input-errors" : ""}
+					placeholder={errors["numPlayers"] ? errors["numPlayers"] : ""}
 					name="num-players"
 					type="number"
 					value={numPlayers}
 					min={3}
 					max={8}
 					onChange={e => setNumPlayers(e.target.value)}
+					onFocus={() =>
+						setErrors(prev => ({ ...prev, ["numPlayers"]: false }))
+					}
 				/>
 				<label htmlFor="num-minutes">Minutes per round</label>
 				<input
+					className={errors["timeLimit"] ? "input-errors" : ""}
+					placeholder={errors["timeLimit"] ? errors["timeLimit"] : ""}
 					name="num-minutes"
 					type="number"
 					value={timeLimit}
 					min={1}
 					max={5}
 					onChange={e => setTimeLimit(e.target.value)}
+					onFocus={() => setErrors(prev => ({ ...prev, ["timeLimit"]: false }))}
 				/>
 				<label htmlFor="num-rounds">Number of Rounds</label>
 				<input
 					name="num-rounds"
 					type="number"
-					value={+rounds.length}
+					value={rounds.length}
 					min={1}
 					max={5}
 					onChange={handleUpdateRounds}
+					onBlur={e => (e.target.value = +e.target.value)}
 				/>
 				{rounds.map((r, i) => {
 					return (

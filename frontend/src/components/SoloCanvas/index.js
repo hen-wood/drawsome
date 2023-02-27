@@ -11,6 +11,7 @@ export default function SoloCanvas() {
 	const history = useHistory();
 	const canvasRef = useRef(null);
 	const contextRef = useRef(null);
+	const [disableButton, setDisableButton] = useState(false);
 	const [isDrawing, setIsDrawing] = useState(false);
 	const [title, setTitle] = useState("");
 
@@ -67,12 +68,14 @@ export default function SoloCanvas() {
 	};
 
 	const handleSaveDrawing = async () => {
+		setDisableButton(true);
 		const newErrors = {
 			canvas: isCanvasBlank(canvasRef),
 			title: title.length < 1
 		};
 		if (newErrors.canvas || newErrors.title) {
 			setErrors(newErrors);
+			setDisableButton(false);
 			return;
 		}
 
@@ -83,6 +86,7 @@ export default function SoloCanvas() {
 
 		dispatch(thunkAddDrawing(formData)).then(() => {
 			history.push("/user-drawings");
+			setDisableButton(false);
 		});
 	};
 
@@ -176,7 +180,9 @@ export default function SoloCanvas() {
 			<h1 className={errors.canvas ? "canvas-error" : "canvas-error-hidden"}>
 				Canvas cannot be blank
 			</h1>
-			<button onClick={handleSaveDrawing}>Save Drawing</button>
+			<button onClick={handleSaveDrawing} disabled={disableButton}>
+				Save Drawing
+			</button>
 		</div>
 	);
 }
