@@ -1,46 +1,81 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { io } from "socket.io-client";
 
 import "./Game.css";
 let socket;
 export default function Game() {
+	const dispatch = useDispatch();
 	const user = useSelector(state => state.session.user);
 	const game = useSelector(state => state.games.currentGame);
 
-	const [gameState, setGameState] = useState({});
+	const [gameState, setGameState] = useState({ players: {} });
+	const [gameReady, setGameReady] = useState(false);
 
 	useEffect(() => {
 		socket = io();
-		const isHost = game.creatorId === user.id;
-		const player = { user, gameCode: game.code, socketId: socket.id, isHost };
 		socket.on("connect", () => {
-			setGameState({ players: { [user.id]: player } });
-			socket.emit("joined", player);
+			// New player emits their data to the server
+			socket.emit("join", {
+				player: { ...user, socketId: socket.id },
+				roomId: game.code
+			});
 		});
 		socket.on("new player joined", newPlayer => {
-			// All players will update their gameState with the new players info
+			// All players will update their gameState with the new players info (including the newPlayer)
+			setGameState(prevGameState => {
+				return {
+					...prevGameState,
+					players: {
+						...prevGameState.players,
+						[newPlayer.id]: { ...newPlayer }
+					}
+				};
+			});
+			// All current users emit event to send current gameState to the new player in a direct message
+			const currentPlayer = { ...user, socketId: socket.id };
+
+			socket.emit("sync new player with current players", {
+				currentPlayer,
+				newPlayerSocketId: newPlayer.socketId
+			});
+		});
+
+		socket.on("sync new player", currentPlayer => {
+			// New client receives current player information from all of the current players
 			setGameState(prevGameState => ({
 				...prevGameState,
 				players: {
 					...prevGameState.players,
-					[newPlayer.user.id]: { ...newPlayer }
+					[currentPlayer.id]: { ...currentPlayer }
 				}
 			}));
-			socket.emit("update from all players", player);
 		});
-		socket.on("sync new player", hostGameState => {
-			console.log({ hostGameState });
-			// New client receives updated gameState directly
-			setGameState(hostGameState);
+
+		socket.on("player disconnected", playerId => {
+			setGameState(prevGameState => {
+				const updatedGameState = { ...prevGameState };
+				delete updatedGameState.players[playerId];
+				return updatedGameState;
+			});
 		});
-	}, [game, user]);
+
+		return () => {
+			socket.emit("disconnection", { roomId: game.code, playerId: user.id });
+			socket.disconnect();
+		};
+	}, []);
+
 	useEffect(() => {
-		console.log({ name: user.username, gameState });
-	}, [gameState]);
+		console.log(`${user.username} gameState updated`, gameState);
+		if (Object.keys(gameState.players).length === game.numPlayers) {
+			setGameReady(true);
+		}
+	}, [gameState, game]);
 
 	return (
-		<div id="game-container">{console.log("IN THE DOM", { gameState })}</div>
+		<div id="game-container">
+			{gameReady ? <h1>Game is ready</h1> : <h1>{game.code}</h1>}
+		</div>
 	);
 }

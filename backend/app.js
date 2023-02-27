@@ -94,52 +94,26 @@ app.use((err, _req, res, _next) => {
 // socket.io stuff
 
 io.on("connection", socket => {
-	socket.on("joined", newPlayer => {
-		// New player joins, isHost boolean value is set on frontend
-		const { gameCode } = newPlayer;
-		// console.log({ newPlayer });
-		// Join the room with the gameCode
-		socket.join(gameCode);
-		socket.to(gameCode).emit("new player joined", newPlayer);
+	socket.on("join", newPlayerData => {
+		// Server receives 'joined' event from new player
+		const { roomId, player } = newPlayerData;
+		// gameCode is destructured and socket is joined to the room associated with the gameCode
+		socket.join(roomId);
+		// server emits an event to the room with the new player's information
+		io.to(roomId).emit("new player joined", player);
 	});
 
-	socket.on("update from host", data => {
-		// 'update from host' event sent from host to update a new player with current gameState
-		const { gameState, socketId } = data;
-		// Server emits 'sync gameState for new player' event directly to the new client
-		io.to(socketId).emit("sync new player", gameState);
+	socket.on("sync new player with current players", currentPlayerData => {
+		// 'sync new player with current players' to sync new player's gameState with the host's gameState
+		const { currentPlayer, newPlayerSocketId } = currentPlayerData;
+		// Server emits 'sync new player' events directly to the new client
+		io.to(newPlayerSocketId).emit("sync new player", currentPlayer);
 	});
-	// socket.on("current connected player data", data => {
-	// 	const { currentUser, gameCode, newPlayerId, socketId } = data;
-	// 	socket.join(gameCode);
-	// 	io.to(gameCode).emit("broadcast for new player", {
-	// 		currentUser,
-	// 		gameCode,
-	// 		newPlayerId,
-	// 		socketId
-	// 	});
-	// });
-	// socket.on("update for player leaving", data => {
-	// 	const { currentUser, gameCode, socketId } = data;
-	// 	socket.join(gameCode);
-	// 	io.to(gameCode).emit("broadcast player data for player leaving", {
-	// 		currentUser,
-	// 		gameCode,
-	// 		socketId
-	// 	});
-	// });
-	// socket.on("creator started game", gameCode => {
-	// 	socket.join(gameCode);
-	// 	io.to(gameCode).emit("broadcast creator started game");
-	// });
-	// socket.on("times up", data => {
-	// 	const { gameCode, roundNumber } = data;
-	// 	socket.join(gameCode);
-	// 	io.to(gameCode).emit("times up broadcast", roundNumber);
-	// });
-	// socket.on("disconnecting", () => {
-	// 	io.emit("player leaving", socket.id); // the Set contains at least the socket ID
-	// });
+
+	socket.on("disconnection", data => {
+		const { roomId, playerId } = data;
+		io.to(roomId).emit("player disconnected", playerId);
+	});
 });
 
 module.exports = { app, server };
