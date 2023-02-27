@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { io } from "socket.io-client";
 
 import "./Game.css";
-let socket;
+// let socket;
 export default function Game() {
 	const dispatch = useDispatch();
 	const user = useSelector(state => state.session.user);
@@ -13,7 +13,7 @@ export default function Game() {
 	const [gameReady, setGameReady] = useState(false);
 
 	useEffect(() => {
-		socket = io();
+		const socket = io();
 		socket.on("connect", () => {
 			// New player emits their data to the server
 			socket.emit("join", {
@@ -76,6 +76,10 @@ export default function Game() {
 	return (
 		<div id="game-container">
 			{gameReady ? <h1>Game is ready</h1> : <h1>{game.code}</h1>}
+			{Object.keys(gameState.players).map(key => {
+				const player = gameState.players[key];
+				return <h1>{player.username}</h1>;
+			})}
 		</div>
 	);
 }

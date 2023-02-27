@@ -97,7 +97,7 @@ io.on("connection", socket => {
 	socket.on("join", newPlayerData => {
 		// Server receives 'joined' event from new player
 		const { roomId, player } = newPlayerData;
-		// gameCode is destructured and socket is joined to the room associated with the gameCode
+		// roomId is destructured and socket is joined to the room associated with the gameCode
 		socket.join(roomId);
 		// server emits an event to the room with the new player's information
 		io.to(roomId).emit("new player joined", player);
