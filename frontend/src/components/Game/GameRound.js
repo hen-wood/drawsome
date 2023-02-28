@@ -1,39 +1,26 @@
-import { useState, useEffect } from "react";
+import { useContext } from "react";
+import { useSelector } from "react-redux";
+import { GameStateContext } from "../../context/GameState";
 import GameCanvas from "../GameCanvas";
-import Timer from "./Timer";
+import { Timer } from "./utils/Timer";
 
 export default function GameRound({
 	roundNumber,
-	game,
 	setTimesUp,
 	timesUp,
 	setDrawingSubmitted
 }) {
-	const [currentRound, setCurrentRound] = useState(null);
+	const { roundNum } = useContext(GameStateContext);
+	const game = useSelector(state => state.games.currentGame);
+	const currentRound = game.gameRounds[roundNum];
 
-	useEffect(() => {
-		if (game) setCurrentRound(game.gameRounds[roundNumber]);
-	}, [game]);
-
-	useEffect(() => {
-		if (timesUp) {
-			setTimesUp(true);
-		}
-	}, [timesUp]);
-
-	return currentRound ? (
+	return (
 		<div id="round-container">
-			<Timer
-				roundNumber={roundNumber}
-				timeLimit={game.timeLimit * 60}
-				setTimesUp={setTimesUp}
-			/>
+			<Timer timeLimit={game.timeLimit * 60} nextSection={"vote"} />
 			<GameCanvas
 				prompt={currentRound.prompt}
 				setDrawingSubmitted={setDrawingSubmitted}
 			/>
 		</div>
-	) : (
-		<h1>loading...</h1>
 	);
 }

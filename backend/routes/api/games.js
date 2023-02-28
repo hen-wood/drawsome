@@ -17,10 +17,6 @@ router.get("/:gameCode", requireAuthentication, async (req, res, next) => {
 		},
 		include: [
 			{
-				model: User,
-				as: "creator"
-			},
-			{
 				model: Round,
 				as: "gameRounds",
 				attributes: ["id", "gameId", "prompt", "roundNumber"]
@@ -51,12 +47,15 @@ router.post("/", requireAuthentication, async (req, res, next) => {
 	const gameId = newGame.id;
 	newGame.code = await codeGen(gameId);
 	await newGame.save();
-	rounds.forEach(async round => {
+	const resBody = newGame.toJSON();
+	resBody.gameRounds = [];
+	for (let round of rounds) {
 		const { prompt, roundNumber } = round;
-		await Round.create({ gameId, prompt, roundNumber });
-	});
+		const newRound = await Round.create({ gameId, prompt, roundNumber });
+		resBody.gameRounds.push(newRound.toJSON());
+	}
 
-	return res.json(newGame);
+	return res.json(resBody);
 });
 
 // PUT start game
