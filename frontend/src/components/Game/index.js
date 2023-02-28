@@ -1,19 +1,21 @@
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { io } from "socket.io-client";
-
+import { useContext, useEffect } from "react";
+import { useSelector } from "react-redux";
+import { SocketContext } from "../../context/Socket";
+import { GameStateContext } from "../../context/GameState";
+import GameEnd from "./GameEnd";
+import GameLobby from "./GameLobby";
+import GameVote from "./GameVote";
+import GameRound from "./GameRound";
 import "./Game.css";
-// let socket;
+
 export default function Game() {
-	const dispatch = useDispatch();
+	const { players, setPlayers, gameSection, setPlayerCount, setGameSection } =
+		useContext(GameStateContext);
 	const user = useSelector(state => state.session.user);
 	const game = useSelector(state => state.games.currentGame);
-
-	const [gameState, setGameState] = useState({ players: {} });
-	const [gameReady, setGameReady] = useState(false);
+	const socket = useContext(SocketContext);
 
 	useEffect(() => {
-		const socket = io();
 		socket.on("connect", () => {
 			// New player emits their data to the server
 			socket.emit("join", {
@@ -21,15 +23,14 @@ export default function Game() {
 				roomId: game.code
 			});
 		});
+
 		socket.on("new player joined", newPlayer => {
 			// All players will update their gameState with the new players info (including the newPlayer)
-			setGameState(prevGameState => {
+			setPlayerCount(prev => prev + 1);
+			setPlayers(prevPlayers => {
 				return {
-					...prevGameState,
-					players: {
-						...prevGameState.players,
-						[newPlayer.id]: { ...newPlayer }
-					}
+					...prevPlayers,
+					[newPlayer.id]: { ...newPlayer, score: 0 }
 				};
 			});
 			// All current users emit event to send current gameState to the new player in a direct message
@@ -43,43 +44,57 @@ export default function Game() {
 
 		socket.on("sync new player", currentPlayer => {
 			// New client receives current player information from all of the current players
-			setGameState(prevGameState => ({
-				...prevGameState,
-				players: {
-					...prevGameState.players,
-					[currentPlayer.id]: { ...currentPlayer }
-				}
+			setPlayerCount(prev => prev + 1);
+			setPlayers(prevPlayers => ({
+				...prevPlayers,
+				[currentPlayer.id]: { ...currentPlayer, score: 0 }
 			}));
 		});
 
 		socket.on("player disconnected", playerId => {
-			setGameState(prevGameState => {
-				const updatedGameState = { ...prevGameState };
-				delete updatedGameState.players[playerId];
-				return updatedGameState;
+			setPlayerCount(prev => prev - 1);
+			setPlayers(prevPlayers => {
+				const updatedPlayers = { ...prevPlayers };
+				delete prevPlayers[playerId];
+				return updatedPlayers;
 			});
 		});
 
+		// All players start
+		socket.on("host started round", () => {
+			setGameSection("round");
+		});
+
+		socket.on("host disconnected", () => {
+			socket.disconnect();
+		});
+
 		return () => {
-			socket.emit("disconnection", { roomId: game.code, playerId: user.id });
+			setPlayerCount(prev => prev - 1);
+			socket.emit("disconnection", {
+				roomId: game.code,
+				playerId: user.id,
+				isHost: game.creatorId === user.id
+			});
 			socket.disconnect();
 		};
 	}, []);
 
 	useEffect(() => {
-		console.log(`${user.username} gameState updated`, gameState);
-		if (Object.keys(gameState.players).length === game.numPlayers) {
-			setGameReady(true);
-		}
-	}, [gameState, game]);
+		console.log(`${user.username} gameState updated`, { players });
+	}, [players]);
 
 	return (
 		<div id="game-container">
-			{gameReady ? <h1>Game is ready</h1> : <h1>{game.code}</h1>}
-			{Object.keys(gameState.players).map(key => {
-				const player = gameState.players[key];
-				return <h1>{player.username}</h1>;
-			})}
+			{gameSection === "lobby" ? (
+				<GameLobby />
+			) : gameSection === "round" ? (
+				<GameRound />
+			) : gameSection === "vote" ? (
+				<GameVote />
+			) : (
+				<GameEnd />
+			)}
 		</div>
 	);
 }

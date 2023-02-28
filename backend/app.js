@@ -83,7 +83,6 @@ app.use((err, _req, res, _next) => {
 	res.status(err.status || 500);
 	console.error(err);
 	return res.json({
-		// title: err.title || "Server Error",
 		message: err.message,
 		statusCode: err.status,
 		errors: err.errors,
@@ -110,9 +109,19 @@ io.on("connection", socket => {
 		io.to(newPlayerSocketId).emit("sync new player", currentPlayer);
 	});
 
+	socket.on("start round", data => {
+		const { roomId } = data;
+		io.to(roomId).emit("host started round");
+	});
+
 	socket.on("disconnection", data => {
-		const { roomId, playerId } = data;
-		io.to(roomId).emit("player disconnected", playerId);
+		const { roomId, playerId, isHost } = data;
+		if (isHost) {
+			console.log("host disconnected");
+			socket.emit("host disconnected");
+		} else {
+			io.to(roomId).emit("player disconnected", playerId);
+		}
 	});
 });
 
