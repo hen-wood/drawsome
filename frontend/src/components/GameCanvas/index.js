@@ -2,14 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { thunkAddDrawing } from "../../store/drawings";
-import isCanvasBlank from "../../utils/isCanvasBlank";
 import "./GameCanvas.css";
 
-export default function GameCanvas({ prompt }) {
+export default function GameCanvas({ prompt, canvasRef }) {
 	const user = useSelector(state => state.session.user);
-	const dispatch = useDispatch();
 	const history = useHistory();
-	const canvasRef = useRef(null);
 	const contextRef = useRef(null);
 	const [isDrawing, setIsDrawing] = useState(false);
 	const [brushSize, setBrushSize] = useState(5);
@@ -66,26 +63,6 @@ export default function GameCanvas({ prompt }) {
 	const endDrawing = () => {
 		contextRef.current.closePath();
 		setIsDrawing(false);
-	};
-
-	const handleSaveDrawing = async () => {
-		// const newErrors = {
-		// 	canvas: isCanvasBlank(canvasRef),
-		// 	title: title.length < 1
-		// };
-		// if (newErrors.canvas || newErrors.title) {
-		// 	setErrors(newErrors);
-		// 	return;
-		// }
-
-		const dataURL = canvasRef.current.toDataURL("image/png");
-		const formData = new FormData();
-		formData.append("image", dataURL);
-		formData.append("title", prompt);
-
-		dispatch(thunkAddDrawing(formData)).then(() => {
-			history.push("/user-drawings");
-		});
 	};
 
 	return (

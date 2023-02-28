@@ -9,6 +9,7 @@ const GameStateProvider = ({ children }) => {
 	const [hasEnded, setHasEnded] = useState(false);
 	const [hasStarted, setHasStarted] = useState(false);
 	const [roundNum, setRoundNum] = useState(1);
+	const [timesUp, setTimesUp] = useState(false);
 
 	return (
 		<GameStateContext.Provider
@@ -24,7 +25,8 @@ const GameStateProvider = ({ children }) => {
 				playerCount,
 				setPlayerCount,
 				roundNum,
-				setRoundNum
+				setRoundNum,
+				timesUp
 			}}
 		>
 			{children}

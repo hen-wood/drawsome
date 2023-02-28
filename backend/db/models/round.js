@@ -1,5 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
+const { Drawing } = require("../models");
+
 module.exports = (sequelize, DataTypes) => {
 	class Round extends Model {
 		static associate(models) {
@@ -8,7 +10,8 @@ module.exports = (sequelize, DataTypes) => {
 				as: "gameRounds"
 			});
 			Round.hasMany(models.Drawing, {
-				foreignKey: "roundId"
+				foreignKey: "roundId",
+				as: "roundDrawings"
 			});
 		}
 	}
@@ -24,7 +27,15 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		{
 			sequelize,
-			modelName: "Round"
+			modelName: "Round",
+			defaultScope: {
+				include: [
+					{
+						model: Drawing,
+						as: "roundDrawings"
+					}
+				]
+			}
 		}
 	);
 	return Round;

@@ -13,7 +13,6 @@ module.exports = (sequelize, DataTypes) => {
 		static getCurrentUserById(id) {
 			return User.scope("currentUser").findByPk(id);
 		}
-		// ASK ABOUT WHY THIS IS NOT ASYNC ^^
 		static async login({ credential, password }) {
 			const { Op } = require("sequelize");
 			const user = await User.scope("loginUser").findOne({
@@ -43,6 +42,19 @@ module.exports = (sequelize, DataTypes) => {
 			User.hasMany(models.Game, {
 				foreignKey: "creatorId",
 				as: "host"
+			});
+			User.hasMany(models.Drawing, {
+				foreignKey: "userId"
+			});
+			User.belongsToMany(models.Game, {
+				through: models.Player,
+				foreignKey: "userId",
+				otherKey: "gameId"
+			});
+			User.belongsToMany(models.Drawing, {
+				through: models.DrawingVote,
+				foreignKey: "voterId",
+				otherKey: "drawingId"
 			});
 		}
 	}

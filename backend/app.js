@@ -114,6 +114,11 @@ io.on("connection", socket => {
 		io.to(roomId).emit("host started round");
 	});
 
+	socket.on("player submitted drawing", data => {
+		const { roomId, drawingData } = data;
+		io.to(roomId).emit();
+	});
+
 	socket.on("disconnection", data => {
 		const { roomId, playerId, isHost } = data;
 		if (isHost) {
