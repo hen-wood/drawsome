@@ -169,7 +169,7 @@ export default function GameCanvas({ prompt }) {
 			<h1 className={errors.canvas ? "canvas-error" : "canvas-error-hidden"}>
 				Canvas cannot be blank
 			</h1>
-			<button onClick={handleSaveDrawing}>Save Drawing</button>
+			{/* <button onClick={handleSaveDrawing}>Save Drawing</button> */}
 		</div>
 	);
 }

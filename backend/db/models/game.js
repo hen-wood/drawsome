@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
 		static associate(models) {
 			Game.belongsTo(models.User, {
 				foreignKey: "creatorId",
-				as: "creator"
+				as: "host"
 			});
 
 			Game.hasMany(models.Round, {
@@ -43,14 +43,17 @@ module.exports = (sequelize, DataTypes) => {
 				attributes: [
 					"id",
 					"code",
+					"creatorId",
 					"numPlayers",
 					"numRounds",
 					"timeLimit",
 					"hasStarted",
-					"hasEnded",
-					"createdAt",
-					"updatedAt"
-				]
+					"hasEnded"
+				],
+				include: {
+					model: "Users",
+					as: "host"
+				}
 			}
 		}
 	);

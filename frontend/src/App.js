@@ -13,6 +13,8 @@ import Signup from "./components/Forms/Signup";
 import NotFound from "./components/NotFound";
 import UserDrawings from "./components/UserDrawings";
 import Game from "./components/Game";
+import GameStateProvider from "./context/GameState";
+import SocketProvider from "./context/Socket";
 
 function App() {
 	const history = useHistory();
@@ -60,7 +62,11 @@ function App() {
 							<UserDrawings />
 						</Route>
 						<Route path="/game/:gameCode">
-							<Game />
+							<GameStateProvider>
+								<SocketProvider>
+									<Game />
+								</SocketProvider>
+							</GameStateProvider>
 						</Route>
 						<Route>
 							<NotFound />
