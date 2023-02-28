@@ -55,11 +55,7 @@ module.exports = (sequelize, DataTypes) => {
 					"timeLimit",
 					"hasStarted",
 					"hasEnded"
-				],
-				include: {
-					model: "Users",
-					as: "host"
-				}
+				]
 			}
 		}
 	);

@@ -3,12 +3,12 @@ import { useSelector, useDispatch } from "react-redux";
 import { thunkStartGame } from "../../store/games";
 import { GameStateContext } from "../../context/GameState";
 import { SocketContext } from "../../context/Socket";
-import { startGame, copyCode, waitingMessage } from "./utils/lobbyTools";
+import { copyCode, waitingMessage } from "./utils/lobbyTools";
 import "./Game.css";
 
 export default function GameLobby() {
 	const dispatch = useDispatch();
-	const { players, playerCount } = useContext(GameStateContext);
+	const { players } = useContext(GameStateContext);
 	const socket = useContext(SocketContext);
 	const game = useSelector(state => state.games.currentGame);
 	const user = useSelector(state => state.session.user);
@@ -21,7 +21,12 @@ export default function GameLobby() {
 				copy game code: {game.code} 🔗
 			</p>
 			<div className="divider"></div>
-			{waitingMessage(playerCount, game.numPlayers, user.id, game.creatorId)}
+			{waitingMessage(
+				playerKeys.length,
+				game.numPlayers,
+				user.id,
+				game.creatorId
+			)}
 			{playerKeys.map(key => {
 				const player = players[key];
 				const isCreator = player.id === game.creatorId;
@@ -38,22 +43,13 @@ export default function GameLobby() {
 					</p>
 				);
 			})}
-			{playerCount >= 2 && user.id === game.creatorId && (
+			{playerKeys.length >= 2 && user.id === game.creatorId && (
 				<button
-					onClick={
-						() =>
-							// startGame(
-							// 	game.code,
-							// 	game.id,
-							// 	socket,
-							// 	thunkStartGame,
-							// 	dispatch
-							// ).then(() => {
-
-							socket.emit("start round", { roomId: game.code })
-
-						// })
-					}
+					onClick={() => {
+						dispatch(thunkStartGame(game.id)).then(() => {
+							socket.emit("start round", { roomId: game.code });
+						});
+					}}
 				>
 					Start the game!
 				</button>

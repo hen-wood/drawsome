@@ -26,7 +26,8 @@ const GameStateProvider = ({ children }) => {
 				setPlayerCount,
 				roundNum,
 				setRoundNum,
-				timesUp
+				timesUp,
+				setTimesUp
 			}}
 		>
 			{children}

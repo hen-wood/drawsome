@@ -9,7 +9,7 @@ import GameRound from "./GameRound";
 import "./Game.css";
 
 export default function Game() {
-	const { players, setPlayers, gameSection, setPlayerCount, setGameSection } =
+	const { setPlayers, gameSection, setGameSection } =
 		useContext(GameStateContext);
 	const user = useSelector(state => state.session.user);
 	const game = useSelector(state => state.games.currentGame);
@@ -26,7 +26,6 @@ export default function Game() {
 
 		socket.on("new player joined", newPlayer => {
 			// All players will update their gameState with the new players info (including the newPlayer)
-			setPlayerCount(prev => prev + 1);
 			setPlayers(prevPlayers => {
 				return {
 					...prevPlayers,
@@ -44,7 +43,6 @@ export default function Game() {
 
 		socket.on("sync new player", currentPlayer => {
 			// New client receives current player information from all of the current players
-			setPlayerCount(prev => prev + 1);
 			setPlayers(prevPlayers => ({
 				...prevPlayers,
 				[currentPlayer.id]: { ...currentPlayer, score: 0 }
@@ -52,7 +50,6 @@ export default function Game() {
 		});
 
 		socket.on("player disconnected", playerId => {
-			setPlayerCount(prev => prev - 1);
 			setPlayers(prevPlayers => {
 				const updatedPlayers = { ...prevPlayers };
 				delete prevPlayers[playerId];
@@ -70,7 +67,6 @@ export default function Game() {
 		});
 
 		return () => {
-			setPlayerCount(prev => prev - 1);
 			socket.emit("disconnection", {
 				roomId: game.code,
 				playerId: user.id,
@@ -79,10 +75,6 @@ export default function Game() {
 			socket.disconnect();
 		};
 	}, []);
-
-	useEffect(() => {
-		console.log(`${user.username} gameState updated`, { players });
-	}, [players]);
 
 	return (
 		<div id="game-container">

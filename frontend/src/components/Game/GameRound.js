@@ -25,7 +25,11 @@ export default function GameRound() {
 			dispatch(thunkAddDrawing(formData)).then(data => {
 				socket.emit("player submitted drawing", {
 					roomId: game.code,
-					drawingData: { ...user, drawingUrl: data.drawingUrl }
+					drawingData: {
+						playerId: user.id,
+						drawingId: data.id,
+						drawingUrl: data.drawingUrl
+					}
 				});
 				setGameSection("vote");
 			});
@@ -34,7 +38,7 @@ export default function GameRound() {
 
 	return (
 		<div id="round-container">
-			<Timer timeLimit={game.timeLimit} />
+			<Timer timeLimit={game.timeLimit} message={`Round ${roundNum}`} />
 			<GameCanvas prompt={currentRound.prompt} canvasRef={canvasRef} />
 		</div>
 	);

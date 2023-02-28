@@ -116,7 +116,7 @@ io.on("connection", socket => {
 
 	socket.on("player submitted drawing", data => {
 		const { roomId, drawingData } = data;
-		io.to(roomId).emit();
+		io.to(roomId).emit("drawing submitted", drawingData);
 	});
 
 	socket.on("disconnection", data => {

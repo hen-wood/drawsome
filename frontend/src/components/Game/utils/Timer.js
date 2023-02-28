@@ -1,14 +1,8 @@
 import { useState, useEffect, useContext } from "react";
-import { useDispatch } from "react-redux";
-import { thunkAddDrawing } from "../../../store/drawings";
 import { GameStateContext } from "../../../context/GameState";
-import { SocketContext } from "../../../context/Socket";
 import formatTime from "../../../utils/formatTime";
-export const Timer = ({ timeLimit }) => {
-	const dispatch = useDispatch();
-	const { roundNum, setTimesUp, timesUp, setGameSection } =
-		useContext(GameStateContext);
-	const socket = useContext(SocketContext);
+export const Timer = ({ timeLimit, message }) => {
+	const { setTimesUp, timesUp, gameSection } = useContext(GameStateContext);
 	const [time, setTime] = useState(5);
 
 	useEffect(() => {
@@ -28,14 +22,16 @@ export const Timer = ({ timeLimit }) => {
 		};
 	}, [time]);
 
-	// useEffect(() => {
-	// 	setGameSection("vote");
-	// }, [timesUp]);
-
 	return (
 		<div id="timer-container">
-			<p>Round {roundNum}</p>
-			<p>{!timesUp ? `Time Remaining: ${formatTime(time)}` : "TIME'S UP!"}</p>
+			<p>{`${message}`}</p>
+			<p>
+				{!timesUp && gameSection === "round"
+					? `Time Remaining: ${formatTime(time)}`
+					: !timesUp
+					? `${time}`
+					: "TIME'S UP!"}
+			</p>
 		</div>
 	);
 };

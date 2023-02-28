@@ -1,6 +1,5 @@
 "use strict";
 const { Model } = require("sequelize");
-const { Drawing } = require("../models");
 
 module.exports = (sequelize, DataTypes) => {
 	class Round extends Model {
@@ -27,15 +26,7 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		{
 			sequelize,
-			modelName: "Round",
-			defaultScope: {
-				include: [
-					{
-						model: Drawing,
-						as: "roundDrawings"
-					}
-				]
-			}
+			modelName: "Round"
 		}
 	);
 	return Round;
