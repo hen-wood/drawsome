@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { thunkAddDrawing } from "../../store/drawings";
 import "./GameCanvas.css";
 
 export default function GameCanvas({ prompt, canvasRef }) {
@@ -146,7 +145,6 @@ export default function GameCanvas({ prompt, canvasRef }) {
 			<h1 className={errors.canvas ? "canvas-error" : "canvas-error-hidden"}>
 				Canvas cannot be blank
 			</h1>
-			{/* <button onClick={handleSaveDrawing}>Save Drawing</button> */}
 		</div>
 	);
 }

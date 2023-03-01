@@ -22,6 +22,7 @@ export default function GameRound() {
 			const formData = new FormData();
 			formData.append("image", dataURL);
 			formData.append("title", currentRound.prompt);
+			formData.append("roundId", currentRound.id);
 
 			dispatch(thunkAddDrawing(formData)).then(data => {
 				socket.emit("player submitted drawing", {
@@ -40,7 +41,7 @@ export default function GameRound() {
 
 	return (
 		<div id="round-container">
-			<Timer timeLimit={game.timeLimit} message={`Round ${roundNum}`} />
+			<Timer timeLimit={game.timeLimit * 60} message={`Round ${roundNum}`} />
 			<GameCanvas prompt={currentRound.prompt} canvasRef={canvasRef} />
 		</div>
 	);

@@ -4,12 +4,10 @@ module.exports = (sequelize, DataTypes) => {
 	class DrawingVote extends Model {
 		static associate(models) {
 			DrawingVote.belongsTo(models.Drawing, {
-				foreignKey: "drawingId",
-				onDelete: "CASCADE"
+				foreignKey: "drawingId"
 			});
 			DrawingVote.belongsTo(models.User, {
-				foreignKey: "voterId",
-				onDelete: "CASCADE"
+				foreignKey: "voterId"
 			});
 		}
 	}

@@ -18,8 +18,13 @@ router.get(
 	requireAuthentication,
 	async (req, res, next) => {
 		const { userId } = req.params;
-		const drawings = await Drawing.findAll({
-			where: { userId }
+		// const drawings = await Drawing.findAll({
+		// 	where: { userId }
+		// });
+		const drawings = await Drawing.scope(["roundDrawings"]).findAll({
+			where: {
+				userId
+			}
 		});
 		return res.json(drawings);
 	}

@@ -119,6 +119,11 @@ io.on("connection", socket => {
 		io.to(roomId).emit("drawing submitted", drawingData);
 	});
 
+	socket.on("player submitted vote", data => {
+		const { roomId, voteDrawingData } = data;
+		io.to(roomId).emit("vote submitted", voteDrawingData);
+	});
+
 	socket.on("disconnection", data => {
 		const { roomId, playerId, isHost } = data;
 		if (isHost) {

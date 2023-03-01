@@ -27,6 +27,10 @@ router.get("/:gameCode", requireAuthentication, async (req, res, next) => {
 		return res.status(404).json({
 			message: "Game not found"
 		});
+	} else if (game.hasStarted) {
+		return res.status(403).json({
+			message: "That game has already begun"
+		});
 	}
 
 	return res.json(game);
@@ -45,7 +49,7 @@ router.post("/", requireAuthentication, async (req, res, next) => {
 	});
 
 	const gameId = newGame.id;
-	newGame.code = await codeGen(gameId);
+	newGame.code = codeGen(gameId);
 	await newGame.save();
 	const resBody = newGame.toJSON();
 	resBody.gameRounds = [];

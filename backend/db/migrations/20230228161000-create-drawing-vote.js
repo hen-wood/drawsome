@@ -21,13 +21,15 @@ module.exports = {
 					type: Sequelize.INTEGER,
 					references: {
 						model: "Drawings"
-					}
+					},
+					onDelete: "CASCADE"
 				},
 				voterId: {
 					type: Sequelize.INTEGER,
 					references: {
 						model: "Users"
-					}
+					},
+					onDelete: "CASCADE"
 				},
 				createdAt: {
 					allowNull: false,

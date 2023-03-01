@@ -14,7 +14,7 @@ export default function JoinGame() {
 
 	const handleJoinGame = e => {
 		e.preventDefault();
-		if (gameCode && gameCode.length !== 5) {
+		if (gameCode.length !== 5) {
 			setError("Code must be 5 characters long");
 			setGameCode("");
 			return;
@@ -25,11 +25,9 @@ export default function JoinGame() {
 				history.push(`/game/${gameCode}`);
 			})
 			.catch(async res => {
-				if (res.status === 404) {
+				if (res.status >= 400) {
 					const err = await res.json();
 					setError(err.message);
-				} else {
-					setError(res.message);
 				}
 				setGameCode("");
 				return;

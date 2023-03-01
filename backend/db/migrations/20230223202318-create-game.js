@@ -25,7 +25,8 @@ module.exports = {
 					type: Sequelize.INTEGER,
 					references: {
 						model: "Users"
-					}
+					},
+					onDelete: "CASCADE"
 				},
 				numRounds: {
 					type: Sequelize.INTEGER,
