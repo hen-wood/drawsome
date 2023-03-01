@@ -5,8 +5,14 @@ import { SocketContext } from "../../context/Socket";
 import { Timer } from "./utils/Timer";
 
 export default function GameVote() {
-	const { roundNum, setRoundNum, players, setGameSection, timesUp } =
-		useContext(GameStateContext);
+	const {
+		roundNum,
+		setRoundNum,
+		players,
+		setGameSection,
+		timesUp,
+		setTimesUp
+	} = useContext(GameStateContext);
 	const user = useSelector(state => state.session.user);
 	const game = useSelector(state => state.games.currentGame);
 	const socket = useContext(SocketContext);
@@ -36,17 +42,21 @@ export default function GameVote() {
 
 	useEffect(() => {
 		if (timesUp) {
-			if (game[roundNum + 1]) {
+			if (game.gameRounds[roundNum + 1]) {
 				setRoundNum(prev => prev + 1);
+				setTimesUp(false);
+
 				setGameSection("round");
+			} else {
+				setGameSection("game end");
 			}
 		}
 	}, [timesUp]);
 
-	return (
+	return votingReady ? (
 		<div id="vote-container-outer">
 			<Timer
-				timeLimit={10}
+				timeLimit={20}
 				message={`Which one of these best captures "${currentRound.prompt}"?`}
 			/>
 			<div id="drawing-vote-container">
@@ -69,6 +79,10 @@ export default function GameVote() {
 					);
 				})}
 			</div>
+		</div>
+	) : (
+		<div id="vote-container-outer">
+			<h1>Loading Drawings...</h1>
 		</div>
 	);
 }

@@ -10,10 +10,10 @@ export default function CreateGame() {
 	const history = useHistory();
 	const user = useSelector(state => state.session.user);
 	const [numPlayers, setNumPlayers] = useState(3);
-	const [timeLimit, setTimeLimit] = useState(3);
+	const [timeLimit, setTimeLimit] = useState(2);
 	const [errors, setErrors] = useState({});
 	const [backendError, setBackendError] = useState("");
-	const [rounds, setRounds] = useState([undefined, undefined, undefined]);
+	const [rounds, setRounds] = useState([undefined, undefined]);
 
 	const handleCreateGame = e => {
 		e.preventDefault();
@@ -63,7 +63,7 @@ export default function CreateGame() {
 			<h1>Create a Drawsome Game</h1>
 			{backendError && <p className="backend-errors">{backendError}</p>}
 			<form onSubmit={handleCreateGame}>
-				<label htmlFor="num-players">Number of players</label>
+				<label htmlFor="num-players">Number of players (3-8)</label>
 				<input
 					className={errors["numPlayers"] ? "input-errors" : ""}
 					placeholder={errors["numPlayers"] ? errors["numPlayers"] : ""}
@@ -77,7 +77,7 @@ export default function CreateGame() {
 						setErrors(prev => ({ ...prev, ["numPlayers"]: false }))
 					}
 				/>
-				<label htmlFor="num-minutes">Minutes per round</label>
+				<label htmlFor="num-minutes">Minutes per round (1-3)</label>
 				<input
 					className={errors["timeLimit"] ? "input-errors" : ""}
 					placeholder={errors["timeLimit"] ? errors["timeLimit"] : ""}
@@ -85,11 +85,11 @@ export default function CreateGame() {
 					type="number"
 					value={timeLimit}
 					min={1}
-					max={5}
+					max={3}
 					onChange={e => setTimeLimit(e.target.value)}
 					onFocus={() => setErrors(prev => ({ ...prev, ["timeLimit"]: false }))}
 				/>
-				<label htmlFor="num-rounds">Number of Rounds</label>
+				<label htmlFor="num-rounds">Number of Rounds (1-5)</label>
 				<input
 					name="num-rounds"
 					type="number"

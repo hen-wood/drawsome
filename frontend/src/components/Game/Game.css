@@ -56,7 +56,8 @@
 #drawing-vote-container{
     display: flex;
     width: 60vw;
-    height: 80vh;
+    min-height: fit-content;
+    max-height: 80vh;
     flex-wrap: wrap;
     overflow-y: auto;
     background-color: rgba(0, 0, 0, 0.527);
@@ -83,4 +84,5 @@
     padding: 10px;
     opacity: 80%;
     cursor:not-allowed;
+    height: fit-content;
 }

@@ -43,7 +43,7 @@ export default function GameLobby() {
 					</p>
 				);
 			})}
-			{playerKeys.length >= 2 && user.id === game.creatorId && (
+			{playerKeys.length === game.numPlayers && user.id === game.creatorId && (
 				<button
 					onClick={() => {
 						dispatch(thunkStartGame(game.id)).then(() => {

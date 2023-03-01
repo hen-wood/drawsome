@@ -3,7 +3,7 @@ import { GameStateContext } from "../../../context/GameState";
 import formatTime from "../../../utils/formatTime";
 export const Timer = ({ timeLimit, message }) => {
 	const { setTimesUp, timesUp, gameSection } = useContext(GameStateContext);
-	const [time, setTime] = useState(5);
+	const [time, setTime] = useState(timeLimit);
 
 	useEffect(() => {
 		const intervalId = setInterval(() => {
@@ -17,9 +17,6 @@ export const Timer = ({ timeLimit, message }) => {
 		if (time <= 0) {
 			setTimesUp(true);
 		}
-		return () => {
-			setTimesUp(false);
-		};
 	}, [time]);
 
 	return (

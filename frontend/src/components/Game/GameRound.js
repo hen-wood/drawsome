@@ -8,7 +8,8 @@ import { thunkAddDrawing } from "../../store/drawings";
 
 export default function GameRound() {
 	const dispatch = useDispatch();
-	const { roundNum, setGameSection, timesUp } = useContext(GameStateContext);
+	const { roundNum, setGameSection, timesUp, setTimesUp } =
+		useContext(GameStateContext);
 	const socket = useContext(SocketContext);
 	const user = useSelector(state => state.session.user);
 	const game = useSelector(state => state.games.currentGame);
@@ -31,6 +32,7 @@ export default function GameRound() {
 						drawingUrl: data.drawingUrl
 					}
 				});
+				setTimesUp(false);
 				setGameSection("vote");
 			});
 		}
