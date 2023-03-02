@@ -81,8 +81,44 @@ export default function Login() {
 						})
 					}
 				/>
-				<button type="submit">Submit</button>
+				<button type="submit">Log in</button>
 			</form>
+			<button
+				onClick={() =>
+					dispatch(login({ credential: "demo1@user.io", password: "password" }))
+						.then(() => history.push("/join-game"))
+						.catch(async res => {
+							const data = await res.json();
+							setBackendError(data.message);
+						})
+				}
+			>
+				Log in Demo User #1
+			</button>
+			<button
+				onClick={() =>
+					dispatch(login({ credential: "demo2@user.io", password: "password" }))
+						.then(() => history.push("/join-game"))
+						.catch(async res => {
+							const data = await res.json();
+							setBackendError(data.message);
+						})
+				}
+			>
+				Log in Demo User #2
+			</button>
+			<button
+				onClick={() =>
+					dispatch(login({ credential: "demo3@user.io", password: "password" }))
+						.then(() => history.push("/join-game"))
+						.catch(async res => {
+							const data = await res.json();
+							setBackendError(data.message);
+						})
+				}
+			>
+				Log in Demo User #3
+			</button>
 			<p>
 				Don't have an account yet? <Link to="/signup">Sign up</Link>
 			</p>
