@@ -1,4 +1,5 @@
 import { csrfFetch } from "./csrf";
+import { actionAddDrawing } from "./drawings";
 // Constants
 
 const SET_CURRENT_GAME = "games/SET_CURRENT_GAME";
@@ -174,6 +175,7 @@ export const thunkAddGameDrawing = drawingData => async dispatch => {
 
 	const data = await response.json();
 	dispatch(actionAddGameDrawing(data));
+	dispatch(actionAddDrawing(data));
 	return data;
 };
 

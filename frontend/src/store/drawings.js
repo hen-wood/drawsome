@@ -16,7 +16,7 @@ const actionSetUserDrawings = drawings => {
 	};
 };
 
-const actionAddDrawing = drawing => {
+export const actionAddDrawing = drawing => {
 	return {
 		type: ADD_DRAWING,
 		payload: drawing
