@@ -55,7 +55,7 @@ export default function GameVote() {
 			<Timer
 				timesUp={timesUp}
 				setTimesUp={setTimesUp}
-				timeLimit={10}
+				timeLimit={15}
 				message={`Which one of these best captures "${currentRound.prompt}"?`}
 			/>
 			<div id="drawing-vote-container">
