@@ -83,13 +83,40 @@ export default function Login() {
 				/>
 				<button type="submit">Log in</button>
 			</form>
-			<button onClick={() => login("demo1", "password")}>
+			<button
+				onClick={() =>
+					dispatch(login({ credential: "demo1@user.io", password: "password" }))
+						.then(() => history.push("/join-game"))
+						.catch(async res => {
+							const data = await res.json();
+							setBackendError(data.message);
+						})
+				}
+			>
 				Log in Demo User #1
 			</button>
-			<button onClick={() => login("demo2", "password")}>
+			<button
+				onClick={() =>
+					dispatch(login({ credential: "demo2@user.io", password: "password" }))
+						.then(() => history.push("/join-game"))
+						.catch(async res => {
+							const data = await res.json();
+							setBackendError(data.message);
+						})
+				}
+			>
 				Log in Demo User #2
 			</button>
-			<button onClick={() => login("demo3", "password")}>
+			<button
+				onClick={() =>
+					dispatch(login({ credential: "demo3@user.io", password: "password" }))
+						.then(() => history.push("/join-game"))
+						.catch(async res => {
+							const data = await res.json();
+							setBackendError(data.message);
+						})
+				}
+			>
 				Log in Demo User #3
 			</button>
 			<p>
