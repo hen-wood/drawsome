@@ -1,84 +1,76 @@
 import { useContext, useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { GameStateContext } from "../../context/GameState";
+import { useDispatch, useSelector } from "react-redux";
 import { SocketContext } from "../../context/Socket";
 import { Timer } from "./utils/Timer";
-import { csrfFetch } from "../../store/csrf";
+import {
+	actionSetGameSection,
+	actionSetPlayerVotedFor,
+	thunkAddVote
+} from "../../store/games";
 
 export default function GameVote() {
-	const { roundNum, players, setGameSection, timesUp, setTimesUp } =
-		useContext(GameStateContext);
-	const user = useSelector(state => state.session.user);
-	const game = useSelector(state => state.games.currentGame);
+	const dispatch = useDispatch();
 	const socket = useContext(SocketContext);
-	const currentRound = game.gameRounds[roundNum];
+	const user = useSelector(state => state.session.user);
+	const game = useSelector(state => state.game);
+	const roundNum = game.currentRound.roundNumber;
+	const playerVotedFor = game.playerVotedFor;
 	const [votingReady, setVotingReady] = useState(false);
-	const [voteDrawingId, setVoteDrawingId] = useState(0);
-	const [drawingDataObj, setDrawingDataObj] = useState({});
 
 	useEffect(() => {
-		socket.on("drawing submitted", playerDrawingData => {
-			const { playerId, drawingId } = playerDrawingData;
-			if (user.id !== playerId) setVoteDrawingId(drawingId);
-			setDrawingDataObj(prev => ({
-				...prev,
-				[drawingId]: playerDrawingData
-			}));
-		});
-
-		return () => {
-			setDrawingDataObj({});
-		};
-	}, []);
-
-	useEffect(() => {
-		if (Object.keys(drawingDataObj).length === Object.keys(players).length) {
+		if (
+			Object.keys(game.drawings[roundNum]).length ===
+			Object.keys(game.players).length
+		)
 			setVotingReady(true);
-		}
 		return () => {
 			setVotingReady(false);
 		};
-	}, [drawingDataObj]);
+	}, [game.drawings, roundNum, game.players]);
 
 	useEffect(() => {
-		if (timesUp) {
-			if (game.gameRounds[roundNum + 1]) {
-				csrfFetch(`/api/drawings/${voteDrawingId}/vote`, {
-					method: "POST"
-				}).then(() => {
-					socket.emit("player submitted vote", {
-						roomId: game.code,
-						voteDrawingData: drawingDataObj[voteDrawingId]
-					});
-					setTimesUp(false);
-					setGameSection("leaderboard");
+		if (game.timesUp) {
+			console.log(playerVotedFor);
+			console.log(game.drawings[roundNum]);
+			const { drawingId } = game.drawings[roundNum][playerVotedFor];
+			dispatch(thunkAddVote(drawingId, playerVotedFor)).then(() => {
+				socket.emit("player submitted vote", {
+					roomId: game.code,
+					playerVotedFor
 				});
-			} else {
-				setGameSection("game end");
-			}
+				if (game.gameRounds[roundNum + 1]) {
+					dispatch(actionSetGameSection("leaderboard"));
+				} else {
+					dispatch(actionSetGameSection("game end"));
+				}
+			});
 		}
-	}, [timesUp]);
+	}, [game.timesUp]);
 
 	return votingReady ? (
 		<div id="vote-container-outer">
 			<Timer
-				timeLimit={20}
-				message={`Which one of these best captures "${currentRound.prompt}"?`}
+				timeLimit={5}
+				message={`Which one of these best captures "${game.currentRound.prompt}"?`}
 			/>
 			<div id="drawing-vote-container">
-				{Object.keys(drawingDataObj).map(key => {
-					const drawingData = drawingDataObj[key];
-					const { playerId, drawingId, drawingUrl } = drawingData;
+				{Object.keys(game.drawings[roundNum]).map(key => {
+					console.log(game.players[key]);
+					const playerId = game.players[key].id;
+					const { drawingUrl } = game.drawings[roundNum][key];
+					const isUser = user.id === playerId;
 					return (
 						<img
 							key={key}
 							src={drawingUrl}
-							alt={currentRound.prompt}
-							onClick={() => setVoteDrawingId(drawingId)}
+							alt={game.currentRound.prompt}
+							onClick={() => {
+								if (!isUser) dispatch(actionSetPlayerVotedFor(playerId));
+							}}
 							className={
-								user.id === playerId
+								isUser
 									? "disable-vote-drawing"
-									: drawingId === voteDrawingId
+									: playerId === playerVotedFor
 									? "vote-drawing choice"
 									: "vote-drawing"
 							}

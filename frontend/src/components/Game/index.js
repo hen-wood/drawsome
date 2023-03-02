@@ -1,39 +1,53 @@
 import { useContext, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { SocketContext } from "../../context/Socket";
-import { GameStateContext } from "../../context/GameState";
+import {
+	actionAddPlayer,
+	actionDisconnectPlayer,
+	actionReconnectPlayer,
+	actionSetCurrentRound,
+	actionSetScores,
+	actionSetGameSection,
+	actionAddGameDrawing,
+	actionSetPlayerVotedFor,
+	actionAddPoints,
+	actionResetGame
+} from "../../store/games";
 import GameEnd from "./GameEnd";
 import GameLobby from "./GameLobby";
 import GameVote from "./GameVote";
 import GameRound from "./GameRound";
+import GameLeaderboard from "./GameLeaderboard";
 import "./Game.css";
 
 export default function Game() {
-	const { setPlayers, gameSection, setGameSection } =
-		useContext(GameStateContext);
-	const user = useSelector(state => state.session.user);
-	const game = useSelector(state => state.games.currentGame);
+	const dispatch = useDispatch();
 	const socket = useContext(SocketContext);
+	const history = useHistory();
+	const user = useSelector(state => state.session.user);
+	const game = useSelector(state => state.game);
 
 	useEffect(() => {
 		socket.on("connect", () => {
 			// New player emits their data to the server
 			socket.emit("join", {
-				player: { ...user, socketId: socket.id },
+				player: { ...user, socketId: socket.id, connected: true },
 				roomId: game.code
 			});
 		});
 
 		socket.on("new player joined", newPlayer => {
-			// All players will update their gameState with the new players info (including the newPlayer)
-			setPlayers(prevPlayers => {
-				return {
-					...prevPlayers,
-					[newPlayer.id]: { ...newPlayer, score: 0 }
-				};
-			});
+			// If a player does not have the newPlayer in their game state...
+			if (!game.players[newPlayer.id]) {
+				// All players will update their gameState with the new players info (including the newPlayer)
+				dispatch(actionAddPlayer(newPlayer));
+			} else {
+				// Otherwise, they will update the existing player's 'connected' property to be true
+				dispatch(actionReconnectPlayer(newPlayer.id));
+			}
 			// All current users emit event to send current gameState to the new player in a direct message
-			const currentPlayer = { ...user, socketId: socket.id };
+			const currentPlayer = { ...user, socketId: socket.id, connected: true };
 
 			socket.emit("sync new player with current players", {
 				currentPlayer,
@@ -42,28 +56,37 @@ export default function Game() {
 		});
 
 		socket.on("sync new player", currentPlayer => {
-			// New client receives current player information from all of the current players
-			setPlayers(prevPlayers => ({
-				...prevPlayers,
-				[currentPlayer.id]: { ...currentPlayer, score: 0 }
-			}));
+			// New player receives current player information from all of the current players
+			dispatch(actionAddPlayer(currentPlayer));
 		});
 
 		socket.on("player disconnected", playerId => {
-			setPlayers(prevPlayers => {
-				const updatedPlayers = { ...prevPlayers };
-				delete prevPlayers[playerId];
-				return updatedPlayers;
-			});
+			// Players will update the player's 'connected' property to be false
+			dispatch(actionDisconnectPlayer(playerId));
 		});
 
-		// All players start
-		socket.on("host started round", () => {
-			setGameSection("round");
+		// All players start Round 1
+		socket.on("host started game", () => {
+			dispatch(actionSetScores(Object.keys(game.players)));
+			dispatch(actionSetCurrentRound(1));
+			dispatch(actionSetGameSection("round"));
+		});
+
+		socket.on("server received drawing", data => {
+			const { drawingData, roundNum, userId } = data.drawingData;
+			console.log({ data });
+			dispatch(actionSetPlayerVotedFor(userId));
+			dispatch(actionAddGameDrawing(drawingData, roundNum));
+		});
+
+		socket.on("server received vote", playerVotedFor => {
+			dispatch(actionAddPoints(playerVotedFor));
 		});
 
 		socket.on("host disconnected", () => {
 			socket.disconnect();
+			history.push("/join-game");
+			dispatch(actionResetGame());
 		});
 
 		return () => {
@@ -73,17 +96,20 @@ export default function Game() {
 				isHost: game.creatorId === user.id
 			});
 			socket.disconnect();
+			dispatch(actionResetGame());
 		};
 	}, []);
 
 	return (
 		<div id="game-container">
-			{gameSection === "lobby" ? (
+			{game.section === "lobby" ? (
 				<GameLobby />
-			) : gameSection === "round" ? (
+			) : game.section === "round" ? (
 				<GameRound />
-			) : gameSection === "vote" ? (
+			) : game.section === "vote" ? (
 				<GameVote />
+			) : game.section === "leaderboard" ? (
+				<GameLeaderboard />
 			) : (
 				<GameEnd />
 			)}

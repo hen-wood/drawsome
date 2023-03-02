@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
 import { thunkLoadGame } from "../../store/games";
 
@@ -8,7 +8,6 @@ import "./Forms.css";
 export default function JoinGame() {
 	const dispatch = useDispatch();
 	const history = useHistory();
-	const user = useSelector(state => state.session.user);
 	const [gameCode, setGameCode] = useState("");
 	const [error, setError] = useState("");
 

@@ -86,3 +86,26 @@
     cursor:not-allowed;
     height: fit-content;
 }
+
+#leaderboard-container{
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+}
+
+#leaderboard-cards{
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+}
+
+.leaderboard-card{
+    display: flex;
+    width: 400px;
+    justify-content: space-between;
+}
+
+.leaderboard-card img{
+    height: 60px;
+    width: fit-content
+}

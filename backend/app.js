@@ -109,28 +109,30 @@ io.on("connection", socket => {
 		io.to(newPlayerSocketId).emit("sync new player", currentPlayer);
 	});
 
-	socket.on("start round", data => {
+	socket.on("start game", data => {
 		const { roomId } = data;
-		io.to(roomId).emit("host started round");
+		io.to(roomId).emit("host started game");
 	});
 
 	socket.on("player submitted drawing", data => {
-		const { roomId, drawingData } = data;
-		io.to(roomId).emit("drawing submitted", drawingData);
+		const { roomId, drawingData, roundNum } = data;
+		socket
+			.to(roomId)
+			.emit("server received drawing", { drawingData, roundNum });
 	});
 
 	socket.on("player submitted vote", data => {
-		const { roomId, voteDrawingData } = data;
-		io.to(roomId).emit("vote submitted", voteDrawingData);
+		const { roomId, playerVotedFor } = data;
+		socket.to(roomId).emit("server received vote", playerVotedFor);
 	});
 
 	socket.on("disconnection", data => {
 		const { roomId, playerId, isHost } = data;
 		if (isHost) {
 			console.log("host disconnected");
-			socket.emit("host disconnected");
+			socket.to(roomId).emit("host disconnected");
 		} else {
-			io.to(roomId).emit("player disconnected", playerId);
+			socket.to(roomId).emit("player disconnected", playerId);
 		}
 	});
 });

@@ -4,11 +4,10 @@ export const GameStateContext = createContext(null);
 
 const GameStateProvider = ({ children }) => {
 	const [players, setPlayers] = useState({});
-	const [playerCount, setPlayerCount] = useState(0);
 	const [gameSection, setGameSection] = useState("lobby");
-	const [hasEnded, setHasEnded] = useState(false);
-	const [hasStarted, setHasStarted] = useState(false);
 	const [roundNum, setRoundNum] = useState(1);
+	const [votesSubmitted, setVotesSubmitted] = useState(0);
+	const [drawingsSubmitted, setDrawingsSubmitted] = useState(0);
 	const [timesUp, setTimesUp] = useState(false);
 
 	return (
@@ -18,14 +17,12 @@ const GameStateProvider = ({ children }) => {
 				setPlayers,
 				gameSection,
 				setGameSection,
-				hasEnded,
-				setHasEnded,
-				hasStarted,
-				setHasStarted,
-				playerCount,
-				setPlayerCount,
 				roundNum,
 				setRoundNum,
+				votesSubmitted,
+				setVotesSubmitted,
+				drawingsSubmitted,
+				setDrawingsSubmitted,
 				timesUp,
 				setTimesUp
 			}}

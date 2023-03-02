@@ -1,8 +1,10 @@
 import { useState, useEffect, useContext } from "react";
-import { GameStateContext } from "../../../context/GameState";
+import { useSelector, useDispatch } from "react-redux";
+import { actionSetTimesUpTrue } from "../../../store/games";
 import formatTime from "../../../utils/formatTime";
 export const Timer = ({ timeLimit, message }) => {
-	const { setTimesUp, timesUp, gameSection } = useContext(GameStateContext);
+	const dispatch = useDispatch();
+	const game = useSelector(state => state.game);
 	const [time, setTime] = useState(timeLimit);
 
 	useEffect(() => {
@@ -15,7 +17,7 @@ export const Timer = ({ timeLimit, message }) => {
 
 	useEffect(() => {
 		if (time <= 0) {
-			setTimesUp(true);
+			dispatch(actionSetTimesUpTrue());
 		}
 	}, [time]);
 
@@ -23,9 +25,9 @@ export const Timer = ({ timeLimit, message }) => {
 		<div id="timer-container">
 			<p>{`${message}`}</p>
 			<p>
-				{!timesUp && gameSection === "round"
+				{!game.timesUp && game.section === "round"
 					? `Time Remaining: ${formatTime(time)}`
-					: !timesUp
+					: !game.timesUp
 					? `${time}`
 					: "TIME'S UP!"}
 			</p>

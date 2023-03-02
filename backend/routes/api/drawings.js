@@ -23,7 +23,7 @@ router.post(
 			title,
 			drawingUrl
 		});
-
+		console.log({ newDrawing });
 		return res.json(newDrawing);
 	}
 );
