@@ -8,11 +8,9 @@ import "./Forms.css";
 export default function CreateGame() {
 	const dispatch = useDispatch();
 	const history = useHistory();
-	const user = useSelector(state => state.session.user);
 	const [numPlayers, setNumPlayers] = useState(3);
 	const [timeLimit, setTimeLimit] = useState(2);
 	const [errors, setErrors] = useState({});
-	const [backendError, setBackendError] = useState("");
 	const [rounds, setRounds] = useState([undefined, undefined]);
 
 	const handleCreateGame = e => {
@@ -60,7 +58,6 @@ export default function CreateGame() {
 	return (
 		<div id="create-game-form-container">
 			<h1>Create a Drawsome Game</h1>
-			{backendError && <p className="backend-errors">{backendError}</p>}
 			<form onSubmit={handleCreateGame}>
 				<label htmlFor="num-players">Number of players (3-8)</label>
 				<input

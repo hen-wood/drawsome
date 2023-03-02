@@ -44,7 +44,7 @@ export default function GameRound() {
 			<Timer
 				timesUp={timesUp}
 				setTimesUp={setTimesUp}
-				timeLimit={10}
+				timeLimit={timeLimit * 60}
 				message={`Round ${currentRound.roundNumber}`}
 			/>
 			<GameCanvas prompt={currentRound.prompt} canvasRef={canvasRef} />
