@@ -14,16 +14,17 @@ export default function GameVote() {
 	const socket = useContext(SocketContext);
 	const user = useSelector(state => state.session.user);
 	const game = useSelector(state => state.game);
-	const playerVotedFor = game.playerVotedFor;
+	const { drawings, currentRound, players, playerVotedFor, gameRounds, code } =
+		useSelector(state => state.game);
 	const [timesUp, setTimesUp] = useState(false);
 	const [votingReady, setVotingReady] = useState(false);
 
 	useEffect(() => {
-		const drawingKeys = Object.keys(game.drawings[game.currentRound.id]).length;
-		const playerKeys = Object.keys(game.players).length;
+		const drawingKeys = Object.keys(drawings[currentRound.id]).length;
+		const playerKeys = Object.keys(players).length;
 		if (
-			Object.keys(game.drawings[game.currentRound.id]).length ===
-			Object.keys(game.players).length
+			Object.keys(drawings[currentRound.id]).length ===
+			Object.keys(players).length
 		) {
 			setVotingReady(true);
 		}
@@ -34,13 +35,13 @@ export default function GameVote() {
 
 	useEffect(() => {
 		if (timesUp) {
-			const drawingId = game.drawings[game.currentRound.id][playerVotedFor].id;
+			const drawingId = drawings[currentRound.id][playerVotedFor].id;
 			dispatch(thunkAddVote(drawingId, playerVotedFor)).then(() => {
 				socket.emit("player submitted vote", {
-					roomId: game.code,
+					roomId: code,
 					playerVotedFor
 				});
-				if (game.gameRounds[game.currentRound.roundNumber + 1]) {
+				if (gameRounds[currentRound.roundNumber + 1]) {
 					dispatch(actionSetGameSection("leaderboard"));
 				} else {
 					dispatch(actionSetGameSection("game end"));
@@ -54,26 +55,25 @@ export default function GameVote() {
 			<Timer
 				timesUp={timesUp}
 				setTimesUp={setTimesUp}
-				timeLimit={5}
-				message={`Which one of these best captures "${game.currentRound.prompt}"?`}
+				timeLimit={10}
+				message={`Which one of these best captures "${currentRound.prompt}"?`}
 			/>
 			<div id="drawing-vote-container">
-				{Object.keys(game.drawings[game.currentRound.id]).map(key => {
-					const playerId = game.players[key].id;
-					const { drawingUrl } = game.drawings[game.currentRound.id][key];
-					const isUser = user.id === playerId;
+				{Object.keys(drawings[currentRound.id]).map(playerId => {
+					const { drawingUrl } = drawings[currentRound.id][playerId];
+					const isUser = user.id === +playerId;
 					return (
 						<img
-							key={key}
+							key={playerId}
 							src={drawingUrl}
-							alt={game.currentRound.prompt}
+							alt={currentRound.prompt}
 							onClick={() => {
-								if (!isUser) dispatch(actionSetPlayerVotedFor(playerId));
+								if (!isUser) dispatch(actionSetPlayerVotedFor(+playerId));
 							}}
 							className={
 								isUser
 									? "disable-vote-drawing"
-									: playerId === playerVotedFor
+									: +playerId === playerVotedFor
 									? "vote-drawing choice"
 									: "vote-drawing"
 							}

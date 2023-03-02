@@ -29,7 +29,7 @@ export default function GameLeaderboard() {
 			<Timer
 				timesUp={timesUp}
 				setTimesUp={setTimesUp}
-				timeLimit={5}
+				timeLimit={10}
 				message={`Here's how you all stack up after Round ${currentRound.roundNumber}...`}
 			/>
 			<div id="leaderboard-cards">

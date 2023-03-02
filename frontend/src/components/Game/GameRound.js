@@ -12,7 +12,7 @@ import {
 export default function GameRound() {
 	const dispatch = useDispatch();
 	const socket = useContext(SocketContext);
-	const game = useSelector(state => state.game);
+	const { timeLimit, currentRound, code } = useSelector(state => state.game);
 	const canvasRef = useRef(null);
 	const [timesUp, setTimesUp] = useState(false);
 
@@ -25,14 +25,14 @@ export default function GameRound() {
 			const dataURL = canvasRef.current.toDataURL("image/png");
 			const formData = new FormData();
 			formData.append("image", dataURL);
-			formData.append("title", game.currentRound.prompt);
-			formData.append("roundId", game.currentRound.id);
+			formData.append("title", currentRound.prompt);
+			formData.append("roundId", currentRound.id);
 
-			dispatch(thunkAddGameDrawing(formData, game.currentRound)).then(data => {
+			dispatch(thunkAddGameDrawing(formData, currentRound)).then(data => {
 				socket.emit("player submitted drawing", {
-					roomId: game.code,
+					roomId: code,
 					drawingData: data,
-					roundNum: game.currentRound.roundNumber
+					roundNum: currentRound.roundNumber
 				});
 				dispatch(actionSetGameSection("vote"));
 			});
@@ -44,10 +44,10 @@ export default function GameRound() {
 			<Timer
 				timesUp={timesUp}
 				setTimesUp={setTimesUp}
-				timeLimit={5}
-				message={`Round ${game.currentRound.roundNumber}`}
+				timeLimit={10}
+				message={`Round ${currentRound.roundNumber}`}
 			/>
-			<GameCanvas prompt={game.currentRound.prompt} canvasRef={canvasRef} />
+			<GameCanvas prompt={currentRound.prompt} canvasRef={canvasRef} />
 		</div>
 	);
 }
