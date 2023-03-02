@@ -33,21 +33,24 @@ export default function GameLeaderboard() {
 				message={`Here's how you all stack up after Round ${currentRound.roundNumber}...`}
 			/>
 			<div id="leaderboard-cards">
-				{Object.keys(players).map(key => {
-					const { username, id } = players[key];
-					const { drawingUrl, title, votes } = drawings[currentRound.id][id];
-					const score = scores[id];
-					return (
-						<div key={key} className="leaderboard-card">
-							<div className="leaderboard-card-user-info">
-								<p className="leaderboard-username">{`${username}`}</p>
-								<p>Votes this round: {votes}</p>
-								<p>Total score: {score}</p>
+				{Object.entries(scores)
+					.sort((a, b) => b[1] - a[1])
+					.map(entry => {
+						const [playerId, score] = entry;
+						const { username } = players[playerId];
+						const { drawingUrl, title, votes } =
+							drawings[currentRound.id][playerId];
+						return (
+							<div key={playerId} className="leaderboard-card">
+								<div className="leaderboard-card-user-info">
+									<p className="leaderboard-username">{`${username}`}</p>
+									<p>Votes this round: {votes}</p>
+									<p>Total score: {score}</p>
+								</div>
+								<img src={drawingUrl} alt={title} />
 							</div>
-							<img src={drawingUrl} alt={title} />
-						</div>
-					);
-				})}
+						);
+					})}
 			</div>
 		</div>
 	) : (

@@ -57,7 +57,7 @@ export default function Game() {
 		});
 
 		socket.on("player disconnected", playerId => {
-			// Players will update the player's 'connected' property to be false
+			// All connected players will update the player's 'connected' property to be false
 			dispatch(actionDisconnectPlayer(playerId));
 		});
 

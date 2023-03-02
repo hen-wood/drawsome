@@ -23,12 +23,19 @@ export default function NavBar() {
 	};
 
 	const handleHomeClick = () => {
-		history.push("/join-game");
+		if (isLoggedIn) {
+			history.push("/join-game");
+		}
 	};
 
 	return (
 		<div id="nav-bar">
-			<h1 onClick={handleHomeClick}>Drawsome</h1>
+			<h1
+				className={isLoggedIn ? "" : "disabled-home-link"}
+				onClick={handleHomeClick}
+			>
+				Drawsome
+			</h1>
 			{isLoggedIn && (
 				<i
 					id="user-icon"
