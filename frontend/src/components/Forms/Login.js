@@ -81,8 +81,17 @@ export default function Login() {
 						})
 					}
 				/>
-				<button type="submit">Submit</button>
+				<button type="submit">Log in</button>
 			</form>
+			<button onClick={() => login("demo1", "password")}>
+				Log in Demo User #1
+			</button>
+			<button onClick={() => login("demo2", "password")}>
+				Log in Demo User #2
+			</button>
+			<button onClick={() => login("demo3", "password")}>
+				Log in Demo User #3
+			</button>
 			<p>
 				Don't have an account yet? <Link to="/signup">Sign up</Link>
 			</p>
