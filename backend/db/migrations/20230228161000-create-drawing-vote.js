@@ -9,7 +9,7 @@ if (process.env.NODE_ENV === "production") {
 module.exports = {
 	async up(queryInterface, Sequelize) {
 		await queryInterface.createTable(
-			"Games",
+			"DrawingVotes",
 			{
 				id: {
 					allowNull: false,
@@ -17,38 +17,19 @@ module.exports = {
 					primaryKey: true,
 					type: Sequelize.INTEGER
 				},
-				code: {
-					type: Sequelize.STRING,
-					unique: true
+				drawingId: {
+					type: Sequelize.INTEGER,
+					references: {
+						model: "Drawings"
+					},
+					onDelete: "CASCADE"
 				},
-				creatorId: {
+				voterId: {
 					type: Sequelize.INTEGER,
 					references: {
 						model: "Users"
 					},
 					onDelete: "CASCADE"
-				},
-				numRounds: {
-					type: Sequelize.INTEGER,
-					allowNull: false
-				},
-				timeLimit: {
-					type: Sequelize.INTEGER,
-					allowNull: false
-				},
-				numPlayers: {
-					type: Sequelize.INTEGER,
-					allowNull: false
-				},
-				hasStarted: {
-					allowNull: false,
-					type: Sequelize.BOOLEAN,
-					defaultValue: false
-				},
-				hasEnded: {
-					allowNull: false,
-					type: Sequelize.BOOLEAN,
-					defaultValue: false
 				},
 				createdAt: {
 					allowNull: false,
@@ -65,6 +46,6 @@ module.exports = {
 		);
 	},
 	async down(queryInterface, Sequelize) {
-		await queryInterface.dropTable("Games");
+		await queryInterface.dropTable("DrawingVotes");
 	}
 };

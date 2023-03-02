@@ -1,26 +1,53 @@
-import { useContext } from "react";
-import { useSelector } from "react-redux";
-import { GameStateContext } from "../../context/GameState";
-import GameCanvas from "../GameCanvas";
+import { useContext, useRef, useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { SocketContext } from "../../context/Socket";
 import { Timer } from "./utils/Timer";
+import GameCanvas from "../GameCanvas";
+import {
+	actionResetVotes,
+	actionSetGameSection,
+	thunkAddGameDrawing
+} from "../../store/games";
 
-export default function GameRound({
-	roundNumber,
-	setTimesUp,
-	timesUp,
-	setDrawingSubmitted
-}) {
-	const { roundNum } = useContext(GameStateContext);
-	const game = useSelector(state => state.games.currentGame);
-	const currentRound = game.gameRounds[roundNum];
+export default function GameRound() {
+	const dispatch = useDispatch();
+	const socket = useContext(SocketContext);
+	const { timeLimit, currentRound, code } = useSelector(state => state.game);
+	const canvasRef = useRef(null);
+	const [timesUp, setTimesUp] = useState(false);
+
+	useEffect(() => {
+		dispatch(actionResetVotes());
+	}, []);
+
+	useEffect(() => {
+		if (timesUp) {
+			const dataURL = canvasRef.current.toDataURL("image/png");
+			const formData = new FormData();
+			formData.append("image", dataURL);
+			formData.append("title", currentRound.prompt);
+			formData.append("roundId", currentRound.id);
+
+			dispatch(thunkAddGameDrawing(formData, currentRound)).then(data => {
+				socket.emit("player submitted drawing", {
+					roomId: code,
+					drawingData: data,
+					roundNum: currentRound.roundNumber
+				});
+				dispatch(actionSetGameSection("vote"));
+			});
+		}
+	}, [timesUp]);
 
 	return (
 		<div id="round-container">
-			<Timer timeLimit={game.timeLimit * 60} nextSection={"vote"} />
-			<GameCanvas
-				prompt={currentRound.prompt}
-				setDrawingSubmitted={setDrawingSubmitted}
+			<Timer
+				timesUp={timesUp}
+				setTimesUp={setTimesUp}
+				timeLimit={timeLimit * 60}
+				message={`Round ${currentRound.roundNumber}`}
 			/>
+			<GameCanvas prompt={currentRound.prompt} canvasRef={canvasRef} />
 		</div>
 	);
 }

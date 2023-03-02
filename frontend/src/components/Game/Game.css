@@ -51,3 +51,85 @@
 #timer-container p{
     margin: 5px 0;
 }
+
+
+#drawing-vote-container{
+    display: flex;
+    width: 60vw;
+    min-height: fit-content;
+    max-height: 80vh;
+    flex-wrap: wrap;
+    overflow-y: auto;
+    background-color: rgba(0, 0, 0, 0.527);
+    box-shadow: 0px 7px 5px -5px black;
+    border-radius: 10px;
+    padding: 10px;
+}
+.vote-drawing{
+    box-sizing: border-box;
+    border-radius: 20px;
+    width: 50%;
+    padding: 10px;
+    cursor: pointer;
+    height: fit-content;
+}
+.choice{
+    border: 5px solid green;
+}
+
+.disable-vote-drawing{
+    box-sizing: border-box;
+    border-radius: 20px;
+    width: 50%;
+    padding: 10px;
+    opacity: 80%;
+    cursor:not-allowed;
+    height: fit-content;
+}
+
+#leaderboard-container{
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+}
+
+#leaderboard-cards{
+    display: flex;
+    flex-direction: column;
+    max-height: 80vh;
+    overflow-y: auto;
+    width: fit-content;
+    background-color: rgba(0, 0, 0, 0.527);
+    box-shadow: 0px 7px 5px -5px black;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.leaderboard-card{
+    display: flex;
+    width: 500px;
+    justify-content: space-between;
+    padding: 10px;
+    margin: 5px;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.527);
+    box-shadow: 0px 7px 5px -5px black;
+}
+
+.leaderboard-card img{
+    height: 160px;
+    border-radius: 8px;
+}
+
+.leaderboard-card-user-info{
+    width: 50%;
+}
+
+.leaderboard-card p{
+    margin: 5px 0;
+}
+
+.leaderboard-username{
+    font-weight: bold;
+    color: #68a6f7;
+}

@@ -1,67 +1,64 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { thunkStartGame } from "../../store/games";
-import { GameStateContext } from "../../context/GameState";
 import { SocketContext } from "../../context/Socket";
-import { startGame, copyCode, waitingMessage } from "./utils/lobbyTools";
+import { copyCode, waitingMessage } from "./utils/lobbyTools";
 import "./Game.css";
 
 export default function GameLobby() {
 	const dispatch = useDispatch();
-	const { players, playerCount } = useContext(GameStateContext);
 	const socket = useContext(SocketContext);
-	const game = useSelector(state => state.games.currentGame);
+	const { code, players, numPlayers, creatorId, id } = useSelector(
+		state => state.game
+	);
 	const user = useSelector(state => state.session.user);
-	const playerKeys = Object.keys(players);
 
-	return game && user ? (
+	return (
 		<div id="lobby-container">
 			<h1>Let's play Drawsome! 🧑‍🎨</h1>
-			<p id="copy-code" onClick={() => copyCode(game.code)}>
-				copy game code: {game.code} 🔗
+			<p id="copy-code" onClick={() => copyCode(code)}>
+				copy game code: {code} 🔗
 			</p>
 			<div className="divider"></div>
-			{waitingMessage(playerCount, game.numPlayers, user.id, game.creatorId)}
-			{playerKeys.map(key => {
+			{waitingMessage(
+				Object.keys(players).length,
+				numPlayers,
+				user.id,
+				creatorId
+			)}
+			{Object.keys(players).map(key => {
 				const player = players[key];
-				const isCreator = player.id === game.creatorId;
+				const isCreator = player.id === creatorId;
 
 				return (
 					<p className="lobby-player" key={key}>
 						{`${isCreator ? "👑" : "✅"} ${
-							isCreator && user.id === game.creatorId
+							isCreator && user.id === creatorId
 								? "You"
 								: user.id === player.id
 								? "You"
 								: player.username
-						} ${isCreator ? "created the game" : "joined the game"}`}
+						} ${
+							isCreator && player.connected
+								? "created the game"
+								: player.connected
+								? "joined the game"
+								: "disconnected..."
+						}`}
 					</p>
 				);
 			})}
-			{playerCount >= 2 && user.id === game.creatorId && (
+			{Object.keys(players).length === numPlayers && user.id === creatorId && (
 				<button
-					onClick={
-						() =>
-							// startGame(
-							// 	game.code,
-							// 	game.id,
-							// 	socket,
-							// 	thunkStartGame,
-							// 	dispatch
-							// ).then(() => {
-
-							socket.emit("start round", { roomId: game.code })
-
-						// })
-					}
+					onClick={() => {
+						dispatch(thunkStartGame(id)).then(() => {
+							socket.emit("start game", { roomId: code });
+						});
+					}}
 				>
 					Start the game!
 				</button>
 			)}
-		</div>
-	) : (
-		<div id="lobby-container">
-			<h1>Loading Lobby...</h1>
 		</div>
 	);
 }

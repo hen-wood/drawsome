@@ -20,7 +20,6 @@
 #game-tool-kit {
     position: absolute;
     display: flex;
-    /* flex-direction: column; */
     right: 30px;
     top: 10px;
     background-color: #094170;

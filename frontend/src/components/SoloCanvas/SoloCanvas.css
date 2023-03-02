@@ -2,11 +2,11 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    border-radius: 5px;
+    border-radius: 10px;
     padding: 20px;
     margin: 8px;
+    background-color: rgba(0, 0, 0, 0.527);
     border: none;
-    background-color: #110896;
     color: white;
     font-size: 14px;
     box-shadow: 0px 7px 5px -5px black;
@@ -21,14 +21,16 @@ canvas{
 #tool-kit {
     position: absolute;
     display: flex;
-    left: 35px;
-    top: 90px;
-    background-color: #110896c4;
+    right: 30px;
+    top: 27px;
+    background-color: #094170;
     box-shadow: 0px 5px 5px -3px rgb(0, 0, 0);
     border-radius: 5px;
+    width: fit-content;
 }
 
 #tool-kit i {
+    font-size: 20px;
     padding: 10px;
     cursor: pointer;
 }
@@ -77,4 +79,8 @@ canvas{
 
 .canvas-error-hidden{
     display: none;
+}
+
+#canvas-container input{
+    width: 50%;
 }
