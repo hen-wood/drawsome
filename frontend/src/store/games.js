@@ -1,5 +1,4 @@
 import { csrfFetch } from "./csrf";
-
 // Constants
 
 const SET_CURRENT_GAME = "games/SET_CURRENT_GAME";
@@ -129,6 +128,7 @@ export const thunkCreateGame = game => async dispatch => {
 	});
 	if (response.ok) {
 		const data = await response.json();
+		dispatch(actionResetGame());
 		dispatch(actionSetCurrentGame(data));
 		return data;
 	} else {
@@ -140,6 +140,7 @@ export const thunkLoadGame = gameCode => async dispatch => {
 	const response = await csrfFetch(`/api/games/${gameCode}`);
 	const data = await response.json();
 	if (response.ok) {
+		dispatch(actionResetGame());
 		dispatch(actionSetCurrentGame(data));
 	} else {
 		return response;

@@ -9,10 +9,14 @@
     z-index: 1;;
 }
 
+
 #nav-bar h1 {
     cursor: pointer;
     color: white;
     margin: 10px 0;
+}
+#nav-bar h1.disabled-home-link{
+    cursor: unset;
 }
 
 #user-icon {

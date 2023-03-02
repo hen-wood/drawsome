@@ -15,18 +15,20 @@ export default function GameEnd() {
 		<div id="leaderboard-container">
 			<p>Final scores</p>
 			<div id="leaderboard-cards">
-				{Object.keys(players).map(key => {
-					const { username, id } = players[key];
-					const score = scores[id];
-					return (
-						<div key={key} className="leaderboard-card">
-							<div className="leaderboard-card-user-info">
-								<p className="leaderboard-username">{`${username}`}</p>
-								<p>Total score: {score}</p>
+				{Object.entries(scores)
+					.sort((a, b) => b[1] - a[1])
+					.map(entry => {
+						const [playerId, score] = entry;
+						const { username } = players[playerId];
+						return (
+							<div key={playerId} className="leaderboard-card">
+								<div className="leaderboard-card-user-info">
+									<p className="leaderboard-username">{`${username}`}</p>
+									<p>Total score: {score}</p>
+								</div>
 							</div>
-						</div>
-					);
-				})}
+						);
+					})}
 			</div>
 		</div>
 	) : (

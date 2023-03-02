@@ -15,9 +15,10 @@ export default function CreateGame() {
 
 	const handleCreateGame = e => {
 		e.preventDefault();
+		console.log({ rounds });
 		const inputErrors = {};
 		rounds.forEach((round, i) => {
-			if (!round) {
+			if (!round || !round.prompt) {
 				inputErrors[i] = true;
 			}
 		});
@@ -30,7 +31,7 @@ export default function CreateGame() {
 		}
 
 		if (Object.values(inputErrors).some(val => val === true)) {
-			setErrors(inputErrors);
+			setErrors(prev => ({ ...prev, ...inputErrors }));
 			return;
 		}
 
@@ -103,9 +104,13 @@ export default function CreateGame() {
 							className={errors[i] ? "input-errors" : ""}
 							placeholder={`Enter prompt for round ${i + 1}`}
 							onChange={e => {
-								const newRounds = [...rounds];
-								newRounds[i] = { prompt: e.target.value, roundNumber: i + 1 };
-								setRounds(newRounds);
+								if (e.target.value.length <= 25) {
+									const newRounds = [...rounds];
+									newRounds[i] = { prompt: e.target.value, roundNumber: i + 1 };
+									setRounds(newRounds);
+								} else {
+									e.target.value = rounds[i].prompt;
+								}
 							}}
 							onFocus={() => setErrors(prev => ({ ...prev, [i]: false }))}
 						></input>
