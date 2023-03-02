@@ -260,17 +260,16 @@ const gameReducer = (state = initialState, action) => {
 			newState.timesUp = false;
 			return newState;
 		case ADD_GAME_DRAWING:
-			// const { roundNumber, drawing } = action.payload;
-			console.log("ADD GAME DRAWING PAYLOAD", action);
 			newState = { ...state };
 			newState.drawings[action.drawing.roundId] = {
 				...newState.drawings[action.drawing.roundId],
-				[action.drawing.userId]: action.drawing
+				[action.drawing.userId]: { ...action.drawing, votes: 0 }
 			};
 			return newState;
 		case ADD_POINTS:
 			newState = { ...state };
 			newState.scores[action.playerId] += 100;
+			newState.drawings[newState.currentRound.id][action.playerId].votes += 1;
 			newState.voteCount += 1;
 			return newState;
 		case SET_TIMESUP_TRUE:

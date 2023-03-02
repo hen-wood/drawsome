@@ -1,6 +1,5 @@
-import { useState, useEffect, useContext } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { actionSetTimesUpTrue } from "../../../store/games";
+import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import formatTime from "../../../utils/formatTime";
 export const Timer = ({ timeLimit, message, setTimesUp, timesUp }) => {
 	const game = useSelector(state => state.game);
@@ -28,7 +27,7 @@ export const Timer = ({ timeLimit, message, setTimesUp, timesUp }) => {
 					? `Time Remaining: ${formatTime(time)}`
 					: !timesUp
 					? `${time}`
-					: "TIME'S UP!"}
+					: "loading..."}
 			</p>
 		</div>
 	);

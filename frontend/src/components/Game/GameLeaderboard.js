@@ -1,27 +1,25 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import {
-	actionResetVotes,
-	actionSetCurrentRound,
-	actionSetGameSection
-} from "../../store/games";
+import { actionSetCurrentRound, actionSetGameSection } from "../../store/games";
 import { Timer } from "./utils/Timer";
 
 export default function GameLeaderboard() {
 	const dispatch = useDispatch();
-	const game = useSelector(state => state.game);
+	const { scores, drawings, players, currentRound, voteCount } = useSelector(
+		state => state.game
+	);
 	const [timesUp, setTimesUp] = useState(false);
 	const [boardReady, setBoardReady] = useState(false);
 
 	useEffect(() => {
-		if (game.voteCount === Object.keys(game.players).length) {
+		if (voteCount === Object.keys(players).length) {
 			setBoardReady(true);
 		}
-	}, [game]);
+	}, [voteCount, players]);
 
 	useEffect(() => {
 		if (timesUp) {
-			dispatch(actionSetCurrentRound(game.currentRound.roundNumber + 1));
+			dispatch(actionSetCurrentRound(currentRound.roundNumber + 1));
 			dispatch(actionSetGameSection("round"));
 		}
 	}, [timesUp]);
@@ -32,17 +30,21 @@ export default function GameLeaderboard() {
 				timesUp={timesUp}
 				setTimesUp={setTimesUp}
 				timeLimit={5}
-				message={`Here's how you all stack up after Round ${game.currentRound.roundNumber}...`}
+				message={`Here's how you all stack up after Round ${currentRound.roundNumber}...`}
 			/>
 			<div id="leaderboard-cards">
-				{Object.keys(game.players).map(key => {
-					const { username, id } = game.players[key];
-					const { drawingUrl, title } = game.drawings[game.currentRound.id];
-					const score = game.scores[id];
+				{Object.keys(players).map(key => {
+					const { username, id } = players[key];
+					const { drawingUrl, title, votes } = drawings[currentRound.id][id];
+					const score = scores[id];
 					return (
 						<div key={key} className="leaderboard-card">
+							<div className="leaderboard-card-user-info">
+								<p className="leaderboard-username">{`${username}`}</p>
+								<p>Votes this round: {votes}</p>
+								<p>Total score: {score}</p>
+							</div>
 							<img src={drawingUrl} alt={title} />
-							<p>{`${username} ${score}`}</p>
 						</div>
 					);
 				})}
