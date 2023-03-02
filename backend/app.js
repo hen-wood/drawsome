@@ -103,7 +103,7 @@ io.on("connection", socket => {
 	});
 
 	socket.on("sync new player with current players", currentPlayerData => {
-		// 'sync new player with current players' to sync new player's gameState with the host's gameState
+		// 'sync new player with current players' syncs new player's gameState with the currentPlayer's gameState
 		const { currentPlayer, newPlayerSocketId } = currentPlayerData;
 		// Server emits 'sync new player' events directly to the new client
 		io.to(newPlayerSocketId).emit("sync new player", currentPlayer);
@@ -126,12 +126,7 @@ io.on("connection", socket => {
 
 	socket.on("disconnection", data => {
 		const { roomId, playerId, isHost } = data;
-		if (isHost) {
-			console.log("host disconnected");
-			socket.to(roomId).emit("host disconnected");
-		} else {
-			socket.to(roomId).emit("player disconnected", playerId);
-		}
+		socket.to(roomId).emit("player disconnected", playerId);
 	});
 });
 

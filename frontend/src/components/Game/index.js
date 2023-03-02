@@ -1,5 +1,4 @@
 import { useContext, useEffect } from "react";
-import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { SocketContext } from "../../context/Socket";
 import {
@@ -7,12 +6,10 @@ import {
 	actionDisconnectPlayer,
 	actionReconnectPlayer,
 	actionSetCurrentRound,
-	actionSetScores,
 	actionSetGameSection,
 	actionAddGameDrawing,
 	actionSetPlayerVotedFor,
-	actionAddPoints,
-	actionResetGame
+	actionAddPoints
 } from "../../store/games";
 import GameEnd from "./GameEnd";
 import GameLobby from "./GameLobby";
@@ -24,7 +21,6 @@ import "./Game.css";
 export default function Game() {
 	const dispatch = useDispatch();
 	const socket = useContext(SocketContext);
-	const history = useHistory();
 	const user = useSelector(state => state.session.user);
 	const game = useSelector(state => state.game);
 
@@ -82,11 +78,7 @@ export default function Game() {
 			dispatch(actionAddPoints(playerVotedFor));
 		});
 
-		socket.on("host disconnected", () => {
-			socket.disconnect();
-			history.push("/join-game");
-			dispatch(actionResetGame());
-		});
+		socket.on("host disconnected", () => {});
 
 		return () => {
 			socket.emit("disconnection", {
@@ -95,7 +87,6 @@ export default function Game() {
 				isHost: game.creatorId === user.id
 			});
 			socket.disconnect();
-			dispatch(actionResetGame());
 		};
 	}, []);
 

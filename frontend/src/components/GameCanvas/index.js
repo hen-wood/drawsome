@@ -141,6 +141,13 @@ export default function GameCanvas({ prompt, canvasRef }) {
 					}
 					onClick={() => handleColorClick("blue")}
 				></i>
+				<i
+					className={
+						brushSize === 5
+							? "fa-solid fa-paintbrush"
+							: "fa-solid fa-paintbrush selected"
+					}
+				></i>
 			</div>
 			<h1 className={errors.canvas ? "canvas-error" : "canvas-error-hidden"}>
 				Canvas cannot be blank
