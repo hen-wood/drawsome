@@ -103,25 +103,30 @@ io.on("connection", socket => {
 	});
 
 	socket.on("sync new player with current players", currentPlayerData => {
-		// 'sync new player with current players' to sync new player's gameState with the host's gameState
+		// 'sync new player with current players' syncs new player's gameState with the currentPlayer's gameState
 		const { currentPlayer, newPlayerSocketId } = currentPlayerData;
 		// Server emits 'sync new player' events directly to the new client
 		io.to(newPlayerSocketId).emit("sync new player", currentPlayer);
 	});
 
-	socket.on("start round", data => {
+	socket.on("start game", data => {
 		const { roomId } = data;
-		io.to(roomId).emit("host started round");
+		io.to(roomId).emit("host started game");
+	});
+
+	socket.on("player submitted drawing", data => {
+		const { roomId, drawingData } = data;
+		io.to(roomId).emit("server received drawing", drawingData);
+	});
+
+	socket.on("player submitted vote", data => {
+		const { roomId, playerVotedFor } = data;
+		io.to(roomId).emit("server received vote", playerVotedFor);
 	});
 
 	socket.on("disconnection", data => {
 		const { roomId, playerId, isHost } = data;
-		if (isHost) {
-			console.log("host disconnected");
-			socket.emit("host disconnected");
-		} else {
-			io.to(roomId).emit("player disconnected", playerId);
-		}
+		socket.to(roomId).emit("player disconnected", playerId);
 	});
 });
 

@@ -12,6 +12,12 @@ module.exports = (sequelize, DataTypes) => {
 				foreignKey: "gameId",
 				as: "gameRounds"
 			});
+
+			Game.belongsToMany(models.User, {
+				through: models.Player,
+				foreignKey: "gameId",
+				otherKey: "userId"
+			});
 		}
 	}
 	Game.init(
@@ -49,11 +55,7 @@ module.exports = (sequelize, DataTypes) => {
 					"timeLimit",
 					"hasStarted",
 					"hasEnded"
-				],
-				include: {
-					model: "Users",
-					as: "host"
-				}
+				]
 			}
 		}
 	);

@@ -5,7 +5,6 @@ export const startGame = (gameCode, gameId, socket, thunk, dispatch) => {
 		})
 		.catch(async res => {
 			const error = await res.json();
-			console.log(error);
 		});
 };
 
