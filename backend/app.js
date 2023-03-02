@@ -115,15 +115,13 @@ io.on("connection", socket => {
 	});
 
 	socket.on("player submitted drawing", data => {
-		const { roomId, drawingData, roundNum } = data;
-		socket
-			.to(roomId)
-			.emit("server received drawing", { drawingData, roundNum });
+		const { roomId, drawingData } = data;
+		io.to(roomId).emit("server received drawing", drawingData);
 	});
 
 	socket.on("player submitted vote", data => {
 		const { roomId, playerVotedFor } = data;
-		socket.to(roomId).emit("server received vote", playerVotedFor);
+		io.to(roomId).emit("server received vote", playerVotedFor);
 	});
 
 	socket.on("disconnection", data => {

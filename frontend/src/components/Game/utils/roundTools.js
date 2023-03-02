@@ -11,7 +11,6 @@ export const handleSaveRoundDrawing = async (
 	formData.append("title", title);
 
 	dispatch(thunk(formData)).then(data => {
-		console.log({ data });
 		return data;
 	});
 };

@@ -67,16 +67,15 @@ export default function Game() {
 
 		// All players start Round 1
 		socket.on("host started game", () => {
-			dispatch(actionSetScores(Object.keys(game.players)));
 			dispatch(actionSetCurrentRound(1));
 			dispatch(actionSetGameSection("round"));
 		});
 
-		socket.on("server received drawing", data => {
-			const { drawingData, roundNum, userId } = data.drawingData;
-			console.log({ data });
-			dispatch(actionSetPlayerVotedFor(userId));
-			dispatch(actionAddGameDrawing(drawingData, roundNum));
+		socket.on("server received drawing", drawingData => {
+			if (drawingData.userId !== user.id) {
+				dispatch(actionSetPlayerVotedFor(drawingData.userId));
+			}
+			dispatch(actionAddGameDrawing(drawingData));
 		});
 
 		socket.on("server received vote", playerVotedFor => {

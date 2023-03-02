@@ -17,7 +17,6 @@ export default function CreateGame() {
 
 	const handleCreateGame = e => {
 		e.preventDefault();
-		console.log({ rounds });
 		const inputErrors = {};
 		rounds.forEach((round, i) => {
 			if (!round) {

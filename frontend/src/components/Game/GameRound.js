@@ -1,12 +1,12 @@
-import { useContext, useRef, useEffect } from "react";
+import { useContext, useRef, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { SocketContext } from "../../context/Socket";
 import { Timer } from "./utils/Timer";
 import GameCanvas from "../GameCanvas";
 import {
-	thunkAddGameDrawing,
+	actionResetVotes,
 	actionSetGameSection,
-	actionSetTimesUpFalse
+	thunkAddGameDrawing
 } from "../../store/games";
 
 export default function GameRound() {
@@ -14,30 +14,39 @@ export default function GameRound() {
 	const socket = useContext(SocketContext);
 	const game = useSelector(state => state.game);
 	const canvasRef = useRef(null);
+	const [timesUp, setTimesUp] = useState(false);
 
 	useEffect(() => {
-		if (game.timesUp) {
+		dispatch(actionResetVotes());
+	}, []);
+
+	useEffect(() => {
+		if (timesUp) {
 			const dataURL = canvasRef.current.toDataURL("image/png");
 			const formData = new FormData();
 			formData.append("image", dataURL);
 			formData.append("title", game.currentRound.prompt);
 			formData.append("roundId", game.currentRound.id);
 
-			dispatch(
-				thunkAddGameDrawing(formData, game.currentRound.roundNumber)
-			).then(data => {
+			dispatch(thunkAddGameDrawing(formData, game.currentRound)).then(data => {
 				socket.emit("player submitted drawing", {
 					roomId: game.code,
 					drawingData: data,
 					roundNum: game.currentRound.roundNumber
 				});
+				dispatch(actionSetGameSection("vote"));
 			});
 		}
-	}, [game.timesUp]);
+	}, [timesUp]);
 
 	return (
 		<div id="round-container">
-			<Timer timeLimit={5} message={`Round ${game.currentRound.roundNum}`} />
+			<Timer
+				timesUp={timesUp}
+				setTimesUp={setTimesUp}
+				timeLimit={5}
+				message={`Round ${game.currentRound.roundNumber}`}
+			/>
 			<GameCanvas prompt={game.currentRound.prompt} canvasRef={canvasRef} />
 		</div>
 	);

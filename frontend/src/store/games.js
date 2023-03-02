@@ -66,10 +66,10 @@ export const actionSetGameSection = section => {
 	};
 };
 
-export const actionAddGameDrawing = (drawing, roundNumber) => {
+export const actionAddGameDrawing = drawing => {
 	return {
 		type: ADD_GAME_DRAWING,
-		payload: { drawing, roundNumber }
+		drawing
 	};
 };
 
@@ -162,29 +162,25 @@ export const thunkStartGame = gameId => async dispatch => {
 	}
 };
 
-export const thunkAddGameDrawing =
-	(drawingData, roundNumber) => async dispatch => {
-		const response = await csrfFetch("/api/drawings", {
-			method: "POST",
-			body: drawingData,
-			headers: {
-				"Content-Type": "multipart/form-data"
-			}
-		});
+export const thunkAddGameDrawing = drawingData => async dispatch => {
+	const response = await csrfFetch("/api/drawings", {
+		method: "POST",
+		body: drawingData,
+		headers: {
+			"Content-Type": "multipart/form-data"
+		}
+	});
 
-		const data = await response.json();
-		dispatch(actionAddGameDrawing(data, roundNumber));
-		dispatch(actionSetTimesUpFalse());
-		dispatch(actionSetGameSection("vote"));
-		return data;
-	};
+	const data = await response.json();
+	dispatch(actionAddGameDrawing(data));
+	return data;
+};
 
-export const thunkAddVote = (drawingId, playerId) => async dispatch => {
+export const thunkAddVote = drawingId => async () => {
 	const response = await csrfFetch(`/api/drawings/${drawingId}/vote`, {
 		method: "POST"
 	});
 	await response.json();
-	dispatch(actionAddPoints(playerId));
 };
 
 const initialState = {
@@ -194,9 +190,9 @@ const initialState = {
 	numPlayers: null,
 	timeLimit: null,
 	numRounds: null,
-	players: {},
-	currentRound: 1,
 	gameRounds: {},
+	currentRound: 1,
+	players: {},
 	section: "lobby",
 	scores: {},
 	drawings: {},
@@ -235,6 +231,7 @@ const gameReducer = (state = initialState, action) => {
 				...newState.players,
 				[action.player.id]: action.player
 			};
+			newState.scores[action.player.id] = 0;
 			return newState;
 		case DISCONNECT_PLAYER:
 			newState = { ...state };
@@ -252,18 +249,23 @@ const gameReducer = (state = initialState, action) => {
 			newState = { ...state };
 			const newRound = newState.gameRounds[action.roundNumber];
 			newState.currentRound = newRound;
-			newState.drawings = { ...newState.drawings, [action.roundNumber]: {} };
+			newState.drawings = {
+				...newState.drawings,
+				[newState.currentRound.id]: {}
+			};
 			return newState;
 		case SET_GAME_SECTION:
 			newState = { ...state };
 			newState.section = action.section;
+			newState.timesUp = false;
 			return newState;
 		case ADD_GAME_DRAWING:
-			const { roundNumber, drawing } = action.payload;
+			// const { roundNumber, drawing } = action.payload;
+			console.log("ADD GAME DRAWING PAYLOAD", action);
 			newState = { ...state };
-			newState.drawings[roundNumber] = {
-				...newState.drawings[roundNumber],
-				[drawing.userId]: drawing
+			newState.drawings[action.drawing.roundId] = {
+				...newState.drawings[action.drawing.roundId],
+				[action.drawing.userId]: action.drawing
 			};
 			return newState;
 		case ADD_POINTS:
