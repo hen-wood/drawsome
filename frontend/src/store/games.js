@@ -199,7 +199,6 @@ const initialState = {
 	section: "lobby",
 	scores: {},
 	drawings: {},
-	timesUp: false,
 	playerVotedFor: null,
 	voteCount: 0
 };
@@ -274,14 +273,6 @@ const gameReducer = (state = initialState, action) => {
 			newState.scores[action.playerId] += 100;
 			newState.drawings[newState.currentRound.id][action.playerId].votes += 1;
 			newState.voteCount += 1;
-			return newState;
-		case SET_TIMESUP_TRUE:
-			newState = { ...state };
-			newState.timesUp = true;
-			return newState;
-		case SET_TIMESUP_FALSE:
-			newState = { ...state };
-			newState.timesUp = false;
 			return newState;
 		case SET_PLAYER_VOTED_FOR:
 			newState = { ...state };
