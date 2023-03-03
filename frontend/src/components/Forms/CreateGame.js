@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
 import { thunkCreateGame } from "../../store/games";
+import getPrompt from "../../utils/randomPrompt";
 
 import "./Forms.css";
 
@@ -15,7 +16,6 @@ export default function CreateGame() {
 
 	const handleCreateGame = e => {
 		e.preventDefault();
-		console.log({ rounds });
 		const inputErrors = {};
 		rounds.forEach((round, i) => {
 			if (!round || !round.prompt) {
@@ -98,22 +98,38 @@ export default function CreateGame() {
 				/>
 				{rounds.map((r, i) => {
 					return (
-						<input
-							key={i}
-							type="text"
-							className={errors[i] ? "input-errors" : ""}
-							placeholder={`Enter prompt for round ${i + 1}`}
-							onChange={e => {
-								if (e.target.value.length <= 25) {
+						<div key={i} className="prompt-div">
+							<i
+								className="fa-solid fa-dice get-prompt-button"
+								onClick={e => {
+									const randPrompt = getPrompt();
+									e.target.nextSibling.value = randPrompt;
 									const newRounds = [...rounds];
-									newRounds[i] = { prompt: e.target.value, roundNumber: i + 1 };
+									newRounds[i] = { prompt: randPrompt, roundNumber: i + 1 };
 									setRounds(newRounds);
-								} else {
-									e.target.value = rounds[i].prompt;
+								}}
+							></i>
+							<input
+								type="text"
+								className={
+									errors[i] ? "input-errors prompt-input" : "prompt-input"
 								}
-							}}
-							onFocus={() => setErrors(prev => ({ ...prev, [i]: false }))}
-						></input>
+								placeholder={`Enter prompt for round ${i + 1}`}
+								onChange={e => {
+									if (e.target.value.length <= 25) {
+										const newRounds = [...rounds];
+										newRounds[i] = {
+											prompt: e.target.value,
+											roundNumber: i + 1
+										};
+										setRounds(newRounds);
+									} else {
+										e.target.value = rounds[i].prompt;
+									}
+								}}
+								onFocus={() => setErrors(prev => ({ ...prev, [i]: false }))}
+							></input>
+						</div>
 					);
 				})}
 

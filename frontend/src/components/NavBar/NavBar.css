@@ -10,13 +10,23 @@
 }
 
 
-#nav-bar h1 {
+.home-link {
     cursor: pointer;
     color: white;
     margin: 10px 0;
 }
-#nav-bar h1.disabled-home-link{
+.disabled-home-link{
     cursor: unset;
+}
+
+#how-to-play-link{
+    cursor: pointer;
+}
+
+#how-to-play-user-icon-div{
+    display: flex;
+    justify-content: space-between;
+    width: 200px;
 }
 
 #user-icon {

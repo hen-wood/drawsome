@@ -106,3 +106,26 @@ button:hover{
 #create-game-form-container form label {
     padding: 5px 10px;
 }
+
+.prompt-div{
+    position: relative;
+    display: flex;
+    box-sizing: border-box;
+}
+
+.prompt-div .prompt-input{
+    width: 100%;
+    padding-left: 50px;
+}
+
+.get-prompt-button{
+    position: absolute;
+    left: 25px;
+    top: 30%;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.get-prompt-button:hover{
+    color: white;
+}
