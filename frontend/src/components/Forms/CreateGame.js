@@ -64,13 +64,13 @@ export default function CreateGame() {
 				<div className="create-game-input-div">
 					<div className="increase-decrease-div">
 						<i
-							class="fa-solid fa-minus"
+							className="fa-solid fa-minus"
 							onClick={() => {
 								if (numPlayers > 3) setNumPlayers(p => +p - 1);
 							}}
 						></i>
 						<i
-							class="fa-solid fa-plus"
+							className="fa-solid fa-plus"
 							onClick={() => {
 								if (numPlayers < 8) setNumPlayers(p => +p + 1);
 							}}
@@ -81,10 +81,10 @@ export default function CreateGame() {
 						placeholder={errors["numPlayers"] ? errors["numPlayers"] : ""}
 						name="num-players"
 						type="number"
-						value={numPlayers}
+						value={+numPlayers}
 						min={3}
 						max={8}
-						onChange={e => setNumPlayers(e.target.value)}
+						onChange={e => setNumPlayers(+e.target.value)}
 						onFocus={() =>
 							setErrors(prev => ({ ...prev, ["numPlayers"]: false }))
 						}
@@ -94,13 +94,13 @@ export default function CreateGame() {
 				<div className="create-game-input-div">
 					<div className="increase-decrease-div">
 						<i
-							class="fa-solid fa-minus"
+							className="fa-solid fa-minus"
 							onClick={() => {
 								if (timeLimit > 1) setTimeLimit(p => +p - 1);
 							}}
 						></i>
 						<i
-							class="fa-solid fa-plus"
+							className="fa-solid fa-plus"
 							onClick={() => {
 								if (timeLimit < 3) setTimeLimit(p => +p + 1);
 							}}
@@ -111,10 +111,10 @@ export default function CreateGame() {
 						placeholder={errors["timeLimit"] ? errors["timeLimit"] : ""}
 						name="num-minutes"
 						type="number"
-						value={timeLimit}
+						value={+timeLimit}
 						min={1}
 						max={3}
-						onChange={e => setTimeLimit(e.target.value)}
+						onChange={e => setTimeLimit(+e.target.value)}
 						onFocus={() =>
 							setErrors(prev => ({ ...prev, ["timeLimit"]: false }))
 						}
@@ -124,13 +124,13 @@ export default function CreateGame() {
 				<div className="create-game-input-div">
 					<div className="increase-decrease-div">
 						<i
-							class="fa-solid fa-minus"
+							className="fa-solid fa-minus"
 							onClick={() => {
 								if (rounds.length > 1) handleUpdateRounds(rounds.length - 1);
 							}}
 						></i>
 						<i
-							class="fa-solid fa-plus"
+							className="fa-solid fa-plus"
 							onClick={() => {
 								if (rounds.length < 5) handleUpdateRounds(rounds.length + 1);
 							}}
