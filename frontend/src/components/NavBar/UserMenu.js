@@ -1,10 +1,12 @@
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../store/session";
+import { useEffect, useRef } from "react";
 
 export default function UserMenu({ isOpen, setIsOpen, setIsLoggedIn, user }) {
 	const dispatch = useDispatch();
 	const history = useHistory();
+	const menu = useRef(null);
 
 	const handleDrawSolo = () => {
 		setIsOpen(false);
@@ -34,8 +36,19 @@ export default function UserMenu({ isOpen, setIsOpen, setIsLoggedIn, user }) {
 		});
 	};
 
+	const closeMenu = e => {
+		if (!menu.current.contains(e.target)) setIsOpen(false);
+	};
+
+	useEffect(() => {
+		if (isOpen) document.addEventListener("click", closeMenu);
+		return () => {
+			document.removeEventListener("click", closeMenu);
+		};
+	}, [isOpen]);
+
 	return (
-		<div className={isOpen ? "user-menu" : "user-menu-hidden"}>
+		<div ref={menu} className={isOpen ? "user-menu" : "user-menu-hidden"}>
 			<p id="menu-username">{user && user.username} 🧑‍🎨</p>
 			<div className="divider"></div>
 			<p className="user-options" onClick={handleDrawSolo}>
