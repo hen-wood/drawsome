@@ -47,10 +47,10 @@ export default function CreateGame() {
 		);
 	};
 
-	const handleUpdateRounds = e => {
-		if (+e.target.value > 5) return;
+	const handleUpdateRounds = val => {
+		if (val > 5) return;
 		const newArr = [];
-		for (let i = 0; i < +e.target.value; i++) {
+		for (let i = 0; i < val; i++) {
 			newArr.push(rounds[i] || undefined);
 		}
 		setRounds(newArr);
@@ -61,44 +61,94 @@ export default function CreateGame() {
 			<h1>Create a Drawsome Game</h1>
 			<form onSubmit={handleCreateGame}>
 				<label htmlFor="num-players">Number of players (3-8)</label>
-				<input
-					className={errors["numPlayers"] ? "input-errors" : ""}
-					placeholder={errors["numPlayers"] ? errors["numPlayers"] : ""}
-					name="num-players"
-					type="number"
-					value={numPlayers}
-					min={3}
-					max={8}
-					onChange={e => setNumPlayers(e.target.value)}
-					onFocus={() =>
-						setErrors(prev => ({ ...prev, ["numPlayers"]: false }))
-					}
-				/>
+				<div className="create-game-input-div">
+					<div className="increase-decrease-div">
+						<i
+							class="fa-solid fa-minus"
+							onClick={() => {
+								if (numPlayers > 3) setNumPlayers(p => +p - 1);
+							}}
+						></i>
+						<i
+							class="fa-solid fa-plus"
+							onClick={() => {
+								if (numPlayers < 8) setNumPlayers(p => +p + 1);
+							}}
+						></i>
+					</div>
+					<input
+						className={errors["numPlayers"] ? "input-errors" : ""}
+						placeholder={errors["numPlayers"] ? errors["numPlayers"] : ""}
+						name="num-players"
+						type="number"
+						value={numPlayers}
+						min={3}
+						max={8}
+						onChange={e => setNumPlayers(e.target.value)}
+						onFocus={() =>
+							setErrors(prev => ({ ...prev, ["numPlayers"]: false }))
+						}
+					/>
+				</div>
 				<label htmlFor="num-minutes">Minutes per round (1-3)</label>
-				<input
-					className={errors["timeLimit"] ? "input-errors" : ""}
-					placeholder={errors["timeLimit"] ? errors["timeLimit"] : ""}
-					name="num-minutes"
-					type="number"
-					value={timeLimit}
-					min={1}
-					max={3}
-					onChange={e => setTimeLimit(e.target.value)}
-					onFocus={() => setErrors(prev => ({ ...prev, ["timeLimit"]: false }))}
-				/>
+				<div className="create-game-input-div">
+					<div className="increase-decrease-div">
+						<i
+							class="fa-solid fa-minus"
+							onClick={() => {
+								if (timeLimit > 1) setTimeLimit(p => +p - 1);
+							}}
+						></i>
+						<i
+							class="fa-solid fa-plus"
+							onClick={() => {
+								if (timeLimit < 3) setTimeLimit(p => +p + 1);
+							}}
+						></i>
+					</div>
+					<input
+						className={errors["timeLimit"] ? "input-errors" : ""}
+						placeholder={errors["timeLimit"] ? errors["timeLimit"] : ""}
+						name="num-minutes"
+						type="number"
+						value={timeLimit}
+						min={1}
+						max={3}
+						onChange={e => setTimeLimit(e.target.value)}
+						onFocus={() =>
+							setErrors(prev => ({ ...prev, ["timeLimit"]: false }))
+						}
+					/>
+				</div>
 				<label htmlFor="num-rounds">Number of Rounds (1-5)</label>
-				<input
-					name="num-rounds"
-					type="number"
-					value={rounds.length}
-					min={1}
-					max={5}
-					onChange={handleUpdateRounds}
-					onBlur={e => (e.target.value = +e.target.value)}
-				/>
+				<div className="create-game-input-div">
+					<div className="increase-decrease-div">
+						<i
+							class="fa-solid fa-minus"
+							onClick={() => {
+								if (rounds.length > 1) handleUpdateRounds(rounds.length - 1);
+							}}
+						></i>
+						<i
+							class="fa-solid fa-plus"
+							onClick={() => {
+								if (rounds.length < 5) handleUpdateRounds(rounds.length + 1);
+							}}
+						></i>
+					</div>
+					<input
+						name="num-rounds"
+						type="number"
+						value={rounds.length}
+						min={1}
+						max={5}
+						onChange={e => handleUpdateRounds(+e.target.value)}
+						onBlur={e => (e.target.value = +e.target.value)}
+					/>
+				</div>
 				{rounds.map((r, i) => {
 					return (
-						<div key={i} className="prompt-div">
+						<div key={i} className="create-game-input-div">
 							<i
 								className="fa-solid fa-dice get-prompt-button"
 								onClick={e => {
