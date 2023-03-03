@@ -194,6 +194,7 @@ const initialState = {
 	timeLimit: null,
 	numRounds: null,
 	gameRounds: {},
+	//-----------------
 	currentRound: 1,
 	players: {},
 	section: "lobby",
