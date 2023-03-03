@@ -106,3 +106,42 @@ button:hover{
 #create-game-form-container form label {
     padding: 5px 10px;
 }
+
+.create-game-input-div{
+    position: relative;
+    display: flex;
+    box-sizing: border-box;
+}
+
+.create-game-input-div .prompt-input,
+.create-game-input-div input{
+    width: 100%;
+    padding-left: 50px;
+}
+
+.get-prompt-button{
+    position: absolute;
+    left: 25px;
+    top: 30%;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.get-prompt-button:hover{
+    color: white;
+}
+
+.increase-decrease-div {
+    position: absolute;
+    display: flex;
+    justify-content: space-between;
+    left: 15px;
+    top: 35%;
+    width: 35px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.increase-decrease-div i:hover{
+    cursor: pointer;
+    color: white;
+}

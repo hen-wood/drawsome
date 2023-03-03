@@ -1,5 +1,5 @@
 import { csrfFetch } from "./csrf";
-
+import { actionAddDrawing } from "./drawings";
 // Constants
 
 const SET_CURRENT_GAME = "games/SET_CURRENT_GAME";
@@ -129,6 +129,7 @@ export const thunkCreateGame = game => async dispatch => {
 	});
 	if (response.ok) {
 		const data = await response.json();
+		dispatch(actionResetGame());
 		dispatch(actionSetCurrentGame(data));
 		return data;
 	} else {
@@ -140,6 +141,7 @@ export const thunkLoadGame = gameCode => async dispatch => {
 	const response = await csrfFetch(`/api/games/${gameCode}`);
 	const data = await response.json();
 	if (response.ok) {
+		dispatch(actionResetGame());
 		dispatch(actionSetCurrentGame(data));
 	} else {
 		return response;
@@ -173,6 +175,7 @@ export const thunkAddGameDrawing = drawingData => async dispatch => {
 
 	const data = await response.json();
 	dispatch(actionAddGameDrawing(data));
+	dispatch(actionAddDrawing(data));
 	return data;
 };
 
@@ -191,12 +194,12 @@ const initialState = {
 	timeLimit: null,
 	numRounds: null,
 	gameRounds: {},
+	//-----------------
 	currentRound: 1,
 	players: {},
 	section: "lobby",
 	scores: {},
 	drawings: {},
-	timesUp: false,
 	playerVotedFor: null,
 	voteCount: 0
 };
@@ -271,14 +274,6 @@ const gameReducer = (state = initialState, action) => {
 			newState.scores[action.playerId] += 100;
 			newState.drawings[newState.currentRound.id][action.playerId].votes += 1;
 			newState.voteCount += 1;
-			return newState;
-		case SET_TIMESUP_TRUE:
-			newState = { ...state };
-			newState.timesUp = true;
-			return newState;
-		case SET_TIMESUP_FALSE:
-			newState = { ...state };
-			newState.timesUp = false;
 			return newState;
 		case SET_PLAYER_VOTED_FOR:
 			newState = { ...state };

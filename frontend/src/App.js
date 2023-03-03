@@ -13,7 +13,6 @@ import Signup from "./components/Forms/Signup";
 import NotFound from "./components/NotFound";
 import UserDrawings from "./components/UserDrawings";
 import Game from "./components/Game";
-import GameStateProvider from "./context/GameState";
 import SocketProvider from "./context/Socket";
 
 function App() {
@@ -62,11 +61,9 @@ function App() {
 							<UserDrawings />
 						</Route>
 						<Route path="/game/:gameCode">
-							<GameStateProvider>
-								<SocketProvider>
-									<Game />
-								</SocketProvider>
-							</GameStateProvider>
+							<SocketProvider>
+								<Game />
+							</SocketProvider>
 						</Route>
 						<Route>
 							<NotFound />

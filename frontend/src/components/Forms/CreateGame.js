@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
 import { thunkCreateGame } from "../../store/games";
+import getPrompt from "../../utils/randomPrompt";
 
 import "./Forms.css";
 
@@ -17,7 +18,7 @@ export default function CreateGame() {
 		e.preventDefault();
 		const inputErrors = {};
 		rounds.forEach((round, i) => {
-			if (!round) {
+			if (!round || !round.prompt) {
 				inputErrors[i] = true;
 			}
 		});
@@ -30,7 +31,7 @@ export default function CreateGame() {
 		}
 
 		if (Object.values(inputErrors).some(val => val === true)) {
-			setErrors(inputErrors);
+			setErrors(prev => ({ ...prev, ...inputErrors }));
 			return;
 		}
 
@@ -46,10 +47,10 @@ export default function CreateGame() {
 		);
 	};
 
-	const handleUpdateRounds = e => {
-		if (+e.target.value > 5) return;
+	const handleUpdateRounds = val => {
+		if (val > 5) return;
 		const newArr = [];
-		for (let i = 0; i < +e.target.value; i++) {
+		for (let i = 0; i < val; i++) {
 			newArr.push(rounds[i] || undefined);
 		}
 		setRounds(newArr);
@@ -60,55 +61,125 @@ export default function CreateGame() {
 			<h1>Create a Drawsome Game</h1>
 			<form onSubmit={handleCreateGame}>
 				<label htmlFor="num-players">Number of players (3-8)</label>
-				<input
-					className={errors["numPlayers"] ? "input-errors" : ""}
-					placeholder={errors["numPlayers"] ? errors["numPlayers"] : ""}
-					name="num-players"
-					type="number"
-					value={numPlayers}
-					min={3}
-					max={8}
-					onChange={e => setNumPlayers(e.target.value)}
-					onFocus={() =>
-						setErrors(prev => ({ ...prev, ["numPlayers"]: false }))
-					}
-				/>
+				<div className="create-game-input-div">
+					<div className="increase-decrease-div">
+						<i
+							className="fa-solid fa-minus"
+							onClick={() => {
+								if (numPlayers > 3) setNumPlayers(p => +p - 1);
+							}}
+						></i>
+						<i
+							className="fa-solid fa-plus"
+							onClick={() => {
+								if (numPlayers < 8) setNumPlayers(p => +p + 1);
+							}}
+						></i>
+					</div>
+					<input
+						className={errors["numPlayers"] ? "input-errors" : ""}
+						placeholder={errors["numPlayers"] ? errors["numPlayers"] : ""}
+						name="num-players"
+						type="number"
+						value={+numPlayers}
+						min={3}
+						max={8}
+						onChange={e => setNumPlayers(+e.target.value)}
+						onFocus={() =>
+							setErrors(prev => ({ ...prev, ["numPlayers"]: false }))
+						}
+					/>
+				</div>
 				<label htmlFor="num-minutes">Minutes per round (1-3)</label>
-				<input
-					className={errors["timeLimit"] ? "input-errors" : ""}
-					placeholder={errors["timeLimit"] ? errors["timeLimit"] : ""}
-					name="num-minutes"
-					type="number"
-					value={timeLimit}
-					min={1}
-					max={3}
-					onChange={e => setTimeLimit(e.target.value)}
-					onFocus={() => setErrors(prev => ({ ...prev, ["timeLimit"]: false }))}
-				/>
+				<div className="create-game-input-div">
+					<div className="increase-decrease-div">
+						<i
+							className="fa-solid fa-minus"
+							onClick={() => {
+								if (timeLimit > 1) setTimeLimit(p => +p - 1);
+							}}
+						></i>
+						<i
+							className="fa-solid fa-plus"
+							onClick={() => {
+								if (timeLimit < 3) setTimeLimit(p => +p + 1);
+							}}
+						></i>
+					</div>
+					<input
+						className={errors["timeLimit"] ? "input-errors" : ""}
+						placeholder={errors["timeLimit"] ? errors["timeLimit"] : ""}
+						name="num-minutes"
+						type="number"
+						value={+timeLimit}
+						min={1}
+						max={3}
+						onChange={e => setTimeLimit(+e.target.value)}
+						onFocus={() =>
+							setErrors(prev => ({ ...prev, ["timeLimit"]: false }))
+						}
+					/>
+				</div>
 				<label htmlFor="num-rounds">Number of Rounds (1-5)</label>
-				<input
-					name="num-rounds"
-					type="number"
-					value={rounds.length}
-					min={1}
-					max={5}
-					onChange={handleUpdateRounds}
-					onBlur={e => (e.target.value = +e.target.value)}
-				/>
+				<div className="create-game-input-div">
+					<div className="increase-decrease-div">
+						<i
+							className="fa-solid fa-minus"
+							onClick={() => {
+								if (rounds.length > 1) handleUpdateRounds(rounds.length - 1);
+							}}
+						></i>
+						<i
+							className="fa-solid fa-plus"
+							onClick={() => {
+								if (rounds.length < 5) handleUpdateRounds(rounds.length + 1);
+							}}
+						></i>
+					</div>
+					<input
+						name="num-rounds"
+						type="number"
+						value={rounds.length}
+						min={1}
+						max={5}
+						onChange={e => handleUpdateRounds(+e.target.value)}
+						onBlur={e => (e.target.value = +e.target.value)}
+					/>
+				</div>
 				{rounds.map((r, i) => {
 					return (
-						<input
-							key={i}
-							type="text"
-							className={errors[i] ? "input-errors" : ""}
-							placeholder={`Enter prompt for round ${i + 1}`}
-							onChange={e => {
-								const newRounds = [...rounds];
-								newRounds[i] = { prompt: e.target.value, roundNumber: i + 1 };
-								setRounds(newRounds);
-							}}
-							onFocus={() => setErrors(prev => ({ ...prev, [i]: false }))}
-						></input>
+						<div key={i} className="create-game-input-div">
+							<i
+								className="fa-solid fa-dice get-prompt-button"
+								onClick={e => {
+									const randPrompt = getPrompt();
+									e.target.nextSibling.value = randPrompt;
+									const newRounds = [...rounds];
+									newRounds[i] = { prompt: randPrompt, roundNumber: i + 1 };
+									setRounds(newRounds);
+								}}
+							></i>
+							<input
+								type="text"
+								className={
+									errors[i] ? "input-errors prompt-input" : "prompt-input"
+								}
+								placeholder={`Enter prompt for round ${i + 1}`}
+								onChange={e => {
+									if (e.target.value.length <= 25) {
+										const newRounds = [...rounds];
+										newRounds[i] = {
+											prompt: e.target.value,
+											roundNumber: i + 1
+										};
+										setRounds(newRounds);
+									} else {
+										e.target.value = rounds[i].prompt;
+									}
+								}}
+								onFocus={() => setErrors(prev => ({ ...prev, [i]: false }))}
+							></input>
+						</div>
 					);
 				})}
 
