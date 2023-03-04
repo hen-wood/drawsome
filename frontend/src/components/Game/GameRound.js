@@ -12,7 +12,7 @@ export default function GameRound() {
 	const { timeLimit, currentRound, hostSocket } = getLocalAsObj("gameState");
 
 	const canvasRef = useRef(null);
-	const [time, setTime] = useState(timeLimit * 60);
+	const [time, setTime] = useState(5);
 	const [timesUp, setTimesUp] = useState(false);
 
 	useEffect(() => {

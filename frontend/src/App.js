@@ -14,6 +14,8 @@ import NotFound from "./components/NotFound";
 import UserDrawings from "./components/UserDrawings";
 import Game from "./components/Game";
 import SocketProvider from "./context/Socket";
+import PastGames from "./components/PastGames";
+import SinglePastGame from "./components/PastGames/SinglePastGame";
 
 function App() {
 	const history = useHistory();
@@ -64,6 +66,12 @@ function App() {
 							<SocketProvider>
 								<Game />
 							</SocketProvider>
+						</Route>
+						<Route exact path="/past-games">
+							<PastGames />
+						</Route>
+						<Route path="/past-games/:gameId">
+							<SinglePastGame />
 						</Route>
 						<Route>
 							<NotFound />

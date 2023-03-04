@@ -21,10 +21,11 @@ import { actionAddPastGame } from "../../store/games";
 
 export default function Game() {
 	const dispatch = useDispatch();
+	const history = useHistory();
 	const socket = useContext(SocketContext);
 	const user = useSelector(state => state.session.user);
 	const [gameState, setGameState] = useState(getLocalAsObj("gameState"));
-	const { code, creatorId } = gameState;
+	const { id, code, creatorId } = gameState;
 
 	useEffect(() => {
 		const isHost = creatorId === user.id;
@@ -142,6 +143,8 @@ export default function Game() {
 
 		socket.on("game over", hostDataStr => {
 			dispatch(actionAddPastGame(JSON.parse(hostDataStr)));
+			history.push(`/past-games/${id}`);
+			socket.disconnect();
 		});
 
 		return () => {
@@ -159,10 +162,8 @@ export default function Game() {
 				<GameVote gameState={gameState} setGameState={setGameState} />
 			) : gameState.section === "leaderboard" ? (
 				<GameLeaderboard gameState={gameState} setGameState={setGameState} />
-			) : gameState.section === "game end" ? (
-				<GameEnd gameState={gameState} setGameState={setGameState} />
 			) : (
-				<h1>Loading game...</h1>
+				<h1>Loading...</h1>
 			)}
 		</div>
 	) : (
