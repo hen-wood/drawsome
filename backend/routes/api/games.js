@@ -1,7 +1,14 @@
 // backend/routes/api/games.js
 const express = require("express");
 const { requireAuthentication } = require("../../utils/auth");
-const { Drawing, Game, Round, User, DrawingVote } = require("../../db/models");
+const {
+	Drawing,
+	Game,
+	Round,
+	User,
+	DrawingVote,
+	Player
+} = require("../../db/models");
 const { codeGen } = require("../../utils/codeGen");
 const { Op, Model, Sequelize } = require("sequelize");
 
@@ -55,6 +62,7 @@ router.post("/", requireAuthentication, async (req, res, next) => {
 	const gameId = newGame.id;
 	newGame.code = codeGen(gameId);
 	await newGame.save();
+	await Player.create({ gameId, userId: creatorId });
 	const resBody = newGame.toJSON();
 	resBody.gameRounds = [];
 	for (let round of rounds) {
@@ -65,6 +73,21 @@ router.post("/", requireAuthentication, async (req, res, next) => {
 
 	return res.json(resBody);
 });
+
+// POST add new player
+router.post(
+	"/:gameId/players",
+	requireAuthentication,
+	async (req, res, next) => {
+		const { gameId } = req.params;
+		const { userId } = req.body;
+		await Player.create({
+			gameId,
+			userId
+		});
+		return res.json({ message: "player added" });
+	}
+);
 
 // PUT start game
 router.put("/:gameId/start", requireAuthentication, async (req, res, next) => {
@@ -98,7 +121,8 @@ router.put("/:gameId/end", requireAuthentication, async (req, res, next) => {
 					]
 				}
 			},
-			{ model: User }
+			{ model: User, as: "creator" },
+			{ model: User, as: "players" }
 		]
 	});
 	gameToEnd.hasEnded = true;

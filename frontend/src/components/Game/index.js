@@ -18,6 +18,7 @@ import {
 } from "./utils/localFunctions";
 import "./Game.css";
 import { actionAddPastGame } from "../../store/games";
+import { csrfFetch } from "../../store/csrf";
 
 export default function Game() {
 	const dispatch = useDispatch();
@@ -67,7 +68,16 @@ export default function Game() {
 			if (isHost) {
 				const hostDataStr = getLocalAsStr("gameState");
 				const toSocketId = player.socketId;
-				socket.emit("data to new player", { hostDataStr, toSocketId });
+				if (!currentState.players[player.id]) {
+					csrfFetch(`/api/games/${id}/players`, {
+						method: "POST",
+						body: JSON.stringify({ userId: player.id })
+					}).then(() => {
+						socket.emit("data to new player", { hostDataStr, toSocketId });
+					});
+				} else {
+					socket.emit("data to new player", { hostDataStr, toSocketId });
+				}
 			}
 		});
 
@@ -77,7 +87,6 @@ export default function Game() {
 		});
 
 		socket.on("host started game", () => {
-			// const otherId = Object.
 			const newState = updateLocalSection("round");
 			setGameState(prev => ({ ...prev, section: newState.section }));
 		});

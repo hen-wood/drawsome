@@ -60,10 +60,6 @@ export default function CreateGame() {
 			const err = await response.json();
 			console.log(err);
 		}
-
-		// dispatch(thunkCreateGame(data)).then(res =>
-		// 	history.push(`/game/${res.code}`)
-		// );
 	};
 
 	const handleUpdateRounds = val => {
