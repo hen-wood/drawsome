@@ -13,7 +13,7 @@ export default function GameVote({ gameState, setGameState }) {
 	const otherId = Object.keys(players).find(key => +key !== user.id);
 	const [playerVotedFor, setPlayerVotedFor] = useState(+otherId);
 	const [timesUp, setTimesUp] = useState(false);
-	const [time, setTime] = useState(15);
+	const [time, setTime] = useState(5);
 
 	useEffect(() => {
 		if (timesUp) {

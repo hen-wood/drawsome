@@ -16,7 +16,7 @@ export default function GameRound({ gameState, setGameState }) {
 	const socket = useContext(SocketContext);
 	const { timeLimit, currentRound, code, hostSocket } = gameState;
 	const canvasRef = useRef(null);
-	const [time, setTime] = useState(15);
+	const [time, setTime] = useState(5);
 	const [timesUp, setTimesUp] = useState(false);
 
 	useEffect(() => {}, []);

@@ -130,7 +130,11 @@ io.on("connection", socket => {
 	});
 
 	socket.on("host data after round", ({ hostDataStr, roomId }) => {
-		io.to(roomId).emit("server sending post-round data", hostDataStr);
+		io.to(roomId).emit("post-round data", hostDataStr);
+	});
+
+	socket.on("host game results", ({ hostDataStr, roomId }) => {
+		io.to(roomId).emit("game over", hostDataStr);
 	});
 
 	socket.on("disconnection", data => {

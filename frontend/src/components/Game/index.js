@@ -6,7 +6,6 @@ import GameLobby from "./GameLobby";
 import GameVote from "./GameVote";
 import GameRound from "./GameRound";
 import GameLeaderboard from "./GameLeaderboard";
-import "./Game.css";
 import {
 	getLocalAsObj,
 	getLocalAsStr,
@@ -16,8 +15,11 @@ import {
 	updateLocalDrawings,
 	updateLocalVote
 } from "./utils/localFunctions";
+import "./Game.css";
+import { actionAddPastGame } from "../../store/games";
 
 export default function Game() {
+	const dispatch = useDispatch();
 	const socket = useContext(SocketContext);
 	const user = useSelector(state => state.session.user);
 	const [gameState, setGameState] = useState(getLocalAsObj("gameState"));
@@ -132,9 +134,13 @@ export default function Game() {
 			setGameState(prev => ({ ...updatedState, section: "leaderboard" }));
 		});
 
-		socket.on("server sending post-round data", hostDataStr => {
+		socket.on("post-round data", hostDataStr => {
 			const updatedState = setLocalFromStr("gameState", hostDataStr);
 			setGameState(prev => ({ ...updatedState }));
+		});
+
+		socket.on("game over", hostDataStr => {
+			dispatch(actionAddPastGame(JSON.parse(hostDataStr)));
 		});
 
 		return () => {
