@@ -1,17 +1,19 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
+import { csrfFetch } from "../../store/csrf";
+import { setLocalFromObj } from "../Game/utils/localFunctions";
 import { thunkLoadGame } from "../../store/games";
 
 import "./Forms.css";
 
 export default function JoinGame() {
-	const dispatch = useDispatch();
+	// const dispatch = useDispatch();
 	const history = useHistory();
 	const [gameCode, setGameCode] = useState("");
 	const [error, setError] = useState("");
 
-	const handleJoinGame = e => {
+	const handleJoinGame = async e => {
 		e.preventDefault();
 		if (gameCode.length !== 5) {
 			setError("Code must be 5 characters long");
@@ -19,18 +21,29 @@ export default function JoinGame() {
 			return;
 		}
 
-		dispatch(thunkLoadGame(gameCode))
-			.then(() => {
-				history.push(`/game/${gameCode}`);
-			})
-			.catch(async res => {
-				if (res.status >= 400) {
-					const err = await res.json();
-					setError(err.message);
-				}
-				setGameCode("");
-				return;
-			});
+		const response = await csrfFetch(`/api/games/${gameCode}`);
+		const game = await response.json();
+		if (response.ok) {
+			setLocalFromObj("gameState", game);
+			history.push(`/game/${gameCode}`);
+			return;
+		} else {
+			const err = response.json();
+			setError(err.message);
+		}
+
+		// dispatch(thunkLoadGame(gameCode))
+		// 	.then(() => {
+		// history.push(`/game/${gameCode}`);
+		// 	})
+		// 	.catch(async res => {
+		// 		if (res.status >= 400) {
+		// 			const err = await res.json();
+		// 			setError(err.message);
+		// 		}
+		// 		setGameCode("");
+		// 		return;
+		// 	});
 	};
 
 	return (

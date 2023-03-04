@@ -1,3 +1,4 @@
+import { setLocalFromObj } from "../components/Game/utils/localFunctions";
 import { csrfFetch } from "./csrf";
 import { actionAddDrawing } from "./drawings";
 // Constants
@@ -129,6 +130,7 @@ export const thunkCreateGame = game => async dispatch => {
 	});
 	if (response.ok) {
 		const data = await response.json();
+		setLocalFromObj("gameState", data);
 		dispatch(actionResetGame());
 		dispatch(actionSetCurrentGame(data));
 		return data;
@@ -141,6 +143,7 @@ export const thunkLoadGame = gameCode => async dispatch => {
 	const response = await csrfFetch(`/api/games/${gameCode}`);
 	const data = await response.json();
 	if (response.ok) {
+		setLocalFromObj("gameState", data);
 		dispatch(actionResetGame());
 		dispatch(actionSetCurrentGame(data));
 	} else {
