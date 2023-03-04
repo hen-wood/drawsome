@@ -3,23 +3,17 @@ import { useSelector, useDispatch } from "react-redux";
 import { SocketContext } from "../../context/Socket";
 import { Timer } from "./utils/Timer";
 import GameCanvas from "../GameCanvas";
-import { updateLocalDrawings } from "./utils/localFunctions";
-import {
-	actionResetVotes,
-	actionSetGameSection,
-	thunkAddGameDrawing
-} from "../../store/games";
+import { getLocalAsObj, updateLocalDrawings } from "./utils/localFunctions";
 import { thunkAddDrawing } from "../../store/drawings";
 
-export default function GameRound({ gameState, setGameState }) {
+export default function GameRound() {
 	const dispatch = useDispatch();
 	const socket = useContext(SocketContext);
-	const { timeLimit, currentRound, code, hostSocket } = gameState;
+	const { timeLimit, currentRound, hostSocket } = getLocalAsObj("gameState");
+
 	const canvasRef = useRef(null);
 	const [time, setTime] = useState(timeLimit * 60);
 	const [timesUp, setTimesUp] = useState(false);
-
-	useEffect(() => {}, []);
 
 	useEffect(() => {
 		if (timesUp) {

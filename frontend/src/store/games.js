@@ -1,6 +1,7 @@
 import { csrfFetch } from "./csrf";
 // Constants
 const ADD_FINISHED_GAME = "games/ADD_FINISHED_GAME";
+const RESET_GAME = "games/RESET_GAME";
 // Actions
 export const actionAddPastGame = game => {
 	return {
@@ -8,6 +9,7 @@ export const actionAddPastGame = game => {
 		game
 	};
 };
+
 // Thunks
 
 export const thunkStartGame = gameId => async dispatch => {

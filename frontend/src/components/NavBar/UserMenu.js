@@ -30,9 +30,9 @@ export default function UserMenu({ isOpen, setIsOpen, setIsLoggedIn, user }) {
 
 	const handleLogout = () => {
 		dispatch(logout()).then(() => {
+			history.push("/login");
 			setIsOpen(false);
 			setIsLoggedIn(false);
-			history.push("/login");
 		});
 	};
 

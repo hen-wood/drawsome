@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 import { SocketContext } from "../../context/Socket";
 import GameEnd from "./GameEnd";
 import GameLobby from "./GameLobby";
@@ -148,10 +149,10 @@ export default function Game() {
 		};
 	}, []);
 
-	return gameState ? (
+	return user && gameState ? (
 		<div id="game-container">
 			{gameState.section === "lobby" ? (
-				<GameLobby gameState={gameState} setGameState={setGameState} />
+				<GameLobby />
 			) : gameState.section === "round" ? (
 				<GameRound gameState={gameState} setGameState={setGameState} />
 			) : gameState.section === "vote" ? (
@@ -166,7 +167,7 @@ export default function Game() {
 		</div>
 	) : (
 		<div id="game-container">
-			<h1>Loading game...</h1>
+			<h1>Loading...</h1>
 		</div>
 	);
 }

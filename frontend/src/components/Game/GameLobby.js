@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { thunkStartGame } from "../../store/games";
 import { SocketContext } from "../../context/Socket";
@@ -6,10 +6,11 @@ import { copyCode, waitingMessage } from "./utils/lobbyTools";
 import "./Game.css";
 import { getLocalAsObj } from "./utils/localFunctions";
 
-export default function GameLobby({ gameState, setGameState }) {
+export default function GameLobby() {
 	const dispatch = useDispatch();
 	const socket = useContext(SocketContext);
-	const { code, numPlayers, creatorId, id, players } = gameState;
+	const { code, numPlayers, creatorId, id, players } =
+		getLocalAsObj("gameState");
 	const user = useSelector(state => state.session.user);
 	return (
 		<div id="lobby-container">
