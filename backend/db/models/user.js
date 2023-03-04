@@ -44,7 +44,8 @@ module.exports = (sequelize, DataTypes) => {
 				as: "host"
 			});
 			User.hasMany(models.Drawing, {
-				foreignKey: "userId"
+				foreignKey: "userId",
+				as: "artist"
 			});
 			User.belongsToMany(models.Game, {
 				through: models.Player,

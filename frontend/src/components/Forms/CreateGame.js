@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
+import { csrfFetch } from "../../store/csrf";
+import { setLocalFromObj } from "../Game/utils/localFunctions";
 import { thunkCreateGame } from "../../store/games";
 import getPrompt from "../../utils/randomPrompt";
 
@@ -14,7 +16,7 @@ export default function CreateGame() {
 	const [errors, setErrors] = useState({});
 	const [rounds, setRounds] = useState([undefined, undefined]);
 
-	const handleCreateGame = e => {
+	const handleCreateGame = async e => {
 		e.preventDefault();
 		const inputErrors = {};
 		rounds.forEach((round, i) => {
@@ -35,16 +37,33 @@ export default function CreateGame() {
 			return;
 		}
 
-		const data = {
+		const newGame = {
 			numRounds: rounds.length,
 			timeLimit,
 			numPlayers,
 			rounds
 		};
 
-		dispatch(thunkCreateGame(data)).then(res =>
-			history.push(`/game/${res.code}`)
-		);
+		const response = await csrfFetch(`/api/games`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify(newGame)
+		});
+		if (response.ok) {
+			const game = await response.json();
+			setLocalFromObj("gameState", game);
+			history.push(`/game/${game.code}`);
+			return;
+		} else {
+			const err = await response.json();
+			console.log(err);
+		}
+
+		// dispatch(thunkCreateGame(data)).then(res =>
+		// 	history.push(`/game/${res.code}`)
+		// );
 	};
 
 	const handleUpdateRounds = val => {

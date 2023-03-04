@@ -95,18 +95,17 @@ app.use((err, _req, res, _next) => {
 io.on("connection", socket => {
 	socket.on("join", newPlayerData => {
 		// Server receives 'joined' event from new player
-		const { roomId, player } = newPlayerData;
+		const { roomId, player, isHost } = newPlayerData;
 		// roomId is destructured and socket is joined to the room associated with the gameCode
 		socket.join(roomId);
+		const roomData = socket.adapter.rooms.get(roomId);
+		if (isHost) roomData.hostId = player.id;
 		// server emits an event to the room with the new player's information
-		io.to(roomId).emit("new player joined", player);
+		socket.to(roomId).emit("new player joined", player);
 	});
 
-	socket.on("sync new player with current players", currentPlayerData => {
-		// 'sync new player with current players' syncs new player's gameState with the currentPlayer's gameState
-		const { currentPlayer, newPlayerSocketId } = currentPlayerData;
-		// Server emits 'sync new player' events directly to the new client
-		io.to(newPlayerSocketId).emit("sync new player", currentPlayer);
+	socket.on("data to new player", ({ hostDataStr, toSocketId }) => {
+		io.to(toSocketId).emit("data for new player", hostDataStr);
 	});
 
 	socket.on("start game", data => {
@@ -114,14 +113,28 @@ io.on("connection", socket => {
 		io.to(roomId).emit("host started game");
 	});
 
-	socket.on("player submitted drawing", data => {
-		const { roomId, drawingData } = data;
-		io.to(roomId).emit("server received drawing", drawingData);
+	socket.on("submitted drawing to host", ({ drawingData, hostSocket }) => {
+		io.to(hostSocket).emit("server sending drawing", drawingData);
 	});
 
-	socket.on("player submitted vote", data => {
-		const { roomId, playerVotedFor } = data;
-		io.to(roomId).emit("server received vote", playerVotedFor);
+	socket.on("all drawings received", ({ hostGameStateStr, roomId }) => {
+		io.to(roomId).emit("start vote", hostGameStateStr);
+	});
+
+	socket.on("player submitted vote", ({ playerVotedFor, hostSocket }) => {
+		io.to(hostSocket).emit("server sending vote", playerVotedFor);
+	});
+
+	socket.on("all votes received", ({ hostDataStr, roomId }) => {
+		io.to(roomId).emit("start leaderboard", hostDataStr);
+	});
+
+	socket.on("host data after round", ({ hostDataStr, roomId }) => {
+		io.to(roomId).emit("post-round data", hostDataStr);
+	});
+
+	socket.on("host game results", ({ hostDataStr, roomId }) => {
+		io.to(roomId).emit("game over", hostDataStr);
 	});
 
 	socket.on("disconnection", data => {

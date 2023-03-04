@@ -1,50 +1,72 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { actionSetCurrentRound, actionSetGameSection } from "../../store/games";
+import { SocketContext } from "../../context/Socket";
+import { thunkEndGame } from "../../store/games";
+import { getLocalAsObj, updateLocalCurrRound } from "./utils/localFunctions";
 import { Timer } from "./utils/Timer";
 
 export default function GameLeaderboard() {
 	const dispatch = useDispatch();
-	const { scores, drawings, players, currentRound, voteCount } = useSelector(
-		state => state.game
-	);
+	const user = useSelector(state => state.session.user);
+	const socket = useContext(SocketContext);
+	const {
+		id,
+		code,
+		scores,
+		drawings,
+		players,
+		currentRound,
+		votes,
+		creatorId,
+		gameRounds
+	} = getLocalAsObj("gameState");
+	const [time, setTime] = useState(5);
 	const [timesUp, setTimesUp] = useState(false);
-	const [boardReady, setBoardReady] = useState(false);
 
 	useEffect(() => {
-		if (voteCount === Object.keys(players).length) {
-			setBoardReady(true);
-		}
-	}, [voteCount, players]);
-
-	useEffect(() => {
-		if (timesUp) {
-			dispatch(actionSetCurrentRound(currentRound.roundNumber + 1));
-			dispatch(actionSetGameSection("round"));
+		if (timesUp && creatorId === user.id) {
+			if (gameRounds[currentRound.roundNumber]) {
+				const hostDataStr = updateLocalCurrRound();
+				socket.emit("host data after round", {
+					hostDataStr,
+					roomId: code
+				});
+			} else {
+				dispatch(thunkEndGame(id))
+					.then(res => {
+						const hostDataStr = JSON.stringify(res);
+						socket.emit("host game results", { hostDataStr, roomId: code });
+					})
+					.catch(async res => {
+						const err = await res.json();
+						console.log({ err });
+					});
+			}
 		}
 	}, [timesUp]);
 
-	return boardReady ? (
+	return (
 		<div id="leaderboard-container">
 			<Timer
-				timesUp={timesUp}
+				time={time}
+				setTime={setTime}
 				setTimesUp={setTimesUp}
-				timeLimit={10}
 				message={`Here's how you all stack up after Round ${currentRound.roundNumber}...`}
 			/>
 			<div id="leaderboard-cards">
 				{Object.entries(scores)
 					.sort((a, b) => b[1] - a[1])
-					.map(entry => {
+					.map((entry, i) => {
 						const [playerId, score] = entry;
 						const { username } = players[playerId];
-						const { drawingUrl, title, votes } =
-							drawings[currentRound.id][playerId];
+						const { drawingUrl, title } = drawings[currentRound.id][playerId];
 						return (
 							<div key={playerId} className="leaderboard-card">
 								<div className="leaderboard-card-user-info">
-									<p className="leaderboard-username">{`${username}`}</p>
-									<p>Votes this round: {votes}</p>
+									<p className="leaderboard-username">{`${
+										i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : ""
+									} ${username}`}</p>
+									<p>Votes this round: {votes[playerId]}</p>
 									<p>Total score: {score}</p>
 								</div>
 								<img src={drawingUrl} alt={title} />
@@ -52,10 +74,6 @@ export default function GameLeaderboard() {
 						);
 					})}
 			</div>
-		</div>
-	) : (
-		<div id="leaderboard">
-			<h1>Loading leaderboard...</h1>
 		</div>
 	);
 }

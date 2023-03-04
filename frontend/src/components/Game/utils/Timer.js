@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import formatTime from "../../../utils/formatTime";
-export const Timer = ({ timeLimit, message, setTimesUp, timesUp }) => {
+export const Timer = ({ time, setTime, setTimesUp, message }) => {
 	const game = useSelector(state => state.game);
-	const [time, setTime] = useState(timeLimit);
 
 	useEffect(() => {
 		const intervalId = setInterval(() => {
@@ -23,9 +22,9 @@ export const Timer = ({ timeLimit, message, setTimesUp, timesUp }) => {
 		<div id="timer-container">
 			<p>{`${message}`}</p>
 			<p>
-				{!timesUp && game.section === "round"
+				{time > 0 && game.section === "round"
 					? `Time Remaining: ${formatTime(time)}`
-					: !timesUp
+					: time > 0
 					? `${time}`
 					: "loading..."}
 			</p>

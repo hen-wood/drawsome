@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
+import { csrfFetch } from "../../store/csrf";
+import { setLocalFromObj } from "../Game/utils/localFunctions";
 import { thunkLoadGame } from "../../store/games";
 
 import "./Forms.css";
 
 export default function JoinGame() {
-	const dispatch = useDispatch();
+	// const dispatch = useDispatch();
 	const history = useHistory();
 	const [gameCode, setGameCode] = useState("");
 	const [error, setError] = useState("");
@@ -19,15 +21,16 @@ export default function JoinGame() {
 			return;
 		}
 
-		dispatch(thunkLoadGame(gameCode))
-			.then(() => {
+		csrfFetch(`/api/games/${gameCode}`)
+			.then(res => res.json())
+			.then(game => {
+				setLocalFromObj("gameState", game);
 				history.push(`/game/${gameCode}`);
+				return;
 			})
 			.catch(async res => {
-				if (res.status >= 400) {
-					const err = await res.json();
-					setError(err.message);
-				}
+				const err = await res.json();
+				setError(err.message);
 				setGameCode("");
 				return;
 			});

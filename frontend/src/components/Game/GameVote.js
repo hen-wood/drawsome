@@ -2,60 +2,42 @@ import { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { SocketContext } from "../../context/Socket";
 import { Timer } from "./utils/Timer";
-import {
-	actionSetGameSection,
-	actionSetPlayerVotedFor,
-	actionSetTimesUpFalse,
-	thunkAddVote
-} from "../../store/games";
+import { getLocalAsObj } from "./utils/localFunctions";
+import { csrfFetch } from "../../store/csrf";
 
-export default function GameVote() {
-	const dispatch = useDispatch();
+export default function GameVote({ gameState, setGameState }) {
 	const socket = useContext(SocketContext);
 	const user = useSelector(state => state.session.user);
-	const game = useSelector(state => state.game);
-	const { drawings, currentRound, players, playerVotedFor, gameRounds, code } =
-		useSelector(state => state.game);
+	const { drawings, currentRound, players, gameRounds, code, hostSocket } =
+		getLocalAsObj("gameState");
+	const otherId = Object.keys(players).find(key => +key !== user.id);
+	const [playerVotedFor, setPlayerVotedFor] = useState(+otherId);
 	const [timesUp, setTimesUp] = useState(false);
-	const [votingReady, setVotingReady] = useState(false);
-
-	useEffect(() => {
-		const drawingKeys = Object.keys(drawings[currentRound.id]).length;
-		const playerKeys = Object.keys(players).length;
-		if (
-			Object.keys(drawings[currentRound.id]).length ===
-			Object.keys(players).length
-		) {
-			setVotingReady(true);
-		}
-		return () => {
-			setVotingReady(false);
-		};
-	}, [game]);
+	const [time, setTime] = useState(10);
 
 	useEffect(() => {
 		if (timesUp) {
 			const drawingId = drawings[currentRound.id][playerVotedFor].id;
-			dispatch(thunkAddVote(drawingId, playerVotedFor)).then(() => {
-				socket.emit("player submitted vote", {
-					roomId: code,
-					playerVotedFor
+			csrfFetch(`/api/drawings/${drawingId}/vote`, { method: "POST" })
+				.then(() => {
+					socket.emit("player submitted vote", {
+						playerVotedFor,
+						hostSocket
+					});
+				})
+				.catch(async res => {
+					const err = await res.json();
+					console.log(err);
 				});
-				if (gameRounds[currentRound.roundNumber + 1]) {
-					dispatch(actionSetGameSection("leaderboard"));
-				} else {
-					dispatch(actionSetGameSection("game end"));
-				}
-			});
 		}
 	}, [timesUp]);
 
-	return votingReady ? (
+	return (
 		<div id="vote-container-outer">
 			<Timer
-				timesUp={timesUp}
+				time={time}
+				setTime={setTime}
 				setTimesUp={setTimesUp}
-				timeLimit={15}
 				message={`Which one of these best captures "${currentRound.prompt}"?`}
 			/>
 			<div id="drawing-vote-container">
@@ -68,7 +50,7 @@ export default function GameVote() {
 							src={drawingUrl}
 							alt={currentRound.prompt}
 							onClick={() => {
-								if (!isUser) dispatch(actionSetPlayerVotedFor(+playerId));
+								if (!isUser) setPlayerVotedFor(+playerId);
 							}}
 							className={
 								isUser
@@ -81,10 +63,6 @@ export default function GameVote() {
 					);
 				})}
 			</div>
-		</div>
-	) : (
-		<div id="vote-container-outer">
-			<h1>Loading Drawings...</h1>
 		</div>
 	);
 }
