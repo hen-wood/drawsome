@@ -7,6 +7,7 @@ import {
 	thunkEditDrawingTitle,
 	thunkDeleteDrawing
 } from "../../store/drawings";
+import OpenDrawing from "../PastGames/OpenDrawing";
 import "./UserDrawings.css";
 
 export default function UserDrawings() {
@@ -17,6 +18,9 @@ export default function UserDrawings() {
 	const [editId, setEditId] = useState(null);
 	const [editedTitle, setEditedTitle] = useState("");
 	const [drawings, setDrawings] = useState(drawingsObj);
+	const [drawingOpen, setDrawingOpen] = useState(false);
+	const [openDrawingTitle, setOpenDrawingTitle] = useState("");
+	const [openDrawingUrl, setOpenDrawingUrl] = useState("");
 
 	useEffect(() => {
 		setDrawings(drawingsObj);
@@ -53,8 +57,21 @@ export default function UserDrawings() {
 		});
 	};
 
+	const handleOpenDrawing = (url, title) => {
+		setOpenDrawingTitle(title);
+		setOpenDrawingUrl(url);
+		setDrawingOpen(true);
+	};
+
 	return isLoaded ? (
 		<div id="user-drawings-container" ref={galleryRef}>
+			{drawingOpen && (
+				<OpenDrawing
+					setDrawingOpen={setDrawingOpen}
+					drawingUrl={openDrawingUrl}
+					title={openDrawingTitle}
+				/>
+			)}
 			{Object.values(drawings).length > 0 ? (
 				Object.values(drawings).map(drawing => {
 					return (
@@ -86,7 +103,11 @@ export default function UserDrawings() {
 								className="fa-solid fa-trash-can delete-button"
 								onClick={() => handleDelete(drawing.id)}
 							></i>
-							<img src={drawing.drawingUrl} alt={drawing.title} />
+							<img
+								src={drawing.drawingUrl}
+								alt={drawing.title}
+								onClick={() => handleOpenDrawing(drawing.drawingUrl)}
+							/>
 						</div>
 					);
 				})

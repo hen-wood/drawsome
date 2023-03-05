@@ -43,6 +43,7 @@ router.post("/", checkIfUserExists, validateSignup, async (req, res, next) => {
 	const resBody = {
 		id: user.id,
 		email: user.email,
+		username: user.email,
 		token: req.cookies.token
 	};
 	return res.json(resBody);

@@ -133,7 +133,6 @@ export default function Game() {
 
 		socket.on("server sending vote", playerVotedFor => {
 			const updatedState = updateLocalVote(playerVotedFor);
-			console.log({ updatedState });
 			if (updatedState.voteCount === Object.keys(updatedState.players).length) {
 				const hostDataStr = JSON.stringify(updatedState);
 				socket.emit("all votes received", { hostDataStr, roomId: code });
@@ -152,8 +151,8 @@ export default function Game() {
 
 		socket.on("game over", hostDataStr => {
 			dispatch(actionAddPastGame(JSON.parse(hostDataStr)));
-			history.push(`/past-games/${id}`);
 			socket.disconnect();
+			history.push(`/past-games/${id}`);
 		});
 
 		return () => {

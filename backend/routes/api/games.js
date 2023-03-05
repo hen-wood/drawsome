@@ -108,7 +108,11 @@ router.put("/:gameId/end", requireAuthentication, async (req, res, next) => {
 				as: "gameRounds",
 				include: {
 					model: Drawing,
-					as: "roundDrawings"
+					as: "roundDrawings",
+					include: {
+						model: DrawingVote,
+						as: "drawingVotes"
+					}
 				}
 			},
 			{

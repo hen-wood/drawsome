@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const { jwtConfig } = require("../config");
 const { User } = require("../db/models");
 const { secret, expiresIn } = jwtConfig;
+const { Op } = require("sequelize");
 
 // Sends a JWT Cookie
 const setTokenCookie = (res, user) => {
@@ -59,21 +60,31 @@ const requireAuthentication = async (req, _res, next) => {
 };
 
 const checkIfUserExists = async (req, res, next) => {
-	const { email } = req.body;
-	let existingUser;
-	if (email) {
-		existingUser = await User.findOne({
-			where: {
-				email
-			}
-		});
-	}
+	const { email, username } = req.body;
+
+	const existingUser = await User.findOne({
+		where: {
+			[Op.or]: [{ email }, { username }]
+		},
+		attributes: ["email", "username"]
+	});
 	if (existingUser) {
-		const err = new Error("User with that email already exists");
-		err.status = 403;
-		return next(err);
+		if (existingUser.email === email && existingUser.username === username) {
+			const err = new Error("User with that email & username already exists");
+			err.status = 403;
+			return next(err);
+		} else if (existingUser.email === email) {
+			const err = new Error("User with that email already exists");
+			err.status = 403;
+			return next(err);
+		} else if (existingUser.username === username) {
+			const err = new Error("User with that username already exists");
+			err.status = 403;
+			return next(err);
+		}
 	}
-	next();
+
+	return next();
 };
 
 module.exports = {

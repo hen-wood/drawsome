@@ -1,0 +1,37 @@
+#open-drawing-outer{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.651);
+    z-index: 1;
+}
+
+#open-drawing-inner{
+    position: relative;
+}
+
+.close-drawing{
+    color: black;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    padding: 5px;
+    background-color: white;
+    border-radius: 50%;
+    height: 15px;
+    width: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 6px 10px -5px rgb(1, 2, 53);
+    cursor: pointer;
+}
+
+#open-drawing-inner img{
+    border-radius: 15px;
+}

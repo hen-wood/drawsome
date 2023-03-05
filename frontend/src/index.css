@@ -39,12 +39,14 @@ h1 {
 }
 
 ::-webkit-scrollbar {
+    height: 8px;
     width: 8px;
     background-color: #4a8ee7;
     border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
+    height: 8px;
     width: 8px;
     background-color: #0150b4;
     border-radius: 4px;

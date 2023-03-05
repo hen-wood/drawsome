@@ -8,7 +8,7 @@ import { csrfFetch } from "../../store/csrf";
 export default function GameVote({ gameState, setGameState }) {
 	const socket = useContext(SocketContext);
 	const user = useSelector(state => state.session.user);
-	const { drawings, currentRound, players, gameRounds, code, hostSocket } =
+	const { drawings, currentRound, players, gameRounds, code, hostSocket, id } =
 		getLocalAsObj("gameState");
 	const otherId = Object.keys(players).find(key => +key !== user.id);
 	const [playerVotedFor, setPlayerVotedFor] = useState(+otherId);
@@ -18,7 +18,10 @@ export default function GameVote({ gameState, setGameState }) {
 	useEffect(() => {
 		if (timesUp) {
 			const drawingId = drawings[currentRound.id][playerVotedFor].id;
-			csrfFetch(`/api/drawings/${drawingId}/vote`, { method: "POST" })
+			csrfFetch(`/api/drawings/${drawingId}/vote`, {
+				method: "POST",
+				body: JSON.stringify({ votedForId: playerVotedFor, gameId: id })
+			})
 				.then(() => {
 					socket.emit("player submitted vote", {
 						playerVotedFor,
