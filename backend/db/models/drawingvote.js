@@ -5,26 +5,33 @@ module.exports = (sequelize, DataTypes) => {
 		static associate(models) {
 			DrawingVote.belongsTo(models.Drawing, {
 				foreignKey: "drawingId",
-				as: "votes"
+				as: "drawingVotes"
 			});
 			DrawingVote.belongsTo(models.User, {
-				foreignKey: "voterId"
+				foreignKey: "votedForId",
+				as: "playerVotes"
 			});
 		}
 	}
 	DrawingVote.init(
 		{
+			gameId: {
+				type: DataTypes.INTEGER,
+				references: {
+					model: "Games"
+				}
+			},
 			drawingId: {
 				type: DataTypes.INTEGER,
 				references: {
-					model: "Drawings",
-					as: "votes"
+					model: "Drawings"
 				}
 			},
-			voterId: {
+			votedForId: {
 				type: DataTypes.INTEGER,
 				references: {
-					model: "Users"
+					model: "Players",
+					as: "playerVotes"
 				}
 			}
 		},

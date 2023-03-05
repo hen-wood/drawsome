@@ -17,6 +17,12 @@ module.exports = {
 					primaryKey: true,
 					type: Sequelize.INTEGER
 				},
+				gameId: {
+					type: Sequelize.INTEGER,
+					references: {
+						model: "Games"
+					}
+				},
 				drawingId: {
 					type: Sequelize.INTEGER,
 					references: {
@@ -24,7 +30,7 @@ module.exports = {
 					},
 					onDelete: "CASCADE"
 				},
-				voterId: {
+				votedForId: {
 					type: Sequelize.INTEGER,
 					references: {
 						model: "Users"

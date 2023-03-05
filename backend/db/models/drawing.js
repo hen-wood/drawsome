@@ -14,15 +14,9 @@ module.exports = (sequelize, DataTypes) => {
 				as: "artist"
 			});
 
-			Drawing.belongsToMany(models.User, {
-				through: models.DrawingVote,
-				foreignKey: "drawingId",
-				otherKey: "voterId"
-			});
-
 			Drawing.hasMany(models.DrawingVote, {
 				foreignKey: "drawingId",
-				as: "votes"
+				as: "drawingVotes"
 			});
 		}
 	}
@@ -53,20 +47,14 @@ module.exports = (sequelize, DataTypes) => {
 				roundDrawings() {
 					const { DrawingVote } = require("../models");
 					return {
-						attributes: {
-							include: [
-								[sequelize.fn("COUNT", sequelize.col("votes.id")), "numVotes"]
-							]
-						},
 						include: [
 							{
 								model: DrawingVote,
-								as: "votes",
-								attributes: [],
+								as: "drawingVotes",
+								attributes: ["id"],
 								required: false
 							}
-						],
-						group: ["Drawing.id"]
+						]
 					};
 				}
 			}

@@ -40,7 +40,7 @@ router.get("/:gameCode", requireAuthentication, async (req, res, next) => {
 		});
 	} else if (game.hasStarted) {
 		return res.status(403).json({
-			message: "That started without you..."
+			message: "That game started without you..."
 		});
 	}
 
@@ -108,21 +108,22 @@ router.put("/:gameId/end", requireAuthentication, async (req, res, next) => {
 				as: "gameRounds",
 				include: {
 					model: Drawing,
-					as: "roundDrawings",
-					include: [
-						{
-							model: DrawingVote,
-							as: "votes"
-						},
-						{
-							model: User,
-							as: "artist"
-						}
-					]
+					as: "roundDrawings"
 				}
 			},
-			{ model: User, as: "creator" },
-			{ model: User, as: "players" }
+			{
+				model: User,
+				as: "players",
+				include: {
+					model: DrawingVote,
+					as: "playerVotes",
+					where: {
+						gameId
+					},
+					attributes: ["id", "drawingId"],
+					required: false
+				}
+			}
 		]
 	});
 	gameToEnd.hasEnded = true;

@@ -53,10 +53,9 @@ module.exports = (sequelize, DataTypes) => {
 				otherKey: "gameId",
 				as: "players"
 			});
-			User.belongsToMany(models.Drawing, {
-				through: models.DrawingVote,
-				foreignKey: "voterId",
-				otherKey: "drawingId"
+			User.hasMany(models.DrawingVote, {
+				foreignKey: "votedForId",
+				as: "playerVotes"
 			});
 		}
 	}
