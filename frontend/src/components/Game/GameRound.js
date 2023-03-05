@@ -1,5 +1,5 @@
 import { useContext, useRef, useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { SocketContext } from "../../context/Socket";
 import { Timer } from "./utils/Timer";
 import GameCanvas from "../GameCanvas";
@@ -12,7 +12,7 @@ export default function GameRound() {
 	const { timeLimit, currentRound, hostSocket } = getLocalAsObj("gameState");
 
 	const canvasRef = useRef(null);
-	const [time, setTime] = useState(5);
+	const [time, setTime] = useState(timeLimit * 60);
 	const [timesUp, setTimesUp] = useState(false);
 
 	useEffect(() => {

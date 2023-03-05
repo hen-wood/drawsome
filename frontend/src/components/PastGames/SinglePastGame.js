@@ -46,7 +46,7 @@ export default function SinglePastGame() {
 									? ["🥉", "third-place"]
 									: ["", "non-podium"];
 							return (
-								<div className="past-game-player-card">
+								<div key={i} className="past-game-player-card">
 									<p className={`podium-info ${medalClass[1]}`}>
 										{medalClass[0]}
 										{username}

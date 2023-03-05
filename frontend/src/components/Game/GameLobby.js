@@ -47,7 +47,7 @@ export default function GameLobby() {
 					</p>
 				);
 			})}
-			{Object.keys(players).length === numPlayers && user.id === creatorId && (
+			{user.id === creatorId && (
 				<button
 					onClick={() => {
 						dispatch(thunkStartGame(id)).then(() => {
@@ -61,3 +61,4 @@ export default function GameLobby() {
 		</div>
 	);
 }
+// Object.keys(players).length === numPlayers &&
