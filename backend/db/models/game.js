@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
 		static associate(models) {
 			Game.belongsTo(models.User, {
 				foreignKey: "creatorId",
-				as: "host"
+				as: "creator"
 			});
 
 			Game.hasMany(models.Round, {
@@ -16,7 +16,8 @@ module.exports = (sequelize, DataTypes) => {
 			Game.belongsToMany(models.User, {
 				through: models.Player,
 				foreignKey: "gameId",
-				otherKey: "userId"
+				otherKey: "userId",
+				as: "players"
 			});
 		}
 	}

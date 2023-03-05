@@ -41,7 +41,7 @@ module.exports = (sequelize, DataTypes) => {
 		static associate(models) {
 			User.hasMany(models.Game, {
 				foreignKey: "creatorId",
-				as: "host"
+				as: "creator"
 			});
 			User.hasMany(models.Drawing, {
 				foreignKey: "userId",
@@ -50,12 +50,12 @@ module.exports = (sequelize, DataTypes) => {
 			User.belongsToMany(models.Game, {
 				through: models.Player,
 				foreignKey: "userId",
-				otherKey: "gameId"
+				otherKey: "gameId",
+				as: "players"
 			});
-			User.belongsToMany(models.Drawing, {
-				through: models.DrawingVote,
-				foreignKey: "voterId",
-				otherKey: "drawingId"
+			User.hasMany(models.DrawingVote, {
+				foreignKey: "votedForId",
+				as: "playerVotes"
 			});
 		}
 	}

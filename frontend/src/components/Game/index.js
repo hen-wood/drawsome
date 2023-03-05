@@ -18,13 +18,15 @@ import {
 } from "./utils/localFunctions";
 import "./Game.css";
 import { actionAddPastGame } from "../../store/games";
+import { csrfFetch } from "../../store/csrf";
 
 export default function Game() {
 	const dispatch = useDispatch();
+	const history = useHistory();
 	const socket = useContext(SocketContext);
 	const user = useSelector(state => state.session.user);
 	const [gameState, setGameState] = useState(getLocalAsObj("gameState"));
-	const { code, creatorId } = gameState;
+	const { id, code, creatorId } = gameState;
 
 	useEffect(() => {
 		const isHost = creatorId === user.id;
@@ -66,7 +68,16 @@ export default function Game() {
 			if (isHost) {
 				const hostDataStr = getLocalAsStr("gameState");
 				const toSocketId = player.socketId;
-				socket.emit("data to new player", { hostDataStr, toSocketId });
+				if (!currentState.players[player.id]) {
+					csrfFetch(`/api/games/${id}/players`, {
+						method: "POST",
+						body: JSON.stringify({ userId: player.id })
+					}).then(() => {
+						socket.emit("data to new player", { hostDataStr, toSocketId });
+					});
+				} else {
+					socket.emit("data to new player", { hostDataStr, toSocketId });
+				}
 			}
 		});
 
@@ -76,7 +87,6 @@ export default function Game() {
 		});
 
 		socket.on("host started game", () => {
-			// const otherId = Object.
 			const newState = updateLocalSection("round");
 			setGameState(prev => ({ ...prev, section: newState.section }));
 		});
@@ -123,7 +133,6 @@ export default function Game() {
 
 		socket.on("server sending vote", playerVotedFor => {
 			const updatedState = updateLocalVote(playerVotedFor);
-			console.log({ updatedState });
 			if (updatedState.voteCount === Object.keys(updatedState.players).length) {
 				const hostDataStr = JSON.stringify(updatedState);
 				socket.emit("all votes received", { hostDataStr, roomId: code });
@@ -142,6 +151,8 @@ export default function Game() {
 
 		socket.on("game over", hostDataStr => {
 			dispatch(actionAddPastGame(JSON.parse(hostDataStr)));
+			socket.disconnect();
+			history.push(`/past-games/${id}`);
 		});
 
 		return () => {
@@ -159,10 +170,8 @@ export default function Game() {
 				<GameVote gameState={gameState} setGameState={setGameState} />
 			) : gameState.section === "leaderboard" ? (
 				<GameLeaderboard gameState={gameState} setGameState={setGameState} />
-			) : gameState.section === "game end" ? (
-				<GameEnd gameState={gameState} setGameState={setGameState} />
 			) : (
-				<h1>Loading game...</h1>
+				<h1>Loading...</h1>
 			)}
 		</div>
 	) : (

@@ -33,9 +33,9 @@ router.post(
 	requireAuthentication,
 	async (req, res, next) => {
 		const { drawingId } = req.params;
-		const voterId = req.user.id;
+		const { votedForId, gameId } = req.body;
 
-		const newVote = await DrawingVote.create({ drawingId, voterId });
+		const newVote = await DrawingVote.create({ drawingId, votedForId, gameId });
 		return res.json(newVote);
 	}
 );

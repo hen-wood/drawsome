@@ -1,0 +1,155 @@
+#single-past-game-container{
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.527);
+    box-shadow: 0px 10px 10px -5px rgb(1, 2, 53);
+    width: 80%;
+    max-width: 1045px;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    max-height: 80vh;
+    height: fit-content;
+}
+
+#game-results-title{
+    margin: 5px;
+    background-color: rgba(0, 0, 0, 0.527);
+    box-shadow: 0px 10px 10px -5px rgb(1, 2, 53);
+    border-radius: 10px;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+}
+#game-results-title p{
+    margin: 0;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+#game-info-container{
+    display: flex;
+    max-height: 100%;
+    overflow-y: hidden;
+}
+
+#player-info-container{
+    padding: 5px;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.527);
+    box-shadow: 0px 10px 10px -5px rgb(1, 2, 53);
+    width: 100%;
+    min-width: fit-content;
+    overflow-y: auto;
+    margin: 5px
+}
+
+.past-game-player-card{
+    margin: 5px;
+    padding: 5px;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.527);
+    box-shadow: 0px 10px 10px -5px rgb(1, 2, 53);
+}
+
+.past-game-player-card p{
+    padding: 5px;
+}
+
+.podium-info{
+    margin: 0;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.first-place{
+    color:goldenrod;
+    text-shadow: -2px 2px 5px goldenrod;
+}
+
+.second-place{
+    color:silver;
+    text-shadow: -2px 2px 5px silver;
+}
+
+.third-place{
+    color:#a5472a;
+    text-shadow: -2px 2px 5px #a5472a;
+}
+
+.non-podium{
+    color: white;
+}
+
+.pg-player-card-score{
+    font-style: italic;
+    margin: 0;
+}
+
+#round-info-container {
+    padding: 5px;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.527);
+    box-shadow: 0px 10px 10px -5px rgb(1, 2, 53);
+    width: 100%;
+    max-width: fit-content;
+    overflow-y: auto;
+    margin: 5px;
+}
+
+.round-info-card{
+    margin: 5px;
+    padding: 5px;
+    border-radius: 10px;
+    max-width: 100%;
+    background-color: rgba(0, 0, 0, 0.527);
+    box-shadow: 0px 10px 10px -5px rgb(1, 2, 53);
+}
+
+.round-info-title p{
+    margin: 5px;
+    font-weight: bold;
+}
+.round-info-divider{
+    border-bottom: 1px solid white;
+    margin: 5px 0;
+}
+
+.round-info-drawings-container{
+    display: flex;
+    overflow-x: auto;
+}
+
+.round-info-drawing-div{
+    position: relative;
+    width: 100%;
+    max-width: fit-content;
+    height: fit-content;
+    margin: 5px;
+}
+
+.round-info-drawing-div img{
+    border-radius: 5px;
+    height: 15vh;
+    cursor: pointer;
+}
+
+.round-info-drawing-username{
+    position: absolute;
+    top:0;
+    left:0;
+    width: fit-content;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0px 5px 10px -5px rgb(1, 2, 53);
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.round-info-drawing-username p{
+    color: black;
+    font-size: 12px;
+    margin: 2px 5px;
+}

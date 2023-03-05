@@ -1,7 +1,14 @@
 // backend/routes/api/games.js
 const express = require("express");
 const { requireAuthentication } = require("../../utils/auth");
-const { Drawing, Game, Round, User, DrawingVote } = require("../../db/models");
+const {
+	Drawing,
+	Game,
+	Round,
+	User,
+	DrawingVote,
+	Player
+} = require("../../db/models");
 const { codeGen } = require("../../utils/codeGen");
 const { Op, Model, Sequelize } = require("sequelize");
 
@@ -33,7 +40,7 @@ router.get("/:gameCode", requireAuthentication, async (req, res, next) => {
 		});
 	} else if (game.hasStarted) {
 		return res.status(403).json({
-			message: "That started without you..."
+			message: "That game started without you..."
 		});
 	}
 
@@ -55,6 +62,7 @@ router.post("/", requireAuthentication, async (req, res, next) => {
 	const gameId = newGame.id;
 	newGame.code = codeGen(gameId);
 	await newGame.save();
+	await Player.create({ gameId, userId: creatorId });
 	const resBody = newGame.toJSON();
 	resBody.gameRounds = [];
 	for (let round of rounds) {
@@ -65,6 +73,21 @@ router.post("/", requireAuthentication, async (req, res, next) => {
 
 	return res.json(resBody);
 });
+
+// POST add new player
+router.post(
+	"/:gameId/players",
+	requireAuthentication,
+	async (req, res, next) => {
+		const { gameId } = req.params;
+		const { userId } = req.body;
+		await Player.create({
+			gameId,
+			userId
+		});
+		return res.json({ message: "player added" });
+	}
+);
 
 // PUT start game
 router.put("/:gameId/start", requireAuthentication, async (req, res, next) => {
@@ -86,19 +109,25 @@ router.put("/:gameId/end", requireAuthentication, async (req, res, next) => {
 				include: {
 					model: Drawing,
 					as: "roundDrawings",
-					include: [
-						{
-							model: DrawingVote,
-							as: "votes"
-						},
-						{
-							model: User,
-							as: "artist"
-						}
-					]
+					include: {
+						model: DrawingVote,
+						as: "drawingVotes"
+					}
 				}
 			},
-			{ model: User }
+			{
+				model: User,
+				as: "players",
+				include: {
+					model: DrawingVote,
+					as: "playerVotes",
+					where: {
+						gameId
+					},
+					attributes: ["id", "drawingId"],
+					required: false
+				}
+			}
 		]
 	});
 	gameToEnd.hasEnded = true;

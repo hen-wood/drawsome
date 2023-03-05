@@ -1,5 +1,5 @@
 import { useContext, useRef, useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { SocketContext } from "../../context/Socket";
 import { Timer } from "./utils/Timer";
 import GameCanvas from "../GameCanvas";
