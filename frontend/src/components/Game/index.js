@@ -58,6 +58,14 @@ export default function Game() {
 		socket.on("new player joined", player => {
 			const currentState = getLocalAsObj("gameState");
 
+			const newState = setLocalFromObj("gameState", {
+				...currentState,
+				players: { ...currentState.players, [player.id]: player },
+				scores: { ...currentState.scores, [player.id]: 0 },
+				votes: { ...currentState.votes, [player.id]: 0 }
+			});
+			setGameState(prev => ({ ...prev, ...newState }));
+
 			if (isHost) {
 				const hostDataStr = getLocalAsStr("gameState");
 				const toSocketId = player.socketId;
@@ -72,14 +80,6 @@ export default function Game() {
 					socket.emit("data to new player", { hostDataStr, toSocketId });
 				}
 			}
-
-			const newState = setLocalFromObj("gameState", {
-				...currentState,
-				players: { ...currentState.players, [player.id]: player },
-				scores: { ...currentState.scores, [player.id]: 0 },
-				votes: { ...currentState.votes, [player.id]: 0 }
-			});
-			setGameState(prev => ({ ...prev, ...newState }));
 		});
 
 		socket.on("data for new player", hostDataStr => {
