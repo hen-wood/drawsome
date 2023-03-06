@@ -165,6 +165,7 @@ export default function CreateGame() {
 					return (
 						<div key={i} className="create-game-input-div">
 							<i
+								title="Get a random prompt"
 								className="fa-solid fa-dice get-prompt-button"
 								onClick={e => {
 									const randPrompt = getPrompt();
