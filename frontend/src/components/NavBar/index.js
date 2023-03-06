@@ -37,6 +37,12 @@ export default function NavBar() {
 			>
 				Drawsome
 			</h1>
+			<a href="https://github.com/hen-wood/drawsome" target="_blank">
+				<i class="fa-brands fa-github"></i> Project repo
+			</a>
+			<a href="https://www.linkedin.com/in/henry-woodmansee/" target="_blank">
+				<i class="fa-brands fa-linkedin"></i> Henry's linkedin
+			</a>
 			<div id="how-to-play-user-icon-div">
 				<p id="how-to-play-link" onClick={() => setShowHow(true)}>
 					How to play
@@ -49,6 +55,7 @@ export default function NavBar() {
 					></i>
 				)}
 			</div>
+
 			{showHow && <HowToPlay setShowHow={setShowHow} />}
 			<UserMenu
 				isOpen={isOpen}
