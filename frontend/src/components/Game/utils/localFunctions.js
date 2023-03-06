@@ -39,7 +39,7 @@ export function updateLocalCurrRound() {
 
 export function updateLocalVote(userId) {
 	const localData = JSON.parse(localStorage.getItem("gameState"));
-	if (localData.votes[userId]) {
+	if (!localData.votes[userId]) {
 		localData.votes[userId] = 1;
 	} else {
 		localData.votes[userId]++;
