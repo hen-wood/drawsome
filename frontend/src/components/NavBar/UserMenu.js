@@ -51,17 +51,17 @@ export default function UserMenu({ isOpen, setIsOpen, setIsLoggedIn, user }) {
 		<div ref={menu} className={isOpen ? "user-menu" : "user-menu-hidden"}>
 			<p id="menu-username">{user && user.username} 🧑‍🎨</p>
 			<div className="divider"></div>
-			<p className="user-options" onClick={handleDrawSolo}>
-				Draw solo
-			</p>
-			<p className="user-options" onClick={handleViewDrawings}>
-				View Past Drawings
-			</p>
 			<p className="user-options" onClick={handleCreateGame}>
 				Create Game
 			</p>
 			<p className="user-options" onClick={handleJoinGame}>
 				Join Game
+			</p>
+			<p className="user-options" onClick={handleDrawSolo}>
+				Draw solo
+			</p>
+			<p className="user-options" onClick={handleViewDrawings}>
+				View Past Drawings
 			</p>
 			<div className="divider"></div>
 			<p className="user-options" onClick={handleLogout}>

@@ -57,6 +57,7 @@ export default function Game() {
 
 		socket.on("new player joined", player => {
 			const currentState = getLocalAsObj("gameState");
+
 			const newState = setLocalFromObj("gameState", {
 				...currentState,
 				players: { ...currentState.players, [player.id]: player },
