@@ -16,6 +16,7 @@ export default function UserDrawings() {
 	const galleryRef = useRef(null);
 	const [isLoaded, setIsLoaded] = useState(false);
 	const [editId, setEditId] = useState(null);
+	const [deleteId, setDeleteId] = useState(null);
 	const [editedTitle, setEditedTitle] = useState("");
 	const [drawings, setDrawings] = useState(drawingsObj);
 	const [drawingOpen, setDrawingOpen] = useState(false);
@@ -54,6 +55,7 @@ export default function UserDrawings() {
 			const updatedDrawings = { ...drawings };
 			delete updatedDrawings[drawingId];
 			setDrawings(updatedDrawings);
+			setDeleteId(null);
 		});
 	};
 
@@ -101,8 +103,29 @@ export default function UserDrawings() {
 							)}
 							<i
 								className="fa-solid fa-trash-can delete-button"
-								onClick={() => handleDelete(drawing.id)}
+								onClick={() => setDeleteId(drawing.id)}
 							></i>
+							{deleteId === drawing.id && (
+								<div className="delete-warning">
+									<p className="delete-warning-title">Delete drawing?</p>
+									<div className="delete-warning-btns">
+										<button
+											className="warning-delete-button"
+											onClick={() => {
+												handleDelete(drawing.id);
+											}}
+										>
+											Delete it!
+										</button>
+										<button
+											className="warning-cancel-button"
+											onClick={() => setDeleteId(null)}
+										>
+											Nevermind
+										</button>
+									</div>
+								</div>
+							)}
 							<img
 								src={drawing.drawingUrl}
 								alt={drawing.title}
