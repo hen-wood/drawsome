@@ -5,20 +5,27 @@ import "./Canvas.css";
 import CanvasColorOptions from "./CanvasColorOptions";
 import BrushOptions from "./BrushOptions";
 
-export default function Canvas({ canvasRef, isGameCanvas }) {
+export default function Canvas({
+	canvasRef,
+	isGameCanvas,
+	bgColor,
+	setBgColor,
+	title,
+	setTitle
+}) {
 	const [showBrushOptions, setShowBrushOptions] = useState(false);
 	const [showCanvasColors, setShowCanvasColors] = useState(false);
 
-	const [title, setTitle] = useState("");
 	const [titleError, setTitleError] = useState("");
 
 	const [color, setColor] = useState("black");
-	const [bgColor, setBgColor] = useState("white");
 	const [brushSize, setBrushSize] = useState(3);
 
 	return (
 		<>
-			{!isGameCanvas && (
+			{isGameCanvas ? (
+				<h1>{`"${title}"`}</h1>
+			) : (
 				<input
 					type="text"
 					placeholder={
