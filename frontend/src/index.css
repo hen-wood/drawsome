@@ -24,10 +24,16 @@ h1 {
     display: flex;
     flex-direction: column;
     height: 100vh;
-    background-image: url('./images/circle-background.svg');
-    background-color: #180bc5;
     background-size:cover;
     overflow-y: auto;
+}
+
+.light-mode{
+    background-image: url('./images/circle-background.svg');
+}
+
+.dark-mode{
+    background-image: url('./images/darkmode-background.svg');
 }
 
 #inner-container {

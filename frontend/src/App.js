@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { Route, Switch, useHistory } from "react-router-dom";
 import * as sessionActions from "./store/session";
 import { thunkGetUserDrawings } from "./store/drawings";
-import Canvas from "./components/Canvas";
 import NavBar from "./components/NavBar";
 import Login from "./components/Forms/Login.js";
 import JoinGame from "./components/Forms/JoinGame";
@@ -23,6 +22,7 @@ function App() {
 	const dispatch = useDispatch();
 	const user = useSelector(state => state.session.user);
 	const [isLoaded, setIsLoaded] = useState(false);
+	const [theme, setTheme] = useState("light-mode");
 
 	useEffect(() => {
 		dispatch(sessionActions.restoreUser()).then(() => {
@@ -40,8 +40,8 @@ function App() {
 	}, [user]);
 
 	return (
-		<div id="main-container">
-			<NavBar />
+		<div id="main-container" className={theme}>
+			<NavBar theme={theme} setTheme={setTheme} />
 			<div id="inner-container">
 				{isLoaded && (
 					<Switch>

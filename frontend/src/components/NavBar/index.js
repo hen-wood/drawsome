@@ -6,7 +6,7 @@ import UserMenu from "./UserMenu";
 import HowToPlay from "./HowToPlay";
 import "./NavBar.css";
 
-export default function NavBar() {
+export default function NavBar({ theme, setTheme }) {
 	const user = useSelector(state => state.session.user);
 	const history = useHistory();
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -62,6 +62,8 @@ export default function NavBar() {
 				setIsOpen={setIsOpen}
 				setIsLoggedIn={setIsLoggedIn}
 				user={user}
+				theme={theme}
+				setTheme={setTheme}
 			/>
 		</div>
 	);
