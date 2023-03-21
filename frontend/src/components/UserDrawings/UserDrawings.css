@@ -20,36 +20,52 @@
 
 .drawing-title{
     position: absolute;
-    background-color: #f5f5f5;
+    background-color: #00000080;
     left: 15px;
     top: 15px;
-    width: 60%;
     overflow: hidden;
     text-overflow: ellipsis;
     font-size: 20px;
     border-radius: 5px;
-    color:black;
+    color:rgb(255, 255, 255);
     margin: 0;
     padding: 5px;
     box-shadow: 0px 7px 5px -5px black;
     cursor: pointer;
 }
+
+.indiv-drawing-container .edit-title-form input.edit-title-field{
+    position: relative;
+    background-color: #00000080;
+    left: 0;
+    top: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 20px;
+    font-weight: bolder;
+    border-radius: 5px;
+    color: #ffffff;
+    margin: 0;
+    padding: 5px 25px 5px 10px;
+    box-shadow: 0px 7px 5px -5px black;
+}
+
 .drawing-title:hover,
 .delete-button:hover{
-    box-shadow: 0px 7px 5px -5px rgb(70, 70, 70);
+    background-color: rgba(0, 0, 0, 0.712);
 }
 
 .delete-button{
-    color: black;
+    color: rgba(255, 52, 52, 0.623);
     font-size: 20px;
     position: absolute;
-    background-color: #f5f5f5;
+    background-color: #00000080;
     padding: 5px;
     box-shadow: 0px 7px 5px -5px black;
     border-radius: 5px;
-    right: 15px;
+    left: 15px;
     cursor: pointer;
-    top: 15px;
+    bottom: 20px;
 }
 
 .indiv-drawing-container img{
@@ -61,24 +77,46 @@
 }
 
 .edit-title-form{
+    width: 60%;
     position: absolute;
     left: 15px;
     top: 15px;
 }
 
-input[type="text"].edit-title-field{
-    padding-right: 35px;
-}
 
 .edit-close{
     position: absolute;
     color: #ffffff;
-    top: 19px;
-    left: 200px;
+    top: 25%;
+    right: 10px;
     cursor: pointer;
 }
 
 #no-drawings-title{
     text-align: center;
     width: 100%;
+}
+
+.delete-warning{
+    position: absolute;
+    top: 50%;
+    left: 25%;
+    border-radius: 10px;
+    background-color: #000000be;
+    box-shadow: 0px 7px 5px -5px black;
+    display: flex;
+    padding: 10px;
+    flex-direction: column;
+}
+
+.delete-warning-title{
+    text-align: center;
+}
+
+.warning-delete-button{
+    background-color: rgb(168, 18, 18);
+}
+
+.warning-delete-button:hover{
+    background-color: rgb(95, 0, 0);
 }
