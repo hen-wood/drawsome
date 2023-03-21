@@ -1,9 +1,11 @@
+import { useState } from "react";
 import { colorArray, sizesArray } from "./optionArrs";
 
 export default function BrushOptions({
 	color,
 	setColor,
 	setShowBrushOptions,
+	brushSize,
 	setBrushSize
 }) {
 	return (
@@ -14,27 +16,29 @@ export default function BrushOptions({
 			></i>
 			<h2 className="options-modal-title">Select brush size and color</h2>
 			<div className="size-options-container">
-				{sizesArray.map((size, i) => {
-					return (
-						<div
-							className="size-option"
-							key={i}
-							onClick={() => {
-								setBrushSize(size);
-							}}
-						>
-							<div
-								style={{
-									height: `${size * 2}px`,
-									width: `${size * 2}px`,
-									borderRadius: "50%",
-									backgroundColor: color,
-									boxShadow: "0px 5px 10px 0px #00000080"
-								}}
-							></div>
-						</div>
-					);
-				})}
+				<button
+					onMouseDown={() => {
+						if (brushSize > 3) setBrushSize(prev => prev - 2);
+					}}
+				>
+					<i className="fa-solid fa-minus"></i>
+				</button>
+				<div
+					style={{
+						height: `${brushSize * 2}px`,
+						width: `${brushSize * 2}px`,
+						borderRadius: "50%",
+						border: "1px solid white",
+						backgroundColor: color
+					}}
+				></div>
+				<button
+					onMouseDown={() => {
+						if (brushSize < 48) setBrushSize(prev => prev + 2);
+					}}
+				>
+					<i className="fa-solid fa-plus"></i>
+				</button>
 			</div>
 			<div className="color-options-container">
 				{colorArray.map((clr, i) => {

@@ -71,6 +71,7 @@ export default function Canvas({
 						color={color}
 						setColor={setColor}
 						setShowBrushOptions={setShowBrushOptions}
+						brushSize={brushSize}
 						setBrushSize={setBrushSize}
 					/>
 				)}
