@@ -16,7 +16,6 @@ import SocketProvider from "./context/Socket";
 import PastGames from "./components/PastGames";
 import SinglePastGame from "./components/PastGames/SinglePastGame";
 import SoloDraw from "./components/SoloDraw";
-import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 
 function App() {
 	const history = useHistory();
@@ -31,44 +30,47 @@ function App() {
 		});
 	}, [dispatch]);
 
+	useEffect(() => {
+		if (user) {
+			dispatch(thunkGetUserDrawings(user.id));
+		}
+	}, [user]);
+
 	return (
 		<div id="main-container" className={theme}>
 			<NavBar theme={theme} setTheme={setTheme} />
 			<div id="inner-container">
 				{isLoaded && (
 					<Switch>
-						<Route exact path="/">
+						<Route path="/join-game">
 							<JoinGame />
 						</Route>
-						<ProtectedRoute path="/join-game">
-							<JoinGame />
-						</ProtectedRoute>
 						<Route path="/login">
 							<Login />
 						</Route>
 						<Route path="/signup">
 							<Signup />
 						</Route>
-						<ProtectedRoute path="/create-game">
+						<Route path="/create-game">
 							<CreateGame />
-						</ProtectedRoute>
-						<ProtectedRoute path="/draw">
+						</Route>
+						<Route path="/draw">
 							<SoloDraw />
-						</ProtectedRoute>
-						<ProtectedRoute path="/user-drawings">
+						</Route>
+						<Route path="/user-drawings">
 							<UserDrawings />
-						</ProtectedRoute>
-						<ProtectedRoute path="/game/:gameCode">
+						</Route>
+						<Route path="/game/:gameCode">
 							<SocketProvider>
 								<Game />
 							</SocketProvider>
-						</ProtectedRoute>
-						<ProtectedRoute exact path="/past-games">
+						</Route>
+						<Route exact path="/past-games">
 							<PastGames />
-						</ProtectedRoute>
-						<ProtectedRoute path="/past-games/:gameId">
+						</Route>
+						<Route path="/past-games/:gameId">
 							<SinglePastGame />
-						</ProtectedRoute>
+						</Route>
 						<Route>
 							<NotFound />
 						</Route>
