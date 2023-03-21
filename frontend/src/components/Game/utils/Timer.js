@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import formatTime from "../../../utils/formatTime";
+import loadingGif from "../../../images/loading.gif";
 export const Timer = ({ time, setTime, setTimesUp, message }) => {
 	const game = useSelector(state => state.game);
 
@@ -22,11 +23,13 @@ export const Timer = ({ time, setTime, setTimesUp, message }) => {
 		<div id="timer-container">
 			<p>{`${message}`}</p>
 			<p>
-				{time > 0 && game.section === "round"
-					? `Time Remaining: ${formatTime(time)}`
-					: time > 0
-					? `${time}`
-					: "loading..."}
+				{time > 0 && game.section === "round" ? (
+					`Time Remaining: ${formatTime(time)}`
+				) : time > 0 ? (
+					`${time}`
+				) : (
+					<img src={loadingGif} alt="loading" />
+				)}
 			</p>
 		</div>
 	);

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import loadingGif from "../../images/loading.gif";
 
 export default function GameEnd() {
 	const { scores, players, voteCount } = useSelector(state => state.game);
@@ -33,7 +34,7 @@ export default function GameEnd() {
 		</div>
 	) : (
 		<div id="leaderboard">
-			<h1>Loading final leaderboard...</h1>
+			<img src={loadingGif} alt="loading" />
 		</div>
 	);
 }
