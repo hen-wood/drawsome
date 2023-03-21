@@ -22,9 +22,9 @@ export default function Canvas({
 	const [brushSize, setBrushSize] = useState(3);
 
 	return (
-		<>
+		<div className="canvas-container">
 			{isGameCanvas ? (
-				<h1>{`"${title}"`}</h1>
+				<h1 className="round-prompt-title">{`"${title}"`}</h1>
 			) : (
 				<input
 					type="text"
@@ -71,6 +71,7 @@ export default function Canvas({
 						color={color}
 						setColor={setColor}
 						setShowBrushOptions={setShowBrushOptions}
+						brushSize={brushSize}
 						setBrushSize={setBrushSize}
 					/>
 				)}
@@ -92,6 +93,6 @@ export default function Canvas({
 					bgColor={bgColor}
 				/>
 			</div>
-		</>
+		</div>
 	);
 }

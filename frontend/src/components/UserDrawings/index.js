@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-
+import loadingGif from "../../images/loading.gif";
 import {
 	thunkEditDrawingTitle,
 	thunkDeleteDrawing
@@ -119,7 +119,7 @@ export default function UserDrawings() {
 		</div>
 	) : (
 		<div id="user-drawings-container" ref={galleryRef}>
-			<h1>Loading drawings...</h1>
+			<img src={loadingGif} alt="loading" />
 		</div>
 	);
 }

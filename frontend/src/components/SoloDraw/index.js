@@ -9,7 +9,7 @@ export default function SoloDraw() {
 	const [title, setTitle] = useState("");
 
 	return (
-		<div className="canvas-container">
+		<>
 			<Canvas
 				canvasRef={canvasRef}
 				isGameCanvas={false}
@@ -18,6 +18,6 @@ export default function SoloDraw() {
 				setBgColor={setBgColor}
 				setTitle={setTitle}
 			/>
-		</div>
+		</>
 	);
 }

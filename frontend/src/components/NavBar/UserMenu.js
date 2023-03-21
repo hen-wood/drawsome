@@ -3,7 +3,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../store/session";
 import { useEffect, useRef } from "react";
 
-export default function UserMenu({ isOpen, setIsOpen, setIsLoggedIn, user }) {
+export default function UserMenu({
+	isOpen,
+	setIsOpen,
+	setIsLoggedIn,
+	user,
+	theme,
+	setTheme
+}) {
 	const dispatch = useDispatch();
 	const history = useHistory();
 	const menu = useRef(null);
@@ -26,6 +33,14 @@ export default function UserMenu({ isOpen, setIsOpen, setIsLoggedIn, user }) {
 	const handleJoinGame = () => {
 		setIsOpen(false);
 		history.push("/join-game");
+	};
+
+	const handleChangeTheme = () => {
+		if (theme === "light-mode") {
+			setTheme("dark-mode");
+		} else {
+			setTheme("light-mode");
+		}
 	};
 
 	const handleLogout = () => {
@@ -63,6 +78,11 @@ export default function UserMenu({ isOpen, setIsOpen, setIsLoggedIn, user }) {
 			<p className="user-options" onClick={handleViewDrawings}>
 				View Past Drawings
 			</p>
+			<div className={`${theme}-switch`} onClick={handleChangeTheme}>
+				<div className="theme-inner">
+					{theme === "light-mode" ? "🌞" : "🌜"}
+				</div>
+			</div>
 			<div className="divider"></div>
 			<p className="user-options" onClick={handleLogout}>
 				Logout

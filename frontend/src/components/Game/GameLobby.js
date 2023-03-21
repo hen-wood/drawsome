@@ -47,7 +47,8 @@ export default function GameLobby() {
 					</p>
 				);
 			})}
-			{Object.keys(players).length === numPlayers && user.id === creatorId && (
+			{/* Object.keys(players).length === numPlayers && */}
+			{user.id === creatorId && (
 				<button
 					onClick={() => {
 						dispatch(thunkStartGame(id)).then(() => {

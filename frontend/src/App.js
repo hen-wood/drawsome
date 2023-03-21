@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { Route, Switch, useHistory } from "react-router-dom";
 import * as sessionActions from "./store/session";
 import { thunkGetUserDrawings } from "./store/drawings";
-import Canvas from "./components/Canvas";
 import NavBar from "./components/NavBar";
 import Login from "./components/Forms/Login.js";
 import JoinGame from "./components/Forms/JoinGame";
@@ -17,12 +16,14 @@ import SocketProvider from "./context/Socket";
 import PastGames from "./components/PastGames";
 import SinglePastGame from "./components/PastGames/SinglePastGame";
 import SoloDraw from "./components/SoloDraw";
+import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 
 function App() {
 	const history = useHistory();
 	const dispatch = useDispatch();
 	const user = useSelector(state => state.session.user);
 	const [isLoaded, setIsLoaded] = useState(false);
+	const [theme, setTheme] = useState("light-mode");
 
 	useEffect(() => {
 		dispatch(sessionActions.restoreUser()).then(() => {
@@ -30,50 +31,44 @@ function App() {
 		});
 	}, [dispatch]);
 
-	useEffect(() => {
-		if (user) {
-			dispatch(thunkGetUserDrawings(user.id));
-			history.push("/join-game");
-		} else {
-			history.push("/login");
-		}
-	}, [user]);
-
 	return (
-		<div id="main-container">
-			<NavBar />
+		<div id="main-container" className={theme}>
+			<NavBar theme={theme} setTheme={setTheme} />
 			<div id="inner-container">
 				{isLoaded && (
 					<Switch>
-						<Route path="/join-game">
+						<Route exact path="/">
 							<JoinGame />
 						</Route>
+						<ProtectedRoute path="/join-game">
+							<JoinGame />
+						</ProtectedRoute>
 						<Route path="/login">
 							<Login />
 						</Route>
 						<Route path="/signup">
 							<Signup />
 						</Route>
-						<Route path="/create-game">
+						<ProtectedRoute path="/create-game">
 							<CreateGame />
-						</Route>
-						<Route path="/draw">
+						</ProtectedRoute>
+						<ProtectedRoute path="/draw">
 							<SoloDraw />
-						</Route>
-						<Route path="/user-drawings">
+						</ProtectedRoute>
+						<ProtectedRoute path="/user-drawings">
 							<UserDrawings />
-						</Route>
-						<Route path="/game/:gameCode">
+						</ProtectedRoute>
+						<ProtectedRoute path="/game/:gameCode">
 							<SocketProvider>
 								<Game />
 							</SocketProvider>
-						</Route>
-						<Route exact path="/past-games">
+						</ProtectedRoute>
+						<ProtectedRoute exact path="/past-games">
 							<PastGames />
-						</Route>
-						<Route path="/past-games/:gameId">
+						</ProtectedRoute>
+						<ProtectedRoute path="/past-games/:gameId">
 							<SinglePastGame />
-						</Route>
+						</ProtectedRoute>
 						<Route>
 							<NotFound />
 						</Route>

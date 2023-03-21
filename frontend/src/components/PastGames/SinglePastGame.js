@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import OpenDrawing from "./OpenDrawing";
+import loadingGif from "../../images/loading.gif";
+
 import "./SinglePastGame.css";
 
 export default function SinglePastGame() {
@@ -101,6 +103,6 @@ export default function SinglePastGame() {
 			</div>
 		</div>
 	) : (
-		<h1>Loading past game...</h1>
+		<img src={loadingGif} alt="loading" />
 	);
 }

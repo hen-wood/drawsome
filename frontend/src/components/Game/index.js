@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { SocketContext } from "../../context/Socket";
-import GameEnd from "./GameEnd";
 import GameLobby from "./GameLobby";
 import GameVote from "./GameVote";
 import GameRound from "./GameRound";
@@ -17,6 +16,7 @@ import {
 	updateLocalVote
 } from "./utils/localFunctions";
 import "./Game.css";
+import loadingGif from "../../images/loading.gif";
 import { actionAddPastGame } from "../../store/games";
 import { csrfFetch } from "../../store/csrf";
 
@@ -172,12 +172,12 @@ export default function Game() {
 			) : gameState.section === "leaderboard" ? (
 				<GameLeaderboard gameState={gameState} setGameState={setGameState} />
 			) : (
-				<h1>Loading...</h1>
+				<img src={loadingGif} alt="loading" />
 			)}
 		</div>
 	) : (
 		<div id="game-container">
-			<h1>Loading...</h1>
+			<img src={loadingGif} alt="loading" />
 		</div>
 	);
 }
