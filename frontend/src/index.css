@@ -51,3 +51,38 @@ h1 {
     background-color: #0150b4;
     border-radius: 4px;
 }
+
+.close-button {
+    color: black;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    padding: 5px;
+    background-color: rgba(255, 255, 255, 0.514);
+    border-radius: 50%;
+    height: 10px;
+    width: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 6px 10px -5px rgb(1, 2, 53);
+    cursor: pointer;
+}
+
+.close-button:hover{
+    background-color: rgba(255, 255, 255, 0.74);
+}
+
+.canvas-container{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 8px;
+    background-color: rgba(0, 0, 0, 0.527);
+    border: none;
+    color: white;
+    font-size: 14px;
+    box-shadow: 0px 7px 5px -5px black;
+}

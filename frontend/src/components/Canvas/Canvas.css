@@ -1,0 +1,164 @@
+.canvas-wrapper{
+    margin: 10px 0;
+}
+
+#tool-kit {
+    position: absolute;
+    display: flex;
+    right: 30px;
+    top: 27px;
+    background-color: #094170;
+    box-shadow: 0px 5px 5px -3px rgb(0, 0, 0);
+    border-radius: 5px;
+    width: fit-content;
+}
+
+#tool-kit i {
+    font-size: 20px;
+    padding: 10px;
+    cursor: pointer;
+}
+
+#tool-kit i.selected {
+    padding: 5px;
+    margin: 5px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px 0px rgb(255, 255, 255);
+}
+
+#red-color-selector {
+    color: red;
+}
+
+#orange-color-selector {
+    color: orange;
+}
+
+#yellow-color-selector {
+    color: yellow;
+}
+
+#green-color-selector {
+    color: green;
+}
+
+#blue-color-selector {
+    color: blue;
+}
+
+#black-color-selector {
+    color: black
+}
+
+#white-color-selector {
+    color: white;
+}
+
+.canvas-error{
+    color: rgba(255, 0, 0, 0.514);
+    top: 50%;
+    left: 20%;
+    position: absolute;
+}
+
+.canvas-error-hidden{
+    display: none;
+}
+
+#canvas-container input{
+    width: 50%;
+}
+
+.canvas-toolkit{
+    display: flex;
+    justify-content: space-between;
+    border-radius: 10px;
+    box-shadow: 0px 5px 5px -3px rgb(0, 0, 0);
+    padding: 5px;
+}
+
+.toolkit-option{
+    width: 100%;
+}
+
+.options-modal{
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: calc(100% - 40px);
+    background-color: #88888885;
+    padding: 10px;
+    margin: 20px 10px;
+    border-radius: 10px;
+    box-shadow: 0px 5px 5px -3px rgb(0, 0, 0);
+}
+
+.close-options-button{
+    position: absolute;
+    cursor:pointer;
+    right: 10px;
+    top: 10px;
+    font-size: 20px;
+}
+
+.close-options-button:hover{
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.size-options-container{
+    border-radius: 10px;
+    padding: 10px;
+    background-color: #00000085;
+    display: flex;
+    justify-content: space-between;
+    box-sizing: border-box;
+}
+
+.color-options-container{
+    display: flex;
+    justify-content: space-between;
+}
+
+.color-option{
+    height: 20px;
+    width: 20px;
+    margin: 5px;
+    box-sizing: border-box;
+}
+
+.color-option:hover{
+    transition: .2s;
+    border-radius: 50%;
+}
+
+.size-option{
+    width: fit-content;
+    padding: 5px 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.size-option:hover{
+    background-color: #ffffff36;
+    transition: background-color .2s;
+    border-radius: 10px;
+}
+
+.canvas-inner-container{
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.toolkit-option-selected{
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.options-modal-title{
+    margin: 0;
+    margin-bottom: 10px;
+}

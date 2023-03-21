@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Route, Switch, useHistory } from "react-router-dom";
 import * as sessionActions from "./store/session";
 import { thunkGetUserDrawings } from "./store/drawings";
-import SoloCanvas from "./components/SoloCanvas";
+import Canvas from "./components/Canvas";
 import NavBar from "./components/NavBar";
 import Login from "./components/Forms/Login.js";
 import JoinGame from "./components/Forms/JoinGame";
@@ -16,6 +16,7 @@ import Game from "./components/Game";
 import SocketProvider from "./context/Socket";
 import PastGames from "./components/PastGames";
 import SinglePastGame from "./components/PastGames/SinglePastGame";
+import SoloDraw from "./components/SoloDraw";
 
 function App() {
 	const history = useHistory();
@@ -57,7 +58,7 @@ function App() {
 							<CreateGame />
 						</Route>
 						<Route path="/draw">
-							<SoloCanvas />
+							<SoloDraw />
 						</Route>
 						<Route path="/user-drawings">
 							<UserDrawings />
