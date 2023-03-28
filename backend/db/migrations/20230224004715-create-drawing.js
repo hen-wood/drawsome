@@ -21,8 +21,7 @@ module.exports = {
 					type: Sequelize.INTEGER,
 					references: {
 						model: "Users"
-					},
-					onDelete: "CASCADE"
+					}
 				},
 				title: {
 					type: Sequelize.STRING,
@@ -37,8 +36,7 @@ module.exports = {
 					references: {
 						model: "Rounds"
 					},
-					allowNull: true,
-					onDelete: "CASCADE"
+					allowNull: true
 				},
 				createdAt: {
 					allowNull: false,
