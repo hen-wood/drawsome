@@ -27,7 +27,8 @@ module.exports = (sequelize, DataTypes) => {
 			creatorId: {
 				type: DataTypes.INTEGER,
 				allowNull: false,
-				references: { model: "Users" }
+				references: { model: "Users" },
+				onDelete: "CASCADE"
 			},
 			numRounds: { type: DataTypes.INTEGER, allowNull: false },
 			timeLimit: { type: DataTypes.INTEGER, allowNull: false },
