@@ -51,9 +51,9 @@ function App() {
 						<Route path="/login">
 							<Login />
 						</Route>
-						<ProtectedRoute path="/signup">
+						<Route path="/signup">
 							<Signup />
-						</ProtectedRoute>
+						</Route>
 						<ProtectedRoute path="/create-game">
 							<CreateGame />
 						</ProtectedRoute>
