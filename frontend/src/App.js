@@ -42,7 +42,7 @@ function App() {
 				{isLoaded && (
 					<Switch>
 						<Route exact path="/">
-							<JoinGame />
+							{user ? <JoinGame /> : <Login />}
 						</Route>
 						<Route path="/join-game">
 							<JoinGame />
