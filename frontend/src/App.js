@@ -16,6 +16,7 @@ import SocketProvider from "./context/Socket";
 import PastGames from "./components/PastGames";
 import SinglePastGame from "./components/PastGames/SinglePastGame";
 import SoloDraw from "./components/SoloDraw";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
 	const dispatch = useDispatch();
@@ -41,41 +42,41 @@ function App() {
 			<div id="inner-container">
 				{isLoaded && (
 					<Switch>
-						<Route exact path="/">
-							{user ? <JoinGame /> : <Login />}
-						</Route>
-						<Route path="/join-game">
+						<ProtectedRoute exact path="/">
 							<JoinGame />
-						</Route>
+						</ProtectedRoute>
+						<ProtectedRoute path="/join-game">
+							<JoinGame />
+						</ProtectedRoute>
 						<Route path="/login">
 							<Login />
 						</Route>
-						<Route path="/signup">
+						<ProtectedRoute path="/signup">
 							<Signup />
-						</Route>
-						<Route path="/create-game">
+						</ProtectedRoute>
+						<ProtectedRoute path="/create-game">
 							<CreateGame />
-						</Route>
-						<Route path="/draw">
+						</ProtectedRoute>
+						<ProtectedRoute path="/draw">
 							<SoloDraw />
-						</Route>
-						<Route path="/user-drawings">
+						</ProtectedRoute>
+						<ProtectedRoute path="/user-drawings">
 							<UserDrawings />
-						</Route>
-						<Route path="/game/:gameCode">
+						</ProtectedRoute>
+						<ProtectedRoute path="/game/:gameCode">
 							<SocketProvider>
 								<Game />
 							</SocketProvider>
-						</Route>
-						<Route exact path="/past-games">
+						</ProtectedRoute>
+						<ProtectedRoute exact path="/past-games">
 							<PastGames />
-						</Route>
-						<Route path="/past-games/:gameId">
+						</ProtectedRoute>
+						<ProtectedRoute path="/past-games/:gameId">
 							<SinglePastGame />
-						</Route>
-						<Route>
+						</ProtectedRoute>
+						<ProtectedRoute>
 							<NotFound />
-						</Route>
+						</ProtectedRoute>
 					</Switch>
 				)}
 			</div>
