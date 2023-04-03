@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { colorArray, sizesArray } from "./optionArrs";
+import { solidColors, lightColors, sizesArray } from "./optionArrs";
 
 export default function BrushOptions({
 	color,
@@ -41,7 +41,23 @@ export default function BrushOptions({
 				</button>
 			</div>
 			<div className="color-options-container">
-				{colorArray.map((clr, i) => {
+				{solidColors.map((clr, i) => {
+					return (
+						<button
+							className="color-option"
+							style={{
+								backgroundColor: clr
+							}}
+							key={i}
+							onClick={() => {
+								setColor(clr);
+							}}
+						></button>
+					);
+				})}
+			</div>
+			<div className="color-options-container">
+				{lightColors.map((clr, i) => {
 					return (
 						<button
 							className="color-option"

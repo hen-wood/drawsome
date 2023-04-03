@@ -1,4 +1,4 @@
-import { colorArray } from "./optionArrs";
+import { solidColors, lightColors } from "./optionArrs";
 
 export default function CanvasColorOptions({
 	setBgColor,
@@ -12,7 +12,23 @@ export default function CanvasColorOptions({
 			></i>
 			<h2 className="options-modal-title">Select canvas color</h2>
 			<div className="color-options-container">
-				{colorArray.map((clr, i) => {
+				{solidColors.map((clr, i) => {
+					return (
+						<button
+							className="color-option"
+							style={{
+								backgroundColor: clr
+							}}
+							key={i}
+							onClick={() => {
+								setBgColor(clr);
+							}}
+						></button>
+					);
+				})}
+			</div>
+			<div className="color-options-container">
+				{lightColors.map((clr, i) => {
 					return (
 						<button
 							className="color-option"
