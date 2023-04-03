@@ -66,7 +66,7 @@ Drawsome is a a multiplayer drawing game inspired by pictionary and cards agains
 4. From the backend directory, run the "dbreset" script to initalize the database and populate it with seed data. (This script can be used any time you want to reset the database)
 
 ```
-git clone https://github.com/hen-wood/meetup-clone.git && cd meetup-clone && npm install && cd backend && mv .env.example .env && npm run dbreset && npm start
+git clone https://github.com/hen-wood/drawsome.git && cd drawsome && npm install && cd backend && mv .env.example .env && npm run dbreset && npm start
 ```
 
 6. In another terminal, start React from the frontend directory
