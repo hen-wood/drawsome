@@ -54,3 +54,25 @@ Drawsome is a a multiplayer drawing game inspired by pictionary and cards agains
 
 [![RENDER](https://img.shields.io/badge/render-000000.svg?&style=for-the-badge&logo=render)](https://www.render.com/)
 [![AWSS3](https://img.shields.io/badge/amazon%20s3-000000.svg?&style=for-the-badge&logo=amazons3)](https://aws.amazon.com/pm/serv-s3/?trk=fecf68c9-3874-4ae2-a7ed-72b6d19c8034&sc_channel=ps&s_kwcid=AL!4422!3!536452728638!e!!g!!aws%20s3&ef_id=CjwKCAiA2rOeBhAsEiwA2Pl7Q6Zfh1RxX9qRTYsnbgE54_VrB3J2URKpsGLTGCGimZk9gYKtgiEfvhoCsmQQAvD_BwE:G:s&s_kwcid=AL!4422!3!536452728638!e!!g!!aws%20s3)
+
+## Installation
+
+1. git clone this repo
+2. Install dependencies from the root directory
+3. From the backend directory, rename .env.example to .env
+
+- **Note**: AWS Image uploads will not work without `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environment variables set
+
+4. From the backend directory, run the "dbreset" script to initalize the database and populate it with seed data. (This script can be used any time you want to reset the database)
+
+```
+git clone https://github.com/hen-wood/meetup-clone.git && cd meetup-clone && npm install && cd backend && mv .env.example .env && npm run dbreset && npm start
+```
+
+6. In another terminal, start React from the frontend directory
+
+```
+cd frontend && npm start
+```
+
+7. Navigate to http://localhost:3000
