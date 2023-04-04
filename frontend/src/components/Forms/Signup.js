@@ -67,12 +67,14 @@ export default function Signup() {
 			});
 	};
 	return (
-		<div id="form-container">
-			<h1>Sign up for Drawsome</h1>
+		<div className="form-container">
+			<h1 className="form-title">Sign up for Drawsome</h1>
 			{backendError && <p className="backend-errors">{backendError}</p>}
 			<form onSubmit={handleSignup}>
 				<input
-					className={errors.username ? "input-errors" : ""}
+					className={
+						errors.username ? "input-field input-errors" : "input-field"
+					}
 					type="text"
 					value={username}
 					placeholder={errors.username || "username"}
@@ -85,7 +87,7 @@ export default function Signup() {
 					}
 				/>
 				<input
-					className={errors.email ? "input-errors" : ""}
+					className={errors.email ? "input-field input-errors" : "input-field"}
 					type="text"
 					value={email}
 					placeholder={errors.email || "email"}
@@ -98,7 +100,9 @@ export default function Signup() {
 					}
 				/>
 				<input
-					className={errors.password ? "input-errors" : ""}
+					className={
+						errors.password ? "input-field input-errors" : "input-field"
+					}
 					type="password"
 					value={password}
 					placeholder={errors.password || "password"}
@@ -111,7 +115,9 @@ export default function Signup() {
 					}
 				/>
 				<input
-					className={errors.matchPassword ? "input-errors" : ""}
+					className={
+						errors.matchPassword ? "input-field input-errors" : "input-field"
+					}
 					type="password"
 					value={matchPassword}
 					placeholder={errors.matchPassword || "confirm password"}
@@ -125,7 +131,7 @@ export default function Signup() {
 				/>
 				<button type="submit">Submit</button>
 			</form>
-			<p>
+			<p className="form-login-signup-prompt">
 				Already have an account? <Link to="/login">Log in</Link>
 			</p>
 		</div>

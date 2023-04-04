@@ -37,11 +37,11 @@ export default function JoinGame() {
 	};
 
 	return (
-		<div id="form-container">
-			<h1>Join a Drawsome Game</h1>
+		<div className="form-container">
+			<h1 className="form-title">Join a Drawsome Game</h1>
 			<form onSubmit={handleJoinGame}>
 				<input
-					className={error ? "input-errors" : ""}
+					className={error ? "input-field input-errors" : "input-field"}
 					type="text"
 					value={gameCode}
 					placeholder={error.length > 0 ? error : "enter game code"}

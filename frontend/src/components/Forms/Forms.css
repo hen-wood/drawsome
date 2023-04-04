@@ -1,15 +1,33 @@
-#form-container {
-    margin-bottom: 20vh;
+.form-container {
     padding: 10px;
     background-color: rgba(0, 0, 0, 0.527);
     box-shadow: 0px 10px 10px -5px rgb(1, 2, 53);
-    border-radius: 10px;
     padding: 10px;
+    height: 100%;
+    max-height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+.demo-login-buttons{
+    display: flex;
+    flex-direction: column;
+    width: 80%;
 }
 
 form {
     display: flex;
     flex-direction: column;
+    width: 80%;
+    overflow-y: auto;
+}
+
+.form-title{
+    font-size: 24px;
 }
 
 ::placeholder{
@@ -26,12 +44,10 @@ form {
     font-style: italic;
 }
 
-input[type="text"],
-input[type="password"],
-input[type="number"] {
+.input-field{
     border-radius: 5px;
     padding: 10px;
-    /* margin: 8px; */
+    margin: 8px;
     border: none;
     background-color: #0b055a;
     color: white;
@@ -40,23 +56,23 @@ input[type="number"] {
     font-family: 'Be Vietnam Pro', sans-serif;
 }
 
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
+.input-field::-webkit-inner-spin-button,
+.input-field::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
 
-input[type="number"] {
+.input-field {
     -moz-appearance: textfield;
 }
 
-input[type="number"]:hover,
-input[type="number"]:focus {
+.input-field:hover,
+.input-field:focus {
     outline: none;
 }
 
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
+.input-field::-webkit-inner-spin-button,
+.input-field::-webkit-outer-spin-button {
     background-color: #f1f1f1;
     border: none;
 }
@@ -82,28 +98,16 @@ button:hover{
     background-color: #0b055a;
 }
 
-#form-container p{
+.form-login-signup-prompt{
     text-align: center;
 }
 
-
-#create-game-form-container {
-    position: absolute;
-    top: 100px;
-    padding: 10px;
-    background-color: rgba(0, 0, 0, 0.527);
-    box-shadow: 0px 10px 10px -5px rgb(1, 2, 53);
-    border-radius: 10px;
-    padding: 10px;
-    max-height: 75vh;
-    overflow-y: auto;
-}
 
 #create-game-form-container p {
     text-align: center;
 }
 
-#create-game-form-container form label {
+.form-container form label {
     padding: 5px 10px;
 }
 
@@ -144,4 +148,25 @@ button:hover{
 .increase-decrease-div i:hover{
     cursor: pointer;
     color: white;
+}
+
+@media (min-width:500px){
+    .form-container{
+        border-radius: 10px;
+        height: fit-content;
+        width: fit-content;
+    }
+
+    form{
+        width: 100%;
+    }
+
+    .form-title{
+        font-size: 28px;
+    }
+
+    .demo-login-buttons{
+        width: 100%;
+        flex-direction: row;
+    }
 }
