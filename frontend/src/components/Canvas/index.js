@@ -67,8 +67,6 @@ export default function Canvas({
 						gridSizeY={0}
 						catenaryColor={color}
 						style={{ width: "100%", height: "100%", borderRadius: "8px" }}
-						// canvasHeight={400}
-						// canvasWidth={400}
 					/>
 				</div>
 				{showBrushOptions && (
