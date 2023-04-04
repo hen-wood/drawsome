@@ -6,178 +6,70 @@ import GameLobby from "./GameLobby";
 import GameVote from "./GameVote";
 import GameRound from "./GameRound";
 import GameLeaderboard from "./GameLeaderboard";
-import {
-	getLocalAsObj,
-	getLocalAsStr,
-	setLocalFromObj,
-	setLocalFromStr,
-	updateLocalSection,
-	updateLocalDrawings,
-	updateLocalVote
-} from "./utils/localFunctions";
 import "./Game.css";
 import loadingGif from "../../images/loading.gif";
-import { actionAddPastGame } from "../../store/games";
-import { csrfFetch } from "../../store/csrf";
+import useSocketListeners from "./utils";
 
 export default function Game() {
-	const dispatch = useDispatch();
-	const history = useHistory();
-	const socket = useContext(SocketContext);
-	const user = useSelector(state => state.session.user);
-	const [gameState, setGameState] = useState(getLocalAsObj("gameState"));
-	const { id, code, creatorId } = gameState;
+	const gameState = useSelector(state => state.gameState);
+	useSocketListeners(gameState);
 
-	useEffect(() => {
-		const isHost = creatorId === user.id;
-		socket.on("connect", () => {
-			const gameSettings = getLocalAsObj("gameState");
-			const player = { ...user, socketId: socket.id, connected: true };
-			if (isHost) {
-				const initState = setLocalFromObj("gameState", {
-					...gameSettings,
-					players: { [player.id]: player },
-					scores: { [player.id]: 0 },
-					currentRound: gameSettings.gameRounds[0],
-					section: "lobby",
-					drawings: {},
-					playerVotedFor: null,
-					votes: { [player.id]: 0 },
-					voteCount: 0,
-					hostSocket: socket.id
-				});
-				setGameState(initState);
-			}
-			socket.emit("join", {
-				player,
-				roomId: code,
-				isHost
-			});
-		});
+	// useEffect(() => {
+	// 	const isHost = game.creatorId;
+	// 	socket.on("connect", () => {
+	// 		dispatch(actionConnectPlayer(socket.id, user));
+	// 		utils.emitClientConnected(user, socket, game.code);
+	// 	});
 
-		socket.on("new player joined", player => {
-			const currentState = getLocalAsObj("gameState");
+	// 	socket.on("player-connected", (user, socketId) => {
+	// 		dispatch(actionConnectPlayer(socketId, user));
+	// 		if (isHost) {
+	// 			utils.emitHostGameState(
+	// 				{ game, players, currentRound, section },
+	// 				socketId,
+	// 				socket
+	// 			);
+	// 		}
+	// 	});
 
-			const newState = setLocalFromObj("gameState", {
-				...currentState,
-				players: { ...currentState.players, [player.id]: player },
-				scores: { ...currentState.scores, [player.id]: 0 },
-				votes: { ...currentState.votes, [player.id]: 0 }
-			});
-			setGameState(prev => ({ ...prev, ...newState }));
+	// 	socket.on("game-state-from-host", gameState => {
+	// 		dispatch(actionSyncWithHost(gameState));
+	// 	});
 
-			if (isHost) {
-				const hostDataStr = getLocalAsStr("gameState");
-				const toSocketId = player.socketId;
-				if (!currentState.players[player.id]) {
-					csrfFetch(`/api/games/${id}/players`, {
-						method: "POST",
-						body: JSON.stringify({ userId: player.id })
-					}).then(() => {
-						socket.emit("data to new player", { hostDataStr, toSocketId });
-					});
-				} else {
-					socket.emit("data to new player", { hostDataStr, toSocketId });
-				}
-			}
-		});
+	// 	socket.on("data for new player", hostDataStr => {});
 
-		socket.on("data for new player", hostDataStr => {
-			const hostState = setLocalFromStr("gameState", hostDataStr);
-			setGameState(hostState);
-		});
+	// 	socket.on("host started game", () => {});
 
-		socket.on("host started game", () => {
-			const newState = updateLocalSection("round");
-			setGameState(prev => ({ ...prev, section: newState.section }));
-		});
+	// 	socket.on("server sending drawing", drawingData => {});
 
-		socket.on("server sending drawing", drawingData => {
-			const { roundId, userId } = drawingData;
-			const updatedState = updateLocalDrawings(roundId, userId, drawingData);
-			setGameState(prev => ({
-				...prev.drawings,
-				[roundId]: updatedState.drawings[roundId]
-			}));
-			const currPlayers = updatedState.players;
-			const currDrawings = updatedState.drawings[roundId];
-			if (
-				Object.keys(currPlayers).length === Object.keys(currDrawings).length
-			) {
-				const hostGameStateStr = JSON.stringify(updatedState);
-				socket.emit("all drawings received", {
-					hostGameStateStr,
-					roomId: code
-				});
-			}
-		});
+	// 	socket.on("start vote", hostGameStateStr => {});
 
-		socket.on("start vote", hostGameStateStr => {
-			updateLocalSection("vote");
-			if (!isHost) {
-				const updatedState = setLocalFromStr("gameState", hostGameStateStr);
-				const roundId = updatedState.currentRound.id;
-				setGameState(prev => ({
-					...prev,
-					drawings: { ...prev.drawings, [roundId]: updatedState.drawings },
-					section: "vote",
-					votes: { [user.id]: 0 }
-				}));
-			} else {
-				setGameState(prev => ({
-					...prev,
-					section: "vote",
-					votes: { [user.id]: 0 }
-				}));
-			}
-		});
+	// 	socket.on("server sending vote", playerVotedFor => {});
 
-		socket.on("server sending vote", playerVotedFor => {
-			const updatedState = updateLocalVote(playerVotedFor);
-			if (updatedState.voteCount === Object.keys(updatedState.players).length) {
-				const hostDataStr = JSON.stringify(updatedState);
-				socket.emit("all votes received", { hostDataStr, roomId: code });
-			}
-		});
+	// 	socket.on("start leaderboard", hostDataStr => {});
 
-		socket.on("start leaderboard", hostDataStr => {
-			const updatedState = setLocalFromStr("gameState", hostDataStr);
-			setGameState(prev => ({ ...updatedState, section: "leaderboard" }));
-		});
+	// 	socket.on("post-round data", hostDataStr => {});
 
-		socket.on("post-round data", hostDataStr => {
-			const updatedState = setLocalFromStr("gameState", hostDataStr);
-			setGameState(prev => ({ ...updatedState }));
-		});
+	// 	socket.on("game over", hostDataStr => {});
 
-		socket.on("game over", hostDataStr => {
-			dispatch(actionAddPastGame(JSON.parse(hostDataStr)));
-			socket.disconnect();
-			history.push(`/past-games/${id}`);
-		});
+	// 	return () => {
+	// 		socket.disconnect();
+	// 	};
+	// }, []);
 
-		return () => {
-			socket.disconnect();
-		};
-	}, []);
-
-	return user && gameState ? (
+	return (
 		<div id="game-container">
 			{gameState.section === "lobby" ? (
 				<GameLobby />
 			) : gameState.section === "round" ? (
-				<GameRound gameState={gameState} setGameState={setGameState} />
+				<GameRound />
 			) : gameState.section === "vote" ? (
-				<GameVote gameState={gameState} setGameState={setGameState} />
+				<GameVote />
 			) : gameState.section === "leaderboard" ? (
-				<GameLeaderboard gameState={gameState} setGameState={setGameState} />
+				<GameLeaderboard />
 			) : (
 				<img src={loadingGif} alt="loading" />
 			)}
-		</div>
-	) : (
-		<div id="game-container">
-			<img src={loadingGif} alt="loading" />
 		</div>
 	);
 }

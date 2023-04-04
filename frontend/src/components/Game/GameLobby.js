@@ -9,9 +9,12 @@ import { getLocalAsObj } from "./utils/localFunctions";
 export default function GameLobby() {
 	const dispatch = useDispatch();
 	const socket = useContext(SocketContext);
-	const { code, numPlayers, creatorId, id, players } =
-		getLocalAsObj("gameState");
+	const {
+		game: { numPlayers, creatorId, code, id },
+		players
+	} = useSelector(state => state.gameState);
 	const user = useSelector(state => state.session.user);
+
 	return (
 		<div id="lobby-container">
 			<h1>Let's play Drawsome! 🧑‍🎨</h1>
@@ -20,17 +23,16 @@ export default function GameLobby() {
 			</p>
 			<div className="divider"></div>
 			{waitingMessage(
-				Object.keys(players).length,
+				Object.values(players).length,
 				numPlayers,
 				user.id,
 				creatorId
 			)}
-			{Object.keys(players).map(key => {
-				const player = players[key];
+			{Object.values(players).map(player => {
 				const isCreator = player.id === creatorId;
 
 				return (
-					<p className="lobby-player" key={key}>
+					<p className="lobby-player" key={player.id}>
 						{`${isCreator ? "👑" : "✅"} ${
 							isCreator && user.id === creatorId
 								? "You"
@@ -40,7 +42,7 @@ export default function GameLobby() {
 						} ${
 							isCreator && player.connected
 								? "created the game"
-								: player.connected
+								: player.isConnected
 								? "joined the game"
 								: "disconnected..."
 						}`}

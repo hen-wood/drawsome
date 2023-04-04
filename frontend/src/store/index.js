@@ -3,11 +3,13 @@ import thunk from "redux-thunk";
 import sessionReducer from "./session";
 import drawingReducer from "./drawings";
 import gameReducer from "./games";
+import gameStateReducer from "./gameState";
 
 const rootReducer = combineReducers({
 	session: sessionReducer,
 	drawings: drawingReducer,
-	game: gameReducer
+	game: gameReducer,
+	gameState: gameStateReducer
 });
 
 let enhancer;

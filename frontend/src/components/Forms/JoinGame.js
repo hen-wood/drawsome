@@ -6,10 +6,12 @@ import { setLocalFromObj } from "../Game/utils/localFunctions";
 import { thunkLoadGame } from "../../store/games";
 
 import "./Forms.css";
+import { thunkJoinGame } from "../../store/gameState";
 
 export default function JoinGame() {
-	// const dispatch = useDispatch();
+	const dispatch = useDispatch();
 	const history = useHistory();
+
 	const [gameCode, setGameCode] = useState("");
 	const [error, setError] = useState("");
 
@@ -20,13 +22,9 @@ export default function JoinGame() {
 			setGameCode("");
 			return;
 		}
-
-		csrfFetch(`/api/games/${gameCode}`)
-			.then(res => res.json())
-			.then(game => {
-				setLocalFromObj("gameState", game);
-				history.push(`/game/${gameCode}`);
-				return;
+		dispatch(thunkJoinGame(gameCode))
+			.then(gameCode => {
+				return history.push(`/game/${gameCode}`);
 			})
 			.catch(async res => {
 				const err = await res.json();

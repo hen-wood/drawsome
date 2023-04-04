@@ -93,53 +93,64 @@ app.use((err, _req, res, _next) => {
 // socket.io stuff
 
 io.on("connection", socket => {
-	socket.on("join", newPlayerData => {
-		// Server receives 'joined' event from new player
-		const { roomId, player, isHost } = newPlayerData;
-		// roomId is destructured and socket is joined to the room associated with the gameCode
-		socket.join(roomId);
-		const roomData = socket.adapter.rooms.get(roomId);
-		if (isHost) roomData.hostId = player.id;
-		// server emits an event to the room with the new player's information
-		socket.to(roomId).emit("new player joined", player);
+	socket.on("client-connected", (user, socketId, gameCode) => {
+		socket.join(gameCode);
+		socket.to(gameCode).emit("player-connected", user, socketId);
 	});
 
-	socket.on("data to new player", ({ hostDataStr, toSocketId }) => {
-		io.to(toSocketId).emit("data for new player", hostDataStr);
+	socket.on("host-sent-game-state", (gameState, socketId) => {
+		io.to(socketId).emit("game-state-from-host", gameState);
 	});
+	// socket.on("join", newPlayerData => {
+	// 	// Server receives 'joined' event from new player
+	// 	const { roomId, player, isHost } = newPlayerData;
+	// 	// roomId is destructured and socket is joined to the room associated with the gameCode
+	// 	socket.join(roomId);
+	// 	const roomData = socket.adapter.rooms.get(roomId);
+	// 	if (isHost) roomData.hostId = player.id;
+	// 	// server emits an event to the room with the new player's information
+	// 	socket.to(roomId).emit("new player joined", player);
+	// });
 
-	socket.on("start game", data => {
-		const { roomId } = data;
-		io.to(roomId).emit("host started game");
-	});
+	// socket.on("data to new player", ({ hostDataStr, toSocketId }) => {
+	// 	io.to(toSocketId).emit("data for new player", hostDataStr);
+	// });
 
-	socket.on("submitted drawing to host", ({ drawingData, hostSocket }) => {
-		io.to(hostSocket).emit("server sending drawing", drawingData);
-	});
+	// socket.on("start game", data => {
+	// 	const { roomId } = data;
+	// 	io.to(roomId).emit("host started game");
+	// });
 
-	socket.on("all drawings received", ({ hostGameStateStr, roomId }) => {
-		io.to(roomId).emit("start vote", hostGameStateStr);
-	});
+	// socket.on("submitted drawing to host", ({ drawingData, hostSocket }) => {
+	// 	io.to(hostSocket).emit("server sending drawing", drawingData);
+	// });
 
-	socket.on("player submitted vote", ({ playerVotedFor, hostSocket }) => {
-		io.to(hostSocket).emit("server sending vote", playerVotedFor);
-	});
+	// socket.on("all drawings received", ({ hostGameStateStr, roomId }) => {
+	// 	io.to(roomId).emit("start vote", hostGameStateStr);
+	// });
 
-	socket.on("all votes received", ({ hostDataStr, roomId }) => {
-		io.to(roomId).emit("start leaderboard", hostDataStr);
-	});
+	// socket.on("player submitted vote", ({ playerVotedFor, hostSocket }) => {
+	// 	io.to(hostSocket).emit("server sending vote", playerVotedFor);
+	// });
 
-	socket.on("host data after round", ({ hostDataStr, roomId }) => {
-		io.to(roomId).emit("post-round data", hostDataStr);
-	});
+	// socket.on("all votes received", ({ hostDataStr, roomId }) => {
+	// 	io.to(roomId).emit("start leaderboard", hostDataStr);
+	// });
 
-	socket.on("host game results", ({ hostDataStr, roomId }) => {
-		io.to(roomId).emit("game over", hostDataStr);
-	});
+	// socket.on("host data after round", ({ hostDataStr, roomId }) => {
+	// 	io.to(roomId).emit("post-round data", hostDataStr);
+	// });
 
-	socket.on("disconnection", data => {
-		const { roomId, playerId, isHost } = data;
-		socket.to(roomId).emit("player disconnected", playerId);
+	// socket.on("host game results", ({ hostDataStr, roomId }) => {
+	// 	io.to(roomId).emit("game over", hostDataStr);
+	// });
+
+	socket.on("disconnecting", reason => {
+		for (let room of socket.rooms) {
+			if (room !== socket.id) {
+				socket.to(room).emit("player-disconnected", socket.id);
+			}
+		}
 	});
 });
 
