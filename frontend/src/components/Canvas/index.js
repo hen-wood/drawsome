@@ -23,27 +23,31 @@ export default function Canvas({
 
 	return (
 		<div className="canvas-container">
-			{isGameCanvas ? (
-				<h1 className="round-prompt-title">{`"${title}"`}</h1>
-			) : (
-				<input
-					type="text"
-					placeholder={
-						titleError.length
-							? "Please enter a title"
-							: "Enter a title for your drawing"
-					}
-					className={titleError.length ? "input-errors" : ""}
-					onChange={e => {
-						if (e.target.value.length <= 30) {
-							setTitle(e.target.value);
-						} else {
-							e.target.value = e.target.value.slice(0, 31);
+			<div className="canvas-title">
+				{isGameCanvas ? (
+					<h1 className="round-prompt-title">{`"${title}"`}</h1>
+				) : (
+					<input
+						type="text"
+						placeholder={
+							titleError.length
+								? "Please enter a title"
+								: "Enter a title for your drawing"
 						}
-					}}
-					onFocus={() => setTitleError("")}
-				></input>
-			)}
+						className={
+							titleError.length ? "title-input input-errors" : "title-input"
+						}
+						onChange={e => {
+							if (e.target.value.length <= 30) {
+								setTitle(e.target.value);
+							} else {
+								e.target.value = e.target.value.slice(0, 31);
+							}
+						}}
+						onFocus={() => setTitleError("")}
+					></input>
+				)}
+			</div>
 			<div className="canvas-inner-container">
 				<div
 					className="canvas-wrapper"
@@ -62,8 +66,9 @@ export default function Canvas({
 						gridSizeX={0}
 						gridSizeY={0}
 						catenaryColor={color}
-						canvasHeight={400}
-						canvasWidth={400}
+						style={{ width: "100%", height: "100%", borderRadius: "8px" }}
+						// canvasHeight={400}
+						// canvasWidth={400}
 					/>
 				</div>
 				{showBrushOptions && (
