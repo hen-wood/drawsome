@@ -63,25 +63,28 @@ export default function UserMenu({
 	}, [isOpen]);
 
 	return (
-		<div ref={menu} className={isOpen ? "user-menu" : "user-menu-hidden"}>
+		<div
+			ref={menu}
+			className={isOpen ? "user-menu" : "user-menu user-menu--hidden"}
+		>
 			<p id="menu-username">{user && user.username} 🧑‍🎨</p>
 			<div className="divider"></div>
-			<button className="user-options" onClick={handleCreateGame}>
+			<button className="user-menu__button" onClick={handleCreateGame}>
 				Create Game
 			</button>
-			<button className="user-options" onClick={handleJoinGame}>
+			<button className="user-menu__button" onClick={handleJoinGame}>
 				Join Game
 			</button>
-			<button className="user-options" onClick={handleDrawSolo}>
+			<button className="user-menu__button" onClick={handleDrawSolo}>
 				Draw solo
 			</button>
-			<button className="user-options" onClick={handleViewDrawings}>
+			<button className="user-menu__button" onClick={handleViewDrawings}>
 				View Past Drawings
 			</button>
-			<button className="user-options" onClick={handleChangeTheme}>
+			<button className="user-menu__button" onClick={handleChangeTheme}>
 				Change Theme {theme === "light-mode" ? "🌞" : "🌜"}
 			</button>
-			<button className="user-options" onClick={handleLogout}>
+			<button className="user-menu__button" onClick={handleLogout}>
 				Logout
 			</button>
 		</div>

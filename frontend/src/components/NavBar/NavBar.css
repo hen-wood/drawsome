@@ -8,6 +8,7 @@
     padding: 10px;
     box-sizing: border-box;
     background-color: #00000080;
+    box-shadow: 10px -5px 10px 10px #010235;
 }
 
 .nav-bar--open{
@@ -53,14 +54,18 @@
     align-items: center;
     padding: 10px;
     background-color: #000000d2;
-    transition: 1s;
 }
 
-.user-options {
+.user-menu--hidden{
+    display: none;
+    opacity: 0;
+}
+
+.user-menu__button {
     margin: 8px 0;
     cursor: pointer;
     color: white;
-    width: 100%;
+    width: 80%;
 }
 
 @media (min-width: 635px) {
@@ -86,8 +91,10 @@
 
     .user-menu{
         width: fit-content;
+        box-shadow: 1px;
+        box-shadow: 5px 12px 10px 10px #010235;
     }
-    .user-options{
+    .user-menu__button{
         width: 200px;
     }
 }
@@ -122,11 +129,7 @@
 
 
 
-.user-menu-hidden{
-    display: none;
-    opacity: 0;
-    transition: 1s;
-}
+
 
 
 
