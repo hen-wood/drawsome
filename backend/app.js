@@ -145,7 +145,16 @@ io.on("connection", socket => {
 	// 	io.to(roomId).emit("game over", hostDataStr);
 	// });
 
+	// socket.on("client-disconnected", (gameCode, userId) => {
+	// 	socket.to(gameCode).emit("player-disconnected", userId);
+	// });
+
+	// // socket.on("disconnect", reason => {
+	// // 	console.log("disconnect reason", reason);
+	// // });
+
 	socket.on("disconnecting", reason => {
+		console.log(socket.rooms);
 		for (let room of socket.rooms) {
 			if (room !== socket.id) {
 				socket.to(room).emit("player-disconnected", socket.id);
