@@ -147,6 +147,11 @@
     box-sizing: border-box;
     height: 78%;
     border-radius: 8px;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .toolkit-option-selected{
