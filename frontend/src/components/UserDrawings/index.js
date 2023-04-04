@@ -66,7 +66,7 @@ export default function UserDrawings() {
 	};
 
 	return isLoaded ? (
-		<div id="user-drawings-container" ref={galleryRef}>
+		<div className="user-drawings-container" ref={galleryRef}>
 			{drawingOpen && (
 				<OpenDrawing
 					setDrawingOpen={setDrawingOpen}
@@ -141,7 +141,7 @@ export default function UserDrawings() {
 			)}
 		</div>
 	) : (
-		<div id="user-drawings-container" ref={galleryRef}>
+		<div className="user-drawings-container" ref={galleryRef}>
 			<img src={loadingGif} alt="loading" />
 		</div>
 	);

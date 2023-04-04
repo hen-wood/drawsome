@@ -30,31 +30,39 @@ export default function NavBar({ theme, setTheme }) {
 	};
 
 	return (
-		<div id="nav-bar">
-			<h1
-				className={isLoggedIn ? "home-link" : "disabled-home-link"}
-				onClick={handleHomeClick}
-			>
-				Drawsome
-			</h1>
-			<a href="https://github.com/hen-wood/drawsome" target="_blank">
-				<i className="fa-brands fa-github"></i> Project repo
-			</a>
-			<a href="https://www.linkedin.com/in/henry-woodmansee/" target="_blank">
-				<i className="fa-brands fa-linkedin"></i> Henry's linkedin
-			</a>
-			<div id="how-to-play-user-icon-div">
-				<p id="how-to-play-link" onClick={() => setShowHow(true)}>
+		<div className={`nav-bar ${isOpen && "nav-bar--open"}`}>
+			<div className="left-nav-links">
+				<h1
+					className={isLoggedIn ? "home-link" : "disabled-home-link"}
+					onClick={handleHomeClick}
+				>
+					Drawsome
+				</h1>
+				<div className="about-links">
+					<a
+						className="about-link"
+						href="https://github.com/hen-wood/drawsome"
+						target="_blank"
+					>
+						<i className="fa-brands fa-github"></i> Project repo
+					</a>
+					<a
+						className="about-link"
+						href="https://www.linkedin.com/in/henry-woodmansee/"
+						target="_blank"
+					>
+						<i className="fa-brands fa-linkedin"></i> Henry's linkedin
+					</a>
+				</div>
+				{/* <p id="how-to-play-link" onClick={() => setShowHow(true)}>
 					How to play
-				</p>
-				{isLoggedIn && (
-					<i
-						id="user-icon"
-						className="fa-regular fa-user"
-						onClick={handleOpenMenu}
-					></i>
-				)}
+				</p> */}
 			</div>
+			{isLoggedIn && (
+				<button className="user-menu-button" onClick={handleOpenMenu}>
+					<i className="fa-regular fa-user user-icon"></i>
+				</button>
+			)}
 
 			{showHow && <HowToPlay setShowHow={setShowHow} />}
 			<UserMenu

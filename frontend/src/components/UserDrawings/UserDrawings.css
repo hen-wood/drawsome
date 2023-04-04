@@ -1,17 +1,18 @@
-#user-drawings-container{
+.user-drawings-container{
     display: flex;
-    width: 60vw;
-    height: 80vh;
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
     overflow-y: auto;
     background-color: rgba(0, 0, 0, 0.527);
     box-shadow: 0px 7px 5px -5px black;
-    border-radius: 15px;
     padding: 10px;
 }
 
 .indiv-drawing-container{
-    width: 50%;
+    width: 100%;
     height: fit-content;
     padding: 10px;
     box-sizing: border-box;
@@ -71,6 +72,7 @@
 .indiv-drawing-container img{
     height: 100%;
     width: 100%;
+    max-width: 800px;
     border-radius: 10px;
     box-shadow: 0px 7px 5px -5px black;
     cursor: pointer;
@@ -119,4 +121,22 @@
 
 .warning-delete-button:hover{
     background-color: rgb(95, 0, 0);
+}
+
+
+@media (min-width: 500px){
+    .user-drawings-container{
+        width: fit-content;
+        padding-bottom: 100px;
+    }
+}
+
+@media (min-width: 1150px){
+    .user-drawings-container{
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+    .indiv-drawing-container{
+        height: 500px;
+    }
 }
