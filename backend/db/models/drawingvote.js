@@ -26,7 +26,8 @@ module.exports = (sequelize, DataTypes) => {
 				references: {
 					model: "Drawings",
 					as: "drawingVotes"
-				}
+				},
+				onDelete: "CASCADE"
 			},
 			votedForId: {
 				type: DataTypes.INTEGER,
