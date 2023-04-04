@@ -35,7 +35,9 @@ export default function Canvas({
 								: "Enter a title for your drawing"
 						}
 						className={
-							titleError.length ? "title-input input-errors" : "title-input"
+							titleError.length
+								? "input-field title-input input-errors"
+								: "input-field title-input"
 						}
 						onChange={e => {
 							if (e.target.value.length <= 30) {

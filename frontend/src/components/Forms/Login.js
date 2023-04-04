@@ -51,12 +51,12 @@ export default function Login() {
 	};
 
 	return (
-		<div id="form-container">
-			<h1>Log in to Drawsome</h1>
+		<div className="form-container">
+			<h1 className="form-title">Log in to Drawsome</h1>
 			{backendError && <p className="backend-errors">{backendError}</p>}
 			<form onSubmit={handleLogin}>
 				<input
-					className={errors.email ? "input-errors" : ""}
+					className={errors.email ? "input-field input-errors" : "input-field"}
 					type="text"
 					value={credential}
 					placeholder={errors.email || "email"}
@@ -69,7 +69,9 @@ export default function Login() {
 					}
 				/>
 				<input
-					className={errors.password ? "input-errors" : ""}
+					className={
+						errors.password ? "input-field input-errors" : "input-field"
+					}
 					type="password"
 					value={password}
 					placeholder={errors.password || "password"}
@@ -83,43 +85,51 @@ export default function Login() {
 				/>
 				<button type="submit">Log in</button>
 			</form>
-			<button
-				onClick={() =>
-					dispatch(login({ credential: "demo1@user.io", password: "password" }))
-						.then(() => history.push("/join-game"))
-						.catch(async res => {
-							const data = await res.json();
-							setBackendError(data.message);
-						})
-				}
-			>
-				Log in Demo User #1
-			</button>
-			<button
-				onClick={() =>
-					dispatch(login({ credential: "demo2@user.io", password: "password" }))
-						.then(() => history.push("/join-game"))
-						.catch(async res => {
-							const data = await res.json();
-							setBackendError(data.message);
-						})
-				}
-			>
-				Log in Demo User #2
-			</button>
-			<button
-				onClick={() =>
-					dispatch(login({ credential: "demo3@user.io", password: "password" }))
-						.then(() => history.push("/join-game"))
-						.catch(async res => {
-							const data = await res.json();
-							setBackendError(data.message);
-						})
-				}
-			>
-				Log in Demo User #3
-			</button>
-			<p>
+			<div className="demo-login-buttons">
+				<button
+					onClick={() =>
+						dispatch(
+							login({ credential: "demo1@user.io", password: "password" })
+						)
+							.then(() => history.push("/join-game"))
+							.catch(async res => {
+								const data = await res.json();
+								setBackendError(data.message);
+							})
+					}
+				>
+					Log in Demo User #1
+				</button>
+				<button
+					onClick={() =>
+						dispatch(
+							login({ credential: "demo2@user.io", password: "password" })
+						)
+							.then(() => history.push("/join-game"))
+							.catch(async res => {
+								const data = await res.json();
+								setBackendError(data.message);
+							})
+					}
+				>
+					Log in Demo User #2
+				</button>
+				<button
+					onClick={() =>
+						dispatch(
+							login({ credential: "demo3@user.io", password: "password" })
+						)
+							.then(() => history.push("/join-game"))
+							.catch(async res => {
+								const data = await res.json();
+								setBackendError(data.message);
+							})
+					}
+				>
+					Log in Demo User #3
+				</button>
+			</div>
+			<p className="form-login-signup-prompt">
 				Don't have an account yet? <Link to="/signup">Sign up</Link>
 			</p>
 		</div>

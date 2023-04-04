@@ -25,7 +25,7 @@ h1 {
     flex-direction: column;
     height: 100vh;
     background-size:cover;
-    overflow: hidden;
+    overflow-y: hidden;
 }
 
 .light-mode{
@@ -42,6 +42,7 @@ h1 {
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow-y: auto;
 }
 
 ::-webkit-scrollbar {

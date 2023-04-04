@@ -33,7 +33,7 @@ export default function NavBar({ theme, setTheme }) {
 		<div className={`nav-bar ${isOpen && "nav-bar--open"}`}>
 			<div className="left-nav-links">
 				<h1
-					className={isLoggedIn ? "home-link" : "disabled-home-link"}
+					className={isLoggedIn ? "home-link" : "home-link disabled-home-link"}
 					onClick={handleHomeClick}
 				>
 					Drawsome
@@ -54,9 +54,6 @@ export default function NavBar({ theme, setTheme }) {
 						<i className="fa-brands fa-linkedin"></i> Henry's linkedin
 					</a>
 				</div>
-				{/* <p id="how-to-play-link" onClick={() => setShowHow(true)}>
-					How to play
-				</p> */}
 			</div>
 			{isLoggedIn && (
 				<button className="user-menu-button" onClick={handleOpenMenu}>

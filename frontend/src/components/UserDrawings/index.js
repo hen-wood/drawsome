@@ -66,7 +66,14 @@ export default function UserDrawings() {
 	};
 
 	return isLoaded ? (
-		<div className="user-drawings-container" ref={galleryRef}>
+		<div
+			className={
+				Object.values(drawings).length
+					? "user-drawings-container"
+					: "no-drawings-container"
+			}
+			ref={galleryRef}
+		>
 			{drawingOpen && (
 				<OpenDrawing
 					setDrawingOpen={setDrawingOpen}
@@ -135,7 +142,7 @@ export default function UserDrawings() {
 					);
 				})
 			) : (
-				<h1 id="no-drawings-title">
+				<h1 className="no-drawings-title">
 					No Drawings yet 😭 Click <Link to="/draw">here</Link> to make one!
 				</h1>
 			)}

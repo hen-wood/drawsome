@@ -18,7 +18,6 @@
 
 .home-link {
     cursor: pointer;
-    color: white;
     margin: 0;
 }
 
@@ -55,6 +54,7 @@
     align-items: center;
     padding: 10px;
     background-color: #000000d2;
+    /* overflow-y: none; */
 }
 
 .user-menu--hidden{
@@ -125,6 +125,7 @@
     border-radius: 50%;
     cursor: pointer;
     background-color: unset;
+    margin: 0;
 }
 
 .user-menu-button:hover{

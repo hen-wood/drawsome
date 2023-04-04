@@ -72,8 +72,8 @@ export default function CreateGame() {
 	};
 
 	return (
-		<div id="create-game-form-container">
-			<h1>Create a Drawsome Game</h1>
+		<div className="form-container">
+			<h1 className="form-title">Create a Drawsome Game</h1>
 			<form onSubmit={handleCreateGame}>
 				<label htmlFor="num-players">Number of players (3-8)</label>
 				<div className="create-game-input-div">
@@ -92,7 +92,9 @@ export default function CreateGame() {
 						></i>
 					</div>
 					<input
-						className={errors["numPlayers"] ? "input-errors" : ""}
+						className={
+							errors["numPlayers"] ? "input-field input-errors" : "input-field"
+						}
 						placeholder={errors["numPlayers"] ? errors["numPlayers"] : ""}
 						name="num-players"
 						type="number"
@@ -122,7 +124,9 @@ export default function CreateGame() {
 						></i>
 					</div>
 					<input
-						className={errors["timeLimit"] ? "input-errors" : ""}
+						className={
+							errors["timeLimit"] ? "input-field input-errors" : "input-field"
+						}
 						placeholder={errors["timeLimit"] ? errors["timeLimit"] : ""}
 						name="num-minutes"
 						type="number"
@@ -159,6 +163,7 @@ export default function CreateGame() {
 						max={5}
 						onChange={e => handleUpdateRounds(+e.target.value)}
 						onBlur={e => (e.target.value = +e.target.value)}
+						className="input-field"
 					/>
 				</div>
 				{rounds.map((r, i) => {
@@ -178,7 +183,7 @@ export default function CreateGame() {
 							<input
 								type="text"
 								className={
-									errors[i] ? "input-errors prompt-input" : "prompt-input"
+									errors[i] ? "input-field input-errors" : "input-field"
 								}
 								placeholder={`Enter prompt for round ${i + 1}`}
 								onChange={e => {

@@ -11,6 +11,11 @@
     padding: 10px;
 }
 
+.no-drawings-container{
+    display: flex;
+    height: 100%;
+}
+
 .indiv-drawing-container{
     width: 100%;
     height: fit-content;
@@ -94,7 +99,7 @@
     cursor: pointer;
 }
 
-#no-drawings-title{
+.no-drawings-title{
     text-align: center;
     width: 100%;
 }
