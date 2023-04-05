@@ -106,9 +106,6 @@ io.on("connection", socket => {
 		io.to(gameCode).emit("start-game");
 	});
 
-	socket.on("host-sent-unpause", (gameState, gameCode) => {
-		io.to(gameCode).emit("unpause-game", gameState);
-	});
 	// socket.on("join", newPlayerData => {
 	// 	// Server receives 'joined' event from new player
 	// 	const { roomId, player, isHost } = newPlayerData;

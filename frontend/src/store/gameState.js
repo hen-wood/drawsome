@@ -172,7 +172,6 @@ const gameStateReducer = (state = initialState, action) => {
 			allPlayersConnected = Object.values(newState.players).every(
 				player => player.isConnected
 			);
-
 			if (allPlayersConnected) newState.isPaused = false;
 			return newState;
 		case SET_TIMES_UP_TRUE:

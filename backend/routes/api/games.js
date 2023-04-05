@@ -27,7 +27,8 @@ router.get("/:gameCode", requireAuthentication, async (req, res, next) => {
 				model: Round,
 				as: "gameRounds",
 				attributes: ["id", "gameId", "prompt", "roundNumber"]
-			}
+			},
+			{ model: Player }
 		]
 	});
 	if (!game) {
@@ -38,7 +39,17 @@ router.get("/:gameCode", requireAuthentication, async (req, res, next) => {
 		return res.status(401).json({
 			message: "That game is over..."
 		});
-	} else if (game.hasStarted) {
+	} else if (
+		!game.hasStarted &&
+		game.Players.length !== game.numPlayers &&
+		!game.Players.some(player => player.userId === req.user.id)
+	) {
+		await Player.create({ gameId: game.id, userId: req.user.id });
+	} else if (
+		game.hasStarted &&
+		!game.Players.some(player => player.userId === req.user.id)
+	) {
+		console.log(game.Players);
 		return res.status(403).json({
 			message: "That game started without you..."
 		});
