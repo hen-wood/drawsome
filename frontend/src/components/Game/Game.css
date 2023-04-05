@@ -1,23 +1,27 @@
-#lobby-container{
-    margin-bottom: 20vh;
+.lobby-container{
+    /* margin-bottom: 20vh; */
+    box-sizing: border-box;
     padding: 20px;
     background-color: rgba(0, 0, 0, 0.527);
     box-shadow: 0px 10px 10px -5px rgb(1, 2, 53);
-    border-radius: 10px;
+    /* border-radius: 10px; */
+    height: 100%;
+    width: 100%;
 }
 
-#lobby-container h1{
+.lobby-container h1{
     margin-left: 0;
     margin-bottom: 20px;
+    font-size: 26px;
     padding: 0;
 }
 
-#lobby-container button{
+.lobby-container button{
     width: 100%;
     margin: 0;
 }
 
-#copy-code{
+.copy-code{
     margin: 0;
     border-radius: 5px;
     box-shadow: 0px 10px 10px -5px rgb(1, 2, 53);

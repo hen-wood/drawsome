@@ -4,14 +4,17 @@ import { SocketContext } from "../../../context/Socket";
 import {
 	actionConnectPlayer,
 	actionDisconnectPlayer,
-	actionSyncWithHost
+	actionResetGameState,
+	actionStartGame,
+	actionSyncWithHost,
+	actionUnpauseGame
 } from "../../../store/gameState";
+import { useParams } from "react-router-dom";
 export default function useSocketListeners(gameState) {
 	const dispatch = useDispatch();
 	const socket = useContext(SocketContext);
 	const user = useSelector(state => state.session.user);
-	const gameCode = gameState.game.code;
-	const isHost = gameState.game.creatorId === user.id;
+	const { gameCode } = useParams();
 
 	useEffect(() => {
 		function handleConnect() {
@@ -27,21 +30,31 @@ export default function useSocketListeners(gameState) {
 			dispatch(actionSyncWithHost(gameState));
 		}
 
-		socket.on("connect", handleConnect);
-		socket.on("player-disconnected", handleDisconnect);
-		socket.on("game-state-from-host", handleGameStateFromHost);
+		function handleStartGame() {
+			dispatch(actionStartGame());
+		}
+
+		if (gameState) {
+			socket.on("connect", handleConnect);
+			socket.on("player-disconnected", handleDisconnect);
+			socket.on("game-state-from-host", handleGameStateFromHost);
+			socket.on("start-game", handleStartGame);
+		}
 
 		return () => {
 			socket.off("connect", handleConnect);
 			socket.off("player-disconnected", handleDisconnect);
 			socket.off("game-state-from-host", handleGameStateFromHost);
+			socket.off("start-game", handleStartGame);
 			socket.disconnect();
+			dispatch(actionResetGameState());
 		};
 	}, []);
 
 	useEffect(() => {
-		function handlePlayerConnected(user, socketId) {
-			dispatch(actionConnectPlayer(user, socketId));
+		function handlePlayerConnected(player, socketId) {
+			const isHost = gameState.game.creatorId === user.id;
+			dispatch(actionConnectPlayer(player, socketId));
 			if (isHost) {
 				socket.emit("host-sent-game-state", gameState, socketId);
 			}

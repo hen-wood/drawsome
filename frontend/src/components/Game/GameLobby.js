@@ -11,14 +11,15 @@ export default function GameLobby() {
 	const socket = useContext(SocketContext);
 	const {
 		game: { numPlayers, creatorId, code, id },
-		players
+		players,
+		isPaused
 	} = useSelector(state => state.gameState);
 	const user = useSelector(state => state.session.user);
 
 	return (
-		<div id="lobby-container">
+		<div className="lobby-container">
 			<h1>Let's play Drawsome! 🧑‍🎨</h1>
-			<p id="copy-code" onClick={() => copyCode(code)}>
+			<p className="copy-code" onClick={() => copyCode(code)}>
 				copy game code: {code} 🔗
 			</p>
 			<div className="divider"></div>
@@ -40,7 +41,7 @@ export default function GameLobby() {
 								? "You"
 								: player.username
 						} ${
-							isCreator && player.connected
+							isCreator && player.isConnected
 								? "created the game"
 								: player.isConnected
 								? "joined the game"
@@ -49,17 +50,19 @@ export default function GameLobby() {
 					</p>
 				);
 			})}
-			{Object.keys(players).length === numPlayers && user.id === creatorId && (
-				<button
-					onClick={() => {
-						dispatch(thunkStartGame(id)).then(() => {
-							socket.emit("start game", { roomId: code });
-						});
-					}}
-				>
-					Start the game!
-				</button>
-			)}
+			{/* Object.values(players).length === numPlayers && */}
+			{Object.values(players).every(player => player.isConnected) &&
+				user.id === creatorId && (
+					<button
+						onClick={() => {
+							dispatch(thunkStartGame(id)).then(() => {
+								socket.emit("host-started-game", code);
+							});
+						}}
+					>
+						Start the game!
+					</button>
+				)}
 		</div>
 	);
 }

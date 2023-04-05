@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { SocketContext } from "../../context/Socket";
 import GameLobby from "./GameLobby";
 import GameVote from "./GameVote";
@@ -9,56 +9,31 @@ import GameLeaderboard from "./GameLeaderboard";
 import "./Game.css";
 import loadingGif from "../../images/loading.gif";
 import useSocketListeners from "./utils";
+import { actionResetGameState, thunkJoinGame } from "../../store/gameState";
 
 export default function Game() {
+	const dispatch = useDispatch();
 	const gameState = useSelector(state => state.gameState);
+	const { gameCode } = useParams();
+	const [isLoaded, setIsLoaded] = useState(false);
 	useSocketListeners(gameState);
 
-	// useEffect(() => {
-	// 	const isHost = game.creatorId;
-	// 	socket.on("connect", () => {
-	// 		dispatch(actionConnectPlayer(socket.id, user));
-	// 		utils.emitClientConnected(user, socket, game.code);
-	// 	});
-
-	// 	socket.on("player-connected", (user, socketId) => {
-	// 		dispatch(actionConnectPlayer(socketId, user));
-	// 		if (isHost) {
-	// 			utils.emitHostGameState(
-	// 				{ game, players, currentRound, section },
-	// 				socketId,
-	// 				socket
-	// 			);
-	// 		}
-	// 	});
-
-	// 	socket.on("game-state-from-host", gameState => {
-	// 		dispatch(actionSyncWithHost(gameState));
-	// 	});
-
-	// 	socket.on("data for new player", hostDataStr => {});
-
-	// 	socket.on("host started game", () => {});
-
-	// 	socket.on("server sending drawing", drawingData => {});
-
-	// 	socket.on("start vote", hostGameStateStr => {});
-
-	// 	socket.on("server sending vote", playerVotedFor => {});
-
-	// 	socket.on("start leaderboard", hostDataStr => {});
-
-	// 	socket.on("post-round data", hostDataStr => {});
-
-	// 	socket.on("game over", hostDataStr => {});
-
-	// 	return () => {
-	// 		socket.disconnect();
-	// 	};
-	// }, []);
-
-	return (
-		<div id="game-container">
+	useEffect(() => {
+		if (!gameState.game) {
+			dispatch(thunkJoinGame(gameCode))
+				.then(() => {
+					setIsLoaded(true);
+				})
+				.catch(async res => {
+					const err = await res.json();
+					console.log(err);
+				});
+		} else {
+			setIsLoaded(true);
+		}
+	}, [gameState.game]);
+	return isLoaded ? (
+		<>
 			{gameState.section === "lobby" ? (
 				<GameLobby />
 			) : gameState.section === "round" ? (
@@ -70,6 +45,8 @@ export default function Game() {
 			) : (
 				<img src={loadingGif} alt="loading" />
 			)}
-		</div>
+		</>
+	) : (
+		<img src={loadingGif} alt="loading" />
 	);
 }
