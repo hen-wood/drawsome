@@ -5,15 +5,12 @@ import { Timer } from "./utils/Timer";
 import { getLocalAsObj } from "./utils/localFunctions";
 import { csrfFetch } from "../../store/csrf";
 
-export default function GameVote({ gameState, setGameState }) {
+export default function GameVote() {
 	const socket = useContext(SocketContext);
 	const user = useSelector(state => state.session.user);
-	const { drawings, currentRound, players, gameRounds, code, hostSocket, id } =
-		getLocalAsObj("gameState");
+	// const {players, drawings,currentRound,}
 	const otherId = Object.keys(players).find(key => +key !== user.id);
 	const [playerVotedFor, setPlayerVotedFor] = useState(+otherId);
-	const [timesUp, setTimesUp] = useState(false);
-	const [time, setTime] = useState(10);
 
 	useEffect(() => {
 		if (timesUp) {
@@ -37,12 +34,6 @@ export default function GameVote({ gameState, setGameState }) {
 
 	return (
 		<div id="vote-container-outer">
-			<Timer
-				time={time}
-				setTime={setTime}
-				setTimesUp={setTimesUp}
-				message={`Which one of these best captures "${currentRound.prompt}"?`}
-			/>
 			<div id="drawing-vote-container">
 				{Object.keys(drawings[currentRound.id]).map(playerId => {
 					const { drawingUrl } = drawings[currentRound.id][playerId];

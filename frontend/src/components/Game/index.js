@@ -33,7 +33,7 @@ export default function Game() {
 		}
 	}, [gameState.game]);
 	return isLoaded ? (
-		<>
+		<div>
 			{gameState.section === "lobby" ? (
 				<GameLobby />
 			) : gameState.section === "round" ? (
@@ -45,7 +45,7 @@ export default function Game() {
 			) : (
 				<img src={loadingGif} alt="loading" />
 			)}
-		</>
+		</div>
 	) : (
 		<img src={loadingGif} alt="loading" />
 	);

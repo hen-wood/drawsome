@@ -6,6 +6,7 @@ import { copyCode, waitingMessage } from "./utils/lobbyTools";
 import "./Game.css";
 import { getLocalAsObj } from "./utils/localFunctions";
 
+
 export default function GameLobby() {
 	const dispatch = useDispatch();
 	const socket = useContext(SocketContext);

@@ -3,6 +3,12 @@ const express = require("express");
 const { singleMulterUpload, uploadDrawingToS3 } = require("../../awsS3.js");
 const { requireAuthentication } = require("../../utils/auth");
 const { Drawing, DrawingVote } = require("../../db/models");
+const { ImageAnnotatorClient } = require("@google-cloud/vision");
+const GCPcredentials = require("../../GCPcredentials.js");
+
+const annotatorClient = new ImageAnnotatorClient({
+	credentials: GCPcredentials
+});
 
 const router = express.Router();
 
@@ -23,6 +29,17 @@ router.post(
 			title,
 			drawingUrl
 		});
+
+		const [result] = await annotatorClient.objectLocalization(drawingUrl);
+		const objects = result.localizedObjectAnnotations;
+
+		objects.forEach(object => {
+			console.log(`Name: ${object.name}`);
+			console.log(`Confidence: ${object.score}`);
+			const veritices = object.boundingPoly.normalizedVertices;
+			veritices.forEach(v => console.log(`x: ${v.x}, y:${v.y}`));
+		});
+
 		return res.json(newDrawing);
 	}
 );
