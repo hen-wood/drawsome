@@ -5,9 +5,11 @@ import {
 	actionConnectPlayer,
 	actionDisconnectPlayer,
 	actionResetGameState,
-	actionStartGame,
 	actionSyncWithHost,
-	actionUnpauseGame
+	actionAddGameDrawing,
+	actionAddVote,
+	actionSetGameSection,
+	actionSetCurrentTimeLimit
 } from "../../../store/gameState";
 import { useParams } from "react-router-dom";
 export default function useSocketListeners(gameState) {
@@ -30,22 +32,40 @@ export default function useSocketListeners(gameState) {
 			dispatch(actionSyncWithHost(gameState));
 		}
 
-		function handleStartGame() {
-			dispatch(actionStartGame());
+		function handleStartRound() {
+			dispatch(actionSetGameSection("round"));
+			dispatch(actionSetCurrentTimeLimit(gameState.game.timeLimit));
+		}
+		function handleStartVote() {
+			dispatch(actionSetGameSection("vote"));
+			dispatch(actionSetCurrentTimeLimit(1));
+		}
+
+		function handleAddDrawing(drawingData) {
+			dispatch(actionAddGameDrawing(drawingData));
+		}
+		function handleAddVote(playerVotedFor) {
+			dispatch(actionAddVote(playerVotedFor));
 		}
 
 		if (gameState) {
 			socket.on("connect", handleConnect);
 			socket.on("player-disconnected", handleDisconnect);
 			socket.on("game-state-from-host", handleGameStateFromHost);
-			socket.on("start-game", handleStartGame);
+			socket.on("start-round", handleStartRound);
+			socket.on("start-vote", handleStartVote);
+			socket.on("player-drawing-to-host", handleAddDrawing);
+			socket.on("player-vote-to-host", handleAddVote);
 		}
 
 		return () => {
 			socket.off("connect", handleConnect);
 			socket.off("player-disconnected", handleDisconnect);
 			socket.off("game-state-from-host", handleGameStateFromHost);
-			socket.off("start-game", handleStartGame);
+			socket.off("start-round", handleStartRound);
+			socket.off("start-vote", handleStartVote);
+			socket.off("player-drawing-to-host", handleAddDrawing);
+			socket.off("player-vote-to-host", handleAddVote);
 			socket.disconnect();
 			dispatch(actionResetGameState());
 		};
@@ -56,7 +76,7 @@ export default function useSocketListeners(gameState) {
 			const isHost = gameState.game.creatorId === user.id;
 			dispatch(actionConnectPlayer(player, socketId));
 			if (isHost) {
-				socket.emit("host-sent-game-state", gameState, socketId);
+				socket.emit("sync-host-one-player", gameState, socketId);
 			}
 		}
 

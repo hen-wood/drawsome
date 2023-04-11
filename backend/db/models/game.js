@@ -48,16 +48,19 @@ module.exports = (sequelize, DataTypes) => {
 			sequelize,
 			modelName: "Game",
 			defaultScope: {
-				attributes: [
-					"id",
-					"code",
-					"creatorId",
-					"numPlayers",
-					"numRounds",
-					"timeLimit",
-					"hasStarted",
-					"hasEnded"
-				]
+				attributes: {
+					include: [
+						"id",
+						"code",
+						"creatorId",
+						"numPlayers",
+						"numRounds",
+						"timeLimit",
+						"hasStarted",
+						"hasEnded"
+					],
+					exclude: ["createdAt", "updatedAt"]
+				}
 			}
 		}
 	);

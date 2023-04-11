@@ -56,7 +56,7 @@ export default function GameLobby() {
 					<button
 						onClick={() => {
 							dispatch(thunkStartGame(id)).then(() => {
-								socket.emit("host-started-game", code);
+								socket.emit("host-started-round", code);
 							});
 						}}
 					>

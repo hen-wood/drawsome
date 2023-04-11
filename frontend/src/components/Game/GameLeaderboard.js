@@ -1,60 +1,43 @@
 import { useEffect, useState, useContext } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { SocketContext } from "../../context/Socket";
-import { thunkEndGame } from "../../store/games";
-import { getLocalAsObj, updateLocalCurrRound } from "./utils/localFunctions";
-import { Timer } from "./utils/Timer";
+import {
+	actionResetDrawings,
+	actionSetCurrentTimeLimit,
+	actionSetGameSection,
+	actionSetTimesUpFalse,
+	actionUpdateCurrentRound
+} from "../../store/gameState";
 
 export default function GameLeaderboard() {
 	const dispatch = useDispatch();
 	const user = useSelector(state => state.session.user);
+	const gameState = useSelector(state => state.gameState);
+	const { game, players, drawings, votes, timesUp } = gameState;
 	const socket = useContext(SocketContext);
-	const {
-		id,
-		code,
-		scores,
-		drawings,
-		players,
-		currentRound,
-		votes,
-		creatorId,
-		gameRounds
-	} = getLocalAsObj("gameState");
-	const [time, setTime] = useState(5);
-	const [timesUp, setTimesUp] = useState(false);
 
 	useEffect(() => {
-		if (timesUp && creatorId === user.id) {
-			if (gameRounds[currentRound.roundNumber]) {
-				const hostDataStr = updateLocalCurrRound();
-				socket.emit("host data after round", {
-					hostDataStr,
-					roomId: code
-				});
-			} else {
-				dispatch(thunkEndGame(id))
-					.then(res => {
-						const hostDataStr = JSON.stringify(res);
-						socket.emit("host game results", { hostDataStr, roomId: code });
-					})
-					.catch(async res => {
-						const err = await res.json();
-						console.log({ err });
-					});
-			}
+		dispatch(actionSetTimesUpFalse());
+	}, []);
+
+	useEffect(() => {
+		if (timesUp) {
+			dispatch(actionSetCurrentTimeLimit(game.timeLimit));
+			dispatch(actionResetDrawings());
+			dispatch(actionUpdateCurrentRound());
+			dispatch(actionSetGameSection("round"));
 		}
 	}, [timesUp]);
 
 	return (
 		<div id="leaderboard-container">
-			<Timer
-				time={time}
-				setTime={setTime}
-				setTimesUp={setTimesUp}
-				message={`Here's how you all stack up after Round ${currentRound.roundNumber}...`}
-			/>
 			<div id="leaderboard-cards">
-				{Object.entries(scores)
+				{Object.values(drawings)
+					.sort((a, b) => a.votes - b.votes)
+					.map(drawing => (
+						<img src={drawing.drawingUrl} />
+					))}
+				{/* {Object.entries(scores)
 					.sort((a, b) => b[1] - a[1])
 					.map((entry, i) => {
 						const [playerId, score] = entry;
@@ -72,7 +55,7 @@ export default function GameLeaderboard() {
 								<img src={drawingUrl} alt={title} />
 							</div>
 						);
-					})}
+					})} */}
 			</div>
 		</div>
 	);

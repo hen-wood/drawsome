@@ -98,14 +98,28 @@ io.on("connection", socket => {
 		socket.to(gameCode).emit("player-connected", user, socketId);
 	});
 
-	socket.on("host-sent-game-state", (gameState, socketId) => {
+	socket.on("sync-host-one-player", (gameState, socketId) => {
 		io.to(socketId).emit("game-state-from-host", gameState);
 	});
 
-	socket.on("host-started-game", gameCode => {
-		io.to(gameCode).emit("start-game");
+	socket.on("sync-host-all-players", (gameState, gameCode) => {
+		io.to(gameCode).emit("game-state-from-host", gameState);
 	});
 
+	socket.on("host-started-vote", (drawings, gameCode) => {
+		socket.to(gameCode).emit("start-vote", drawings);
+	});
+
+	socket.on("host-started-round", gameCode => {
+		io.to(gameCode).emit("start-round");
+	});
+
+	socket.on("player-sent-drawing", (drawingData, hostSocket) => {
+		io.to(hostSocket).emit("player-drawing-to-host", drawingData);
+	});
+	socket.on("player-sent-vote", (playerVotedFor, hostSocket) => {
+		io.to(hostSocket).emit("player-vote-to-host", playerVotedFor);
+	});
 	// socket.on("join", newPlayerData => {
 	// 	// Server receives 'joined' event from new player
 	// 	const { roomId, player, isHost } = newPlayerData;

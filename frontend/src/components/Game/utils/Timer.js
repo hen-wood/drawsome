@@ -8,12 +8,12 @@ import {
 } from "../../../store/gameState";
 export const Timer = () => {
 	const dispatch = useDispatch();
-	const timeLimit = useSelector(state => state.gameState.currentTimeLimit);
+	const { currentTimeLimit, timesUp } = useSelector(state => state.gameState);
 	const isPaused = useSelector(state => state.gameState.isPaused);
-	const [time, setTime] = useState(timeLimit * 10);
+	const [time, setTime] = useState(5);
+	// const [time, setTime] = useState(currentTimeLimit * 10);
 
 	useEffect(() => {
-		dispatch(actionSetTimesUpFalse());
 		const intervalId = setInterval(() => {
 			if (!isPaused) {
 				setTime(prevTime => {
@@ -27,7 +27,9 @@ export const Timer = () => {
 			dispatch(actionSetCurrentTimeLimit(time / 10));
 		}
 
-		return () => clearInterval(intervalId);
+		return () => {
+			clearInterval(intervalId);
+		};
 	}, [isPaused]);
 
 	useEffect(() => {
@@ -35,6 +37,10 @@ export const Timer = () => {
 			dispatch(actionSetTimesUpTrue());
 		}
 	}, [time]);
+
+	useEffect(() => {
+		setTime(currentTimeLimit);
+	}, [currentTimeLimit]);
 
 	return (
 		<p className="round-info round-info--right">

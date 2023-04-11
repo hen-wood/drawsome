@@ -2,11 +2,16 @@ import { csrfFetch } from "./csrf";
 const SET_GAME = "gameState/SET_GAME";
 const CONNECT_PLAYER = "gameState/CONNECT_PLAYER";
 const DISCONNECT_PLAYER = "gameState/DISCONNECT_PLAYER";
-const START_GAME = "gameState/START_GAME";
+const START_ROUND = "gameState/START_ROUND";
+const START_VOTE = "gameState/START_VOTE";
+const ADD_DRAWING = "gameState/ADD_DRAWING";
+const ADD_VOTE = "gameState/ADD_DRAWING_VOTE";
+const UPDATE_CURRENT_ROUND = "gameState/UPDATE_CURRENT_ROUND";
+const SET_GAME_SECTION = "gameState/SET_GAME_SECTION";
 const SET_TIMES_UP_TRUE = "gameState/SET_TIMES_UP_TRUE";
 const SET_TIMES_UP_FALSE = "gameState/SET_TIMES_UP_FALSE";
 const SET_CURRENT_TIME_LIMIT = "gameState/SET_CURRENT_TIME_LIMIT";
-const ADD_DRAWING = "gameState/ADD_DRAWING";
+const RESET_DRAWINGS = "gameState/RESET_DRAWINGS";
 const SYNC_WITH_HOST = "gameState/SYNC_WITH_HOST";
 const RESET_GAME_STATE = "gameState/RESET_GAME_STATE";
 
@@ -38,9 +43,23 @@ export const actionSyncWithHost = hostGameState => {
 	};
 };
 
-export const actionStartGame = () => {
+export const actionStartRound = () => {
 	return {
-		type: START_GAME
+		type: START_ROUND
+	};
+};
+
+export const actionStartVote = drawings => {
+	return {
+		type: START_VOTE,
+		payload: drawings
+	};
+};
+
+export const actionSetGameSection = section => {
+	return {
+		type: SET_GAME_SECTION,
+		section
 	};
 };
 
@@ -62,10 +81,26 @@ export const actionSetCurrentTimeLimit = limit => {
 	};
 };
 
-export const actionAddDrawing = (roundId, artistId, url) => {
+export const actionAddGameDrawing = drawingData => {
 	return {
 		type: ADD_DRAWING,
-		payload: { roundId, artistId, url }
+		payload: drawingData
+	};
+};
+export const actionAddVote = playerVotedFor => {
+	return {
+		type: ADD_VOTE,
+		payload: playerVotedFor
+	};
+};
+
+export const actionUpdateCurrentRound = () => {
+	return { type: UPDATE_CURRENT_ROUND };
+};
+
+export const actionResetDrawings = () => {
+	return {
+		type: RESET_DRAWINGS
 	};
 };
 
@@ -109,6 +144,7 @@ const initialState = {
 	currentRound: 0,
 	players: {},
 	drawings: {},
+	numVotes: 0,
 	section: "lobby",
 	timesUp: false,
 	isPaused: false,
@@ -133,6 +169,7 @@ const gameStateReducer = (state = initialState, action) => {
 					[action.payload.user.id]: {
 						...action.payload.user,
 						isConnected: true,
+						score: 0,
 						socketId: action.payload.socketId
 					}
 				}
@@ -158,12 +195,8 @@ const gameStateReducer = (state = initialState, action) => {
 				},
 				isPaused: true
 			};
-		case START_GAME:
-			return {
-				...state,
-				game: { ...state.game, hasStarted: true },
-				section: "round"
-			};
+		case SET_GAME_SECTION:
+			return { ...state, section: action.section };
 		case SYNC_WITH_HOST:
 			newState = {
 				...action.payload,
@@ -176,7 +209,7 @@ const gameStateReducer = (state = initialState, action) => {
 			return newState;
 		case SET_TIMES_UP_TRUE:
 			return { ...state, timesUp: true };
-		case SET_TIMES_UP_TRUE:
+		case SET_TIMES_UP_FALSE:
 			return { ...state, timesUp: false };
 		case SET_CURRENT_TIME_LIMIT:
 			return { ...state, currentTimeLimit: action.payload };
@@ -185,9 +218,36 @@ const gameStateReducer = (state = initialState, action) => {
 				...state,
 				drawings: {
 					...state.drawings,
-					[action.payload.roundId]: { ...action.payload }
+					[action.payload.userId]: action.payload
 				}
 			};
+		case ADD_VOTE:
+			return {
+				...state,
+				drawings: {
+					...state.drawings,
+					[action.payload]: {
+						...state.drawings[action.payload],
+						votes: state.drawings[action.payload].votes + 1
+					}
+				},
+				players: {
+					...state.players,
+					[action.payload]: {
+						...state.players[action.payload],
+						score: state.players[action.payload].score + 100
+					}
+				},
+				numVotes: state.numVotes + 1
+			};
+		case UPDATE_CURRENT_ROUND: {
+			return {
+				...state,
+				currentRound: state.currentRound + 1
+			};
+		}
+		case RESET_DRAWINGS:
+			return { ...state, drawings: {} };
 		case RESET_GAME_STATE:
 			return initialState;
 		default:

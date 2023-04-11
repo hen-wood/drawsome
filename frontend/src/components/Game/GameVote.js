@@ -1,64 +1,78 @@
 import { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { SocketContext } from "../../context/Socket";
-import { Timer } from "./utils/Timer";
-import { getLocalAsObj } from "./utils/localFunctions";
 import { csrfFetch } from "../../store/csrf";
+import {
+	actionSetCurrentTimeLimit,
+	actionSetGameSection,
+	actionSetTimesUpFalse
+} from "../../store/gameState";
 
-export default function GameVote({ gameState, setGameState }) {
+export default function GameVote() {
+	const dispatch = useDispatch();
 	const socket = useContext(SocketContext);
 	const user = useSelector(state => state.session.user);
-	const { drawings, currentRound, players, gameRounds, code, hostSocket, id } =
-		getLocalAsObj("gameState");
-	const otherId = Object.keys(players).find(key => +key !== user.id);
-	const [playerVotedFor, setPlayerVotedFor] = useState(+otherId);
-	const [timesUp, setTimesUp] = useState(false);
-	const [time, setTime] = useState(10);
+	const gameState = useSelector(state => state.gameState);
+	const { game, players, drawings, currentRound, timesUp } = gameState;
+	const round = game.gameRounds[currentRound];
+	const [isLoaded, setIsLoaded] = useState(false);
+	const [playerVotedFor, setPlayerVotedFor] = useState(null);
 
 	useEffect(() => {
-		if (timesUp) {
-			const drawingId = drawings[currentRound.id][playerVotedFor].id;
+		if (Object.values(drawings).length === Object.values(players).length) {
+			setPlayerVotedFor(
+				Object.values(players).find(player => player.id !== user.id).id
+			);
+			if (game.creatorId === user.id) {
+				dispatch(actionSetTimesUpFalse());
+				socket.emit("host-started-vote", drawings, game.code);
+			}
+		}
+	}, [drawings, players]);
+
+	useEffect(() => {
+		if (!timesUp) {
+			setIsLoaded(true);
+		}
+		if (isLoaded && timesUp) {
+			const drawingId = drawings[playerVotedFor].id;
+			const host = Object.values(players).find(
+				player => player.id === game.creatorId
+			);
 			csrfFetch(`/api/drawings/${drawingId}/vote`, {
 				method: "POST",
-				body: JSON.stringify({ votedForId: playerVotedFor, gameId: id })
+				body: JSON.stringify({ votedForId: playerVotedFor, gameId: game.id })
 			})
 				.then(() => {
-					socket.emit("player submitted vote", {
-						playerVotedFor,
-						hostSocket
-					});
+					socket.emit("player-sent-vote", playerVotedFor, host.socketId);
+					dispatch(actionSetCurrentTimeLimit(1));
+					dispatch(actionSetGameSection("leaderboard"));
 				})
 				.catch(async res => {
 					const err = await res.json();
 					console.log(err);
 				});
 		}
-	}, [timesUp]);
+	}, [isLoaded, timesUp]);
 
-	return (
+	return isLoaded ? (
 		<div id="vote-container-outer">
-			<Timer
-				time={time}
-				setTime={setTime}
-				setTimesUp={setTimesUp}
-				message={`Which one of these best captures "${currentRound.prompt}"?`}
-			/>
 			<div id="drawing-vote-container">
-				{Object.keys(drawings[currentRound.id]).map(playerId => {
-					const { drawingUrl } = drawings[currentRound.id][playerId];
-					const isUser = user.id === +playerId;
+				{Object.values(drawings).map(drawing => {
+					const { drawingUrl, userId } = drawing;
+					const isUser = user.id === userId;
 					return (
 						<img
-							key={playerId}
+							key={drawing.id}
 							src={drawingUrl}
-							alt={currentRound.prompt}
+							alt={round.prompt}
 							onClick={() => {
-								if (!isUser) setPlayerVotedFor(+playerId);
+								if (!isUser) setPlayerVotedFor(userId);
 							}}
 							className={
 								isUser
 									? "disable-vote-drawing"
-									: +playerId === playerVotedFor
+									: userId === playerVotedFor
 									? "vote-drawing choice"
 									: "vote-drawing"
 							}
@@ -67,5 +81,7 @@ export default function GameVote({ gameState, setGameState }) {
 				})}
 			</div>
 		</div>
+	) : (
+		<h1>Waiting for all drawings</h1>
 	);
 }
