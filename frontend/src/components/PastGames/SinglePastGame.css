@@ -176,6 +176,7 @@
 @media (min-width:920px) {
     .game-info-container {
         flex-direction: row;
+        width: 80%;
     }
 
     .player-info-container {

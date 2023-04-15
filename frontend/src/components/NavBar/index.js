@@ -42,7 +42,7 @@ export default function NavBar({ theme, setTheme }) {
 					>
 						Drawsome
 					</h1>
-					{!game && (
+					{game && !game.hasStarted && (
 						<div className="about-links">
 							<a
 								className="about-link"

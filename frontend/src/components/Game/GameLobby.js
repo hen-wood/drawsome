@@ -21,12 +21,7 @@ export default function GameLobby() {
 				Copy game code: {code} 🔗
 			</button>
 			<div className="divider"></div>
-			{waitingMessage(
-				Object.values(players).length,
-				numPlayers,
-				user.id,
-				creatorId
-			)}
+			{waitingMessage(Object.values(players), numPlayers, user.id, creatorId)}
 			{Object.values(players).map(player => {
 				const isCreator = player.id === creatorId;
 
