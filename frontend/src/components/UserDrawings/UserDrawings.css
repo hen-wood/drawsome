@@ -17,7 +17,8 @@
 }
 
 .indiv-drawing-container{
-    width: 100%;
+    width: fit-content;
+    max-width: 100%;
     height: fit-content;
     padding: 10px;
     box-sizing: border-box;
@@ -40,20 +41,30 @@
     cursor: pointer;
 }
 
-.indiv-drawing-container .edit-title-form input.edit-title-field{
+.indiv-drawing-container .edit-title-form .edit-title-field{
     position: relative;
     background-color: #00000080;
     left: 0;
     top: 0;
     overflow: hidden;
     text-overflow: ellipsis;
+    width: fit-content;
     font-size: 20px;
     font-weight: bolder;
     border-radius: 5px;
+    border: none;
     color: #ffffff;
     margin: 0;
     padding: 5px 25px 5px 10px;
     box-shadow: 0px 7px 5px -5px black;
+}
+
+.user-drawings__image{
+    height: 100%;
+    max-width: 100%;
+    border-radius: 10px;
+    box-shadow: 0px 7px 5px -5px black;
+    cursor: pointer;
 }
 
 .drawing-title:hover,
@@ -74,17 +85,9 @@
     bottom: 20px;
 }
 
-.indiv-drawing-container img{
-    height: 100%;
-    width: 100%;
-    max-width: 800px;
-    border-radius: 10px;
-    box-shadow: 0px 7px 5px -5px black;
-    cursor: pointer;
-}
 
 .edit-title-form{
-    width: 60%;
+    width: fit-content;
     position: absolute;
     left: 15px;
     top: 15px;
@@ -132,7 +135,8 @@
 @media (min-width: 500px){
     .user-drawings-container{
         width: fit-content;
-        padding-bottom: 100px;
+        height: 80%;
+        border-radius: 15px;
     }
 }
 
@@ -140,8 +144,10 @@
     .user-drawings-container{
         display: grid;
         grid-template-columns: 1fr 1fr;
+        /* width: min-content; */
     }
     .indiv-drawing-container{
-        height: 500px;
+        height: fit-content;
+        width: 100%;
     }
 }

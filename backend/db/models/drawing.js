@@ -28,7 +28,8 @@ module.exports = (sequelize, DataTypes) => {
 				allowNull: false
 			},
 			title: {
-				type: DataTypes.STRING
+				type: DataTypes.STRING,
+				allowNull: false
 			},
 			drawingUrl: { type: DataTypes.STRING, allowNull: false },
 			roundId: {

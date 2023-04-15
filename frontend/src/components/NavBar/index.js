@@ -42,12 +42,13 @@ export default function NavBar({ theme, setTheme }) {
 					>
 						Drawsome
 					</h1>
-					{!game && (
+					{(!game || !game.hasStarted) && (
 						<div className="about-links">
 							<a
 								className="about-link"
 								href="https://github.com/hen-wood/drawsome"
 								target="_blank"
+								rel="noreferrer"
 							>
 								<i className="fa-brands fa-github"></i> Project repo
 							</a>
@@ -55,6 +56,7 @@ export default function NavBar({ theme, setTheme }) {
 								className="about-link"
 								href="https://www.linkedin.com/in/henry-woodmansee/"
 								target="_blank"
+								rel="noreferrer"
 							>
 								<i className="fa-brands fa-linkedin"></i> Henry's linkedin
 							</a>
