@@ -134,6 +134,7 @@ export default function UserDrawings() {
 								</div>
 							)}
 							<img
+								className="user-drawings__image"
 								src={drawing.drawingUrl}
 								alt={drawing.title}
 								onClick={() => handleOpenDrawing(drawing.drawingUrl)}

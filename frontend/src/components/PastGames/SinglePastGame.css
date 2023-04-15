@@ -174,13 +174,18 @@
 }
 
 @media (min-width:920px) {
+    .single-past-game-container{
+        width: 80%;
+        height: 80%;
+        border-radius: 15px;
+    }
+
     .game-info-container {
         flex-direction: row;
-        width: 80%;
     }
 
     .player-info-container {
-        width: 40%;
+        width: 100%;
         min-height: 100%;
     }
 
