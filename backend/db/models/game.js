@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
 				as: "gameRounds"
 			});
 
+			Game.hasMany(models.Player, { foreignKey: "gameId" });
 			Game.belongsToMany(models.User, {
 				through: models.Player,
 				foreignKey: "gameId",
@@ -47,16 +48,19 @@ module.exports = (sequelize, DataTypes) => {
 			sequelize,
 			modelName: "Game",
 			defaultScope: {
-				attributes: [
-					"id",
-					"code",
-					"creatorId",
-					"numPlayers",
-					"numRounds",
-					"timeLimit",
-					"hasStarted",
-					"hasEnded"
-				]
+				attributes: {
+					include: [
+						"id",
+						"code",
+						"creatorId",
+						"numPlayers",
+						"numRounds",
+						"timeLimit",
+						"hasStarted",
+						"hasEnded"
+					],
+					exclude: ["createdAt", "updatedAt"]
+				}
 			}
 		}
 	);

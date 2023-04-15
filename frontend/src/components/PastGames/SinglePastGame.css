@@ -1,17 +1,15 @@
-#single-past-game-container{
+.single-past-game-container{
     padding: 10px;
     background-color: rgba(0, 0, 0, 0.527);
     box-shadow: 0px 10px 10px -5px rgb(1, 2, 53);
-    width: 80%;
-    max-width: 1045px;
-    border-radius: 15px;
+    width: 100%;
     display: flex;
     flex-direction: column;
-    max-height: 80vh;
-    height: fit-content;
+    height: 100%;
+    box-sizing: border-box;
 }
 
-#game-results-title{
+.game-results-title{
     margin: 5px;
     background-color: rgba(0, 0, 0, 0.527);
     box-shadow: 0px 10px 10px -5px rgb(1, 2, 53);
@@ -20,27 +18,33 @@
     display: flex;
     justify-content: space-between;
 }
-#game-results-title p{
+.game-results-title p{
     margin: 0;
     font-size: 22px;
     font-weight: bold;
 }
 
-#game-info-container{
+.game-info-container{
     display: flex;
-    max-height: 100%;
-    overflow-y: hidden;
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    box-sizing: border-box;
 }
 
-#player-info-container{
+
+
+.player-info-container{
     padding: 5px;
     border-radius: 10px;
     background-color: rgba(0, 0, 0, 0.527);
     box-shadow: 0px 10px 10px -5px rgb(1, 2, 53);
-    width: 100%;
-    min-width: fit-content;
+    box-sizing: border-box;
+    margin: 5px;
     overflow-y: auto;
-    margin: 5px
+    height: fit-content;
 }
 
 .past-game-player-card{
@@ -85,71 +89,102 @@
     margin: 0;
 }
 
-#round-info-container {
+.round-info-container {
     padding: 5px;
     border-radius: 10px;
     background-color: rgba(0, 0, 0, 0.527);
     box-shadow: 0px 10px 10px -5px rgb(1, 2, 53);
-    width: 100%;
-    max-width: fit-content;
-    overflow-y: auto;
     margin: 5px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    height: fit-content;
+    max-width: 100%;
+    overflow-y: auto;
 }
 
 .round-info-card{
     margin: 5px;
     padding: 5px;
     border-radius: 10px;
-    max-width: 100%;
     background-color: rgba(0, 0, 0, 0.527);
     box-shadow: 0px 10px 10px -5px rgb(1, 2, 53);
+    max-width: 100%;
+    height: 100%;
+    box-sizing: border-box;
 }
 
 .round-info-title p{
     margin: 5px;
     font-weight: bold;
+    width: 100%;
+    box-sizing: border-box;
 }
 .round-info-divider{
     border-bottom: 1px solid white;
     margin: 5px 0;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .round-info-drawings-container{
     display: flex;
+    height: fit-content;
+    width: 100%;
+    box-sizing: border-box;
     overflow-x: auto;
 }
 
 .round-info-drawing-div{
     position: relative;
-    width: 100%;
-    max-width: fit-content;
-    height: fit-content;
     margin: 5px;
+    border-radius: 5px;
+    overflow: hidden;
+    height: 20vh;
+    min-width: fit-content;
 }
 
 .round-info-drawing-div img{
-    border-radius: 5px;
-    height: 15vh;
     cursor: pointer;
+    height: 100%;
 }
 
-.round-info-drawing-username{
+.drawing-stats{
     position: absolute;
     top:0;
     left:0;
-    width: fit-content;
+    width: 100%;
     background-color: white;
-    border-radius: 5px;
+    border-radius: 5px 5px 0 0;
     box-shadow: 0px 5px 10px -5px rgb(1, 2, 53);
     display: flex;
     justify-content: space-between;
-    width: 100%;
     font-weight: bold;
     cursor: pointer;
 }
 
-.round-info-drawing-username p{
+.drawing-stats__text{
     color: black;
     font-size: 12px;
     margin: 2px 5px;
+}
+
+.drawing-stats__vote-count{
+    font-style: italic;
+}
+
+@media (min-width:920px) {
+    .game-info-container {
+        flex-direction: row;
+    }
+
+    .player-info-container {
+        width: 40%;
+        min-height: 100%;
+    }
+
+    .round-info-container {
+        width: 100%;
+        min-height: 100%;
+    }
 }

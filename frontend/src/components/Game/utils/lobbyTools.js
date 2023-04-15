@@ -1,13 +1,3 @@
-export const startGame = (gameCode, gameId, socket, thunk, dispatch) => {
-	dispatch(thunk(gameId))
-		.then(() => {
-			socket.emit("creator started game", gameCode);
-		})
-		.catch(async res => {
-			const error = await res.json();
-		});
-};
-
 export const copyCode = code => {
 	navigator.clipboard.writeText(code);
 };

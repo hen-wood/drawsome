@@ -1,36 +1,50 @@
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import formatTime from "../../../utils/formatTime";
-import loadingGif from "../../../images/loading.gif";
-export const Timer = ({ time, setTime, setTimesUp, message }) => {
-	const game = useSelector(state => state.game);
+import {
+	actionSetTimesUpTrue,
+	actionSetCurrentTimeLimit
+} from "../../../store/gameState";
+export const Timer = () => {
+	const dispatch = useDispatch();
+	const { currentTimeLimit, isPaused, section } = useSelector(
+		state => state.gameState
+	);
+	const [time, setTime] = useState(currentTimeLimit * 10);
 
 	useEffect(() => {
 		const intervalId = setInterval(() => {
-			setTime(prevTime => prevTime - 1);
+			if (!isPaused) {
+				setTime(prevTime => {
+					if (prevTime > 0) {
+						return prevTime - 1;
+					}
+				});
+			}
 		}, 1000);
+		if (isPaused) {
+			dispatch(actionSetCurrentTimeLimit(time / 10));
+		}
 
-		return () => clearInterval(intervalId);
-	}, []);
+		return () => {
+			clearInterval(intervalId);
+		};
+	}, [isPaused]);
 
 	useEffect(() => {
 		if (time <= 0) {
-			setTimesUp(true);
+			dispatch(actionSetTimesUpTrue());
 		}
 	}, [time]);
 
+	useEffect(() => {
+		console.log("CURRENT TIME LIMIT CHANGED", currentTimeLimit);
+		setTime(currentTimeLimit * 10);
+	}, [currentTimeLimit, section]);
+
 	return (
-		<div id="timer-container">
-			<p>{`${message}`}</p>
-			<p>
-				{time > 0 && game.section === "round" ? (
-					`Time Remaining: ${formatTime(time)}`
-				) : time > 0 ? (
-					`${time}`
-				) : (
-					<img src={loadingGif} alt="loading" />
-				)}
-			</p>
-		</div>
+		<p className="round-info round-info--right">
+			{time > 0 ? `${formatTime(time)}` : "Loading..."}
+		</p>
 	);
 };

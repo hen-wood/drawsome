@@ -1,9 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
-import { csrfFetch } from "../../store/csrf";
-import { setLocalFromObj } from "../Game/utils/localFunctions";
-import { thunkCreateGame } from "../../store/games";
+import { thunkCreateGame } from "../../store/gameState";
 import getPrompt from "../../utils/randomPrompt";
 
 import "./Forms.css";
@@ -11,6 +9,7 @@ import "./Forms.css";
 export default function CreateGame() {
 	const dispatch = useDispatch();
 	const history = useHistory();
+	const user = useSelector(state => state.session.user);
 	const [numPlayers, setNumPlayers] = useState(3);
 	const [timeLimit, setTimeLimit] = useState(2);
 	const [errors, setErrors] = useState({});
@@ -44,22 +43,11 @@ export default function CreateGame() {
 			rounds
 		};
 
-		const response = await csrfFetch(`/api/games`, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json"
-			},
-			body: JSON.stringify(newGame)
-		});
-		if (response.ok) {
-			const game = await response.json();
-			setLocalFromObj("gameState", game);
-			history.push(`/game/${game.code}`);
-			return;
-		} else {
-			const err = await response.json();
-			console.log(err);
-		}
+		dispatch(thunkCreateGame(newGame, user))
+			.then(gameCode => {
+				history.push(`/game/${gameCode}`);
+			})
+			.catch(e => console.log(e));
 	};
 
 	const handleUpdateRounds = val => {

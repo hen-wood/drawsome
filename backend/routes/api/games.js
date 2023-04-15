@@ -27,7 +27,8 @@ router.get("/:gameCode", requireAuthentication, async (req, res, next) => {
 				model: Round,
 				as: "gameRounds",
 				attributes: ["id", "gameId", "prompt", "roundNumber"]
-			}
+			},
+			{ model: Player }
 		]
 	});
 	if (!game) {
@@ -38,14 +39,69 @@ router.get("/:gameCode", requireAuthentication, async (req, res, next) => {
 		return res.status(401).json({
 			message: "That game is over..."
 		});
-	} else if (game.hasStarted) {
-		return res.status(403).json({
+	} else if (
+		!game.hasStarted &&
+		game.Players.length !== game.numPlayers &&
+		!game.Players.some(player => player.userId === req.user.id)
+	) {
+		await Player.create({ gameId: game.id, userId: req.user.id });
+	} else if (
+		game.Players.length === game.numPlayers &&
+		!game.Players.some(player => player.userId === req.user.id)
+	) {
+		return res.status(401).json({
+			message: "That game is full..."
+		});
+	} else if (
+		game.hasStarted &&
+		!game.Players.some(player => player.userId === req.user.id)
+	) {
+		return res.status(401).json({
 			message: "That game started without you..."
 		});
 	}
 
 	return res.json(game);
 });
+
+// GET single past game
+router.get(
+	"/past-games/:gameId",
+	requireAuthentication,
+	async (req, res, next) => {
+		const { gameId } = req.params;
+		const pastGame = await Game.findByPk(gameId, {
+			include: [
+				{
+					model: Round,
+					as: "gameRounds",
+					include: {
+						model: Drawing,
+						as: "roundDrawings",
+						include: {
+							model: DrawingVote,
+							as: "drawingVotes"
+						}
+					}
+				},
+				{
+					model: User,
+					as: "players",
+					include: {
+						model: DrawingVote,
+						as: "playerVotes",
+						where: {
+							gameId
+						},
+						attributes: ["id", "drawingId"],
+						required: false
+					}
+				}
+			]
+		});
+		return res.json(pastGame);
+	}
+);
 
 // POST create new game
 router.post("/", requireAuthentication, async (req, res, next) => {

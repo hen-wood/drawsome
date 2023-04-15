@@ -1,23 +1,27 @@
-#lobby-container{
-    margin-bottom: 20vh;
+.lobby-container{
+    /* margin-bottom: 20vh; */
+    box-sizing: border-box;
     padding: 20px;
     background-color: rgba(0, 0, 0, 0.527);
     box-shadow: 0px 10px 10px -5px rgb(1, 2, 53);
-    border-radius: 10px;
+    /* border-radius: 10px; */
+    height: 100%;
+    width: 100%;
 }
 
-#lobby-container h1{
+.lobby-container h1{
     margin-left: 0;
     margin-bottom: 20px;
+    font-size: 26px;
     padding: 0;
 }
 
-#lobby-container button{
+.lobby-container button{
     width: 100%;
     margin: 0;
 }
 
-#copy-code{
+.copy-code{
     margin: 0;
     border-radius: 5px;
     box-shadow: 0px 10px 10px -5px rgb(1, 2, 53);
@@ -27,85 +31,116 @@
     cursor: pointer;
 }
 
-#copy-code:hover{
+.copy-code:hover{
     background-color: rgba(0, 0, 0, 0.212);
 }
 
-#copy-code:active{
+.copy-code:active{
     background-color: #685abe;
 }
 
-#round-container{
-    width: 100%;
-}
-#timer-container{
-    align-items: center;
-    overflow: none;
-    display: flex;
-    justify-content: space-around;
-    width: 100%;
-    border-radius: 10px;
-    box-sizing: border-box;
-    z-index: 1;
-}
-#timer-container p{
-    margin: 5px 0;
-}
 
-
-#drawing-vote-container{
+.game-vote-container{
     display: flex;
-    width: 60vw;
-    min-height: fit-content;
-    max-height: 80vh;
-    flex-wrap: wrap;
+    flex-direction: column;
+    max-width: 100%;
+    height: 100%;
     overflow-y: auto;
     background-color: rgba(0, 0, 0, 0.527);
     box-shadow: 0px 7px 5px -5px black;
-    border-radius: 10px;
-    padding: 10px;
+    padding: 20px;
+    box-sizing: border-box;
 }
-.vote-drawing{
+
+@media (min-width: 600px){
+    .game-vote-container{
+        max-height: 80%;
+        border-radius: 15px;
+    }
+}
+
+.drawing-vote__card{
+    position: relative;
+    width: fit-content;
+    max-width: 100%;
+    height: fit-content;
     box-sizing: border-box;
     border-radius: 20px;
-    width: 50%;
+    border: 5px solid #00000000;
+}
+
+.drawing-vote__image{
+    border-radius: 20px;
     padding: 10px;
     cursor: pointer;
     height: fit-content;
+    max-width: 100%;
+    box-sizing: border-box;
 }
-.choice{
+
+.drawing-vote--choice{
+    box-sizing: border-box;
     border: 5px solid green;
 }
 
-.disable-vote-drawing{
-    box-sizing: border-box;
-    border-radius: 20px;
-    width: 50%;
-    padding: 10px;
-    opacity: .3;
-    cursor:not-allowed;
-    height: fit-content;
+.drawing-vote__check{
+    color: green;
+    font-size: 30px;
+    position: absolute;
+    top: 25px;
+    right: 25px;
 }
 
-#leaderboard-container{
-    display: flex;
-    flex-direction: column;
-    width: fit-content;
-}
-
-#leaderboard-cards{
-    display: flex;
-    flex-direction: column;
-    max-height: 80vh;
-    overflow-y: auto;
-    width: fit-content;
+.round-winner__container{
+    width: 100%;
+    height: 100%;
+    padding: 15px;
     background-color: rgba(0, 0, 0, 0.527);
-    box-shadow: 0px 7px 5px -5px black;
-    border-radius: 10px;
-    padding: 10px;
+    overflow: hidden;
 }
 
-.leaderboard-card{
+@media (min-width:600px){
+    .round-winner__container{
+        max-width: fit-content;
+        height: fit-content;
+        border-radius: 15px;
+    }
+}
+
+.round-winner__title{}
+
+.round-winner__name{
+    font-size: 20px;
+    animation: slide-in-right 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+
+
+@keyframes slide-in-right {
+    0%{
+        transform: translateX(100%);
+    }
+    100%{
+        transform: translateX(0%);
+    }
+}
+.round-winner__drawing{
+    max-width: 100%;
+    animation: slide-in-bottom 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+    border-radius: 10px;
+    box-shadow: 0px 10px 10px -5px rgb(1, 2, 53);
+}
+
+@keyframes slide-in-bottom {
+    0%{
+        transform: translateY(100%);
+    }
+    100%{
+        transform: translateY(0%);
+    }
+}
+
+/* .leaderboard-card{
     display: flex;
     width: 500px;
     justify-content: space-between;
@@ -132,4 +167,4 @@
 .leaderboard-username{
     font-weight: bold;
     color: #68a6f7;
-}
+} */

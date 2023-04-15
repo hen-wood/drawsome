@@ -28,6 +28,17 @@ export const thunkStartGame = gameId => async dispatch => {
 	}
 };
 
+export const thunkGetPastGame = gameId => async dispatch => {
+	const response = await csrfFetch(`/api/games/past-games/${gameId}`);
+	if (response.ok) {
+		const pastGame = await response.json();
+		dispatch(actionAddPastGame(pastGame));
+		return pastGame;
+	} else {
+		return response;
+	}
+};
+
 export const thunkEndGame = gameId => async dispatch => {
 	const response = await csrfFetch(`/api/games/${gameId}/end`, {
 		method: "PUT"

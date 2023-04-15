@@ -32,8 +32,7 @@ module.exports = (sequelize, DataTypes) => {
 			votedForId: {
 				type: DataTypes.INTEGER,
 				references: {
-					model: "Players",
-					as: "playerVotes"
+					model: "Users"
 				}
 			}
 		},

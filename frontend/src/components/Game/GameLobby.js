@@ -1,36 +1,37 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { thunkStartGame } from "../../store/games";
 import { SocketContext } from "../../context/Socket";
 import { copyCode, waitingMessage } from "./utils/lobbyTools";
 import "./Game.css";
-import { getLocalAsObj } from "./utils/localFunctions";
 
 export default function GameLobby() {
 	const dispatch = useDispatch();
 	const socket = useContext(SocketContext);
-	const { code, numPlayers, creatorId, id, players } =
-		getLocalAsObj("gameState");
+	const {
+		game: { numPlayers, creatorId, code, id },
+		players
+	} = useSelector(state => state.gameState);
 	const user = useSelector(state => state.session.user);
+
 	return (
-		<div id="lobby-container">
+		<div className="lobby-container">
 			<h1>Let's play Drawsome! 🧑‍🎨</h1>
-			<p id="copy-code" onClick={() => copyCode(code)}>
-				copy game code: {code} 🔗
-			</p>
+			<button className="copy-code" onClick={() => copyCode(code)}>
+				Copy game code: {code} 🔗
+			</button>
 			<div className="divider"></div>
 			{waitingMessage(
-				Object.keys(players).length,
+				Object.values(players).length,
 				numPlayers,
 				user.id,
 				creatorId
 			)}
-			{Object.keys(players).map(key => {
-				const player = players[key];
+			{Object.values(players).map(player => {
 				const isCreator = player.id === creatorId;
 
 				return (
-					<p className="lobby-player" key={key}>
+					<p className="lobby-player" key={player.id}>
 						{`${isCreator ? "👑" : "✅"} ${
 							isCreator && user.id === creatorId
 								? "You"
@@ -38,26 +39,28 @@ export default function GameLobby() {
 								? "You"
 								: player.username
 						} ${
-							isCreator && player.connected
+							isCreator && player.isConnected
 								? "created the game"
-								: player.connected
+								: player.isConnected
 								? "joined the game"
 								: "disconnected..."
 						}`}
 					</p>
 				);
 			})}
-			{Object.keys(players).length === numPlayers && user.id === creatorId && (
-				<button
-					onClick={() => {
-						dispatch(thunkStartGame(id)).then(() => {
-							socket.emit("start game", { roomId: code });
-						});
-					}}
-				>
-					Start the game!
-				</button>
-			)}
+			{Object.values(players).length === numPlayers &&
+				Object.values(players).every(player => player.isConnected) &&
+				user.id === creatorId && (
+					<button
+						onClick={() => {
+							dispatch(thunkStartGame(id)).then(() => {
+								socket.emit("host-started-round", 0, code);
+							});
+						}}
+					>
+						Start the game!
+					</button>
+				)}
 		</div>
 	);
 }

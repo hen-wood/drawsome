@@ -36,7 +36,8 @@ module.exports = (sequelize, DataTypes) => {
 				allowNull: true,
 				references: {
 					model: "Rounds"
-				}
+				},
+				onDelete: "CASCADE"
 			}
 		},
 		{
