@@ -4,18 +4,25 @@ import { SocketContext } from "../../context/Socket";
 import Canvas from "../Canvas";
 import { thunkAddDrawing } from "../../store/drawings";
 import {
+	actionResetDrawings,
 	actionSetCurrentTimeLimit,
-	actionSetGameSection
+	actionSetGameSection,
+	actionSetTimesUpFalse
 } from "../../store/gameState";
 
 export default function GameRound() {
 	const dispatch = useDispatch();
 	const socket = useContext(SocketContext);
 	const user = useSelector(state => state.session.user);
-	const { timesUp, currentRound, players, game, drawings, creatorId } =
-		useSelector(state => state.gameState);
+	const { timesUp, currentRound, players, game, drawings } = useSelector(
+		state => state.gameState
+	);
 	const canvasRef = useRef(null);
 	const [bgColor, setBgColor] = useState("#fff");
+
+	useEffect(() => {
+		dispatch(actionResetDrawings());
+	}, []);
 
 	useEffect(() => {
 		if (timesUp) {
@@ -33,6 +40,16 @@ export default function GameRound() {
 			});
 		}
 	}, [timesUp]);
+
+	useEffect(() => {
+		if (
+			timesUp &&
+			Object.values(drawings).length === Object.values(players).length &&
+			game.creatorId === user.id
+		) {
+			socket.emit("host-started-vote", drawings, game.code);
+		}
+	}, [drawings, players, timesUp]);
 
 	return (
 		<>

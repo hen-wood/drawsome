@@ -22,7 +22,7 @@ Drawsome is a a multiplayer drawing game inspired by pictionary and cards agains
 
 <img src='frontend/src/images/howto/voting.png' style='width: 500px'/>
 
-### **Leaderboard**
+### **leaderboard**
 
 <img src='frontend/src/images/howto/leaderboard.png' style='width: 500px'/>
 

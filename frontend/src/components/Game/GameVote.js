@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { SocketContext } from "../../context/Socket";
 import { csrfFetch } from "../../store/csrf";
 import {
+	actionResetVotes,
 	actionSetCurrentTimeLimit,
 	actionSetGameSection,
 	actionSetTimesUpFalse
@@ -13,28 +14,18 @@ export default function GameVote() {
 	const socket = useContext(SocketContext);
 	const user = useSelector(state => state.session.user);
 	const gameState = useSelector(state => state.gameState);
-	const { game, players, drawings, currentRound, timesUp } = gameState;
+	const { game, players, drawings, currentRound, timesUp, votes } = gameState;
 	const round = game.gameRounds[currentRound];
-	const [isLoaded, setIsLoaded] = useState(false);
-	const [playerVotedFor, setPlayerVotedFor] = useState(null);
+	const [playerVotedFor, setPlayerVotedFor] = useState(
+		Object.values(players).find(player => player.id !== user.id).id
+	);
 
 	useEffect(() => {
-		if (Object.values(drawings).length === Object.values(players).length) {
-			setPlayerVotedFor(
-				Object.values(players).find(player => player.id !== user.id).id
-			);
-			if (game.creatorId === user.id) {
-				dispatch(actionSetTimesUpFalse());
-				socket.emit("host-started-vote", drawings, game.code);
-			}
-		}
-	}, [drawings, players]);
+		dispatch(actionResetVotes());
+	}, []);
 
 	useEffect(() => {
-		if (!timesUp) {
-			setIsLoaded(true);
-		}
-		if (isLoaded && timesUp) {
+		if (timesUp) {
 			const drawingId = drawings[playerVotedFor].id;
 			const host = Object.values(players).find(
 				player => player.id === game.creatorId
@@ -45,17 +36,25 @@ export default function GameVote() {
 			})
 				.then(() => {
 					socket.emit("player-sent-vote", playerVotedFor, host.socketId);
-					dispatch(actionSetCurrentTimeLimit(1));
-					dispatch(actionSetGameSection("leaderboard"));
 				})
 				.catch(async res => {
 					const err = await res.json();
 					console.log(err);
 				});
 		}
-	}, [isLoaded, timesUp]);
+	}, [timesUp]);
 
-	return isLoaded ? (
+	useEffect(() => {
+		if (
+			timesUp &&
+			Object.values(votes).length === Object.values(players).length &&
+			game.creatorId === user.id
+		) {
+			socket.emit("host-started-round-winner", votes, game.code);
+		}
+	}, [votes, players, timesUp]);
+
+	return (
 		<div id="vote-container-outer">
 			<div id="drawing-vote-container">
 				{Object.values(drawings).map(drawing => {
@@ -81,7 +80,5 @@ export default function GameVote() {
 				})}
 			</div>
 		</div>
-	) : (
-		<h1>Waiting for all drawings</h1>
 	);
 }

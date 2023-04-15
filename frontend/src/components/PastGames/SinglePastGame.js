@@ -1,15 +1,16 @@
-import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import OpenDrawing from "./OpenDrawing";
 import loadingGif from "../../images/loading.gif";
 
 import "./SinglePastGame.css";
+import { thunkGetPastGame } from "../../store/games";
 
 export default function SinglePastGame() {
 	const { gameId } = useParams();
+	const dispatch = useDispatch();
 	const game = useSelector(state => state.game.pastGames[gameId]);
-	const { players, gameRounds } = game;
 	const [drawingOpen, setDrawingOpen] = useState(false);
 	const [openDrawingUrl, setOpenDrawingUrl] = useState("");
 	const [openDrawingTitle, setOpenDrawingTitle] = useState("");
@@ -20,8 +21,14 @@ export default function SinglePastGame() {
 		setDrawingOpen(true);
 	};
 
+	useEffect(() => {
+		if (!game) {
+			dispatch(thunkGetPastGame(gameId));
+		}
+	}, [game]);
+
 	return game ? (
-		<div id="single-past-game-container">
+		<div className="single-past-game-container">
 			{drawingOpen && (
 				<OpenDrawing
 					setDrawingOpen={setDrawingOpen}
@@ -29,12 +36,12 @@ export default function SinglePastGame() {
 					title={openDrawingTitle}
 				/>
 			)}
-			<div id="game-results-title">
+			<div className="game-results-title">
 				<p>Game results...</p>
 			</div>
-			<div id="game-info-container">
-				<div id="player-info-container">
-					{players
+			<div className="game-info-container">
+				<div className="player-info-container">
+					{game.players
 						.sort((a, b) => b.playerVotes.length - a.playerVotes.length)
 						.map((player, i) => {
 							const { username, playerVotes } = player;
@@ -58,8 +65,8 @@ export default function SinglePastGame() {
 							);
 						})}
 				</div>
-				<div id="round-info-container">
-					{gameRounds
+				<div className="round-info-container">
+					{game.gameRounds
 						.sort((a, b) => a.roundNumber - b.roundNumber)
 						.map((round, i) => {
 							const { roundNumber, prompt, roundDrawings } = round;
@@ -79,7 +86,9 @@ export default function SinglePastGame() {
 											.map((drawing, i) => {
 												const { title, drawingUrl, userId, drawingVotes } =
 													drawing;
-												const { username } = players.find(p => p.id === userId);
+												const { username } = game.players.find(
+													p => p.id === userId
+												);
 												const votes = drawingVotes.length;
 												return (
 													<div
@@ -88,9 +97,13 @@ export default function SinglePastGame() {
 														onClick={() => handleOpenDrawing(drawingUrl, title)}
 													>
 														<img src={drawingUrl} alt={title} />
-														<div className="round-info-drawing-username">
-															<p>{username}</p>
-															<p>{`${votes} vote${votes === 1 ? "" : "s"}`}</p>
+														<div className="drawing-stats">
+															<p className="drawing-stats__text drawing-stats__username">
+																{username}
+															</p>
+															<p className="drawing-stats__text drawing-stats__vote-count">{`${votes} vote${
+																votes === 1 ? "" : "s"
+															}`}</p>
 														</div>
 													</div>
 												);

@@ -58,6 +58,45 @@ router.get("/:gameCode", requireAuthentication, async (req, res, next) => {
 	return res.json(game);
 });
 
+// GET single past game
+router.get(
+	"/past-games/:gameId",
+	requireAuthentication,
+	async (req, res, next) => {
+		const { gameId } = req.params;
+		const pastGame = await Game.findByPk(gameId, {
+			include: [
+				{
+					model: Round,
+					as: "gameRounds",
+					include: {
+						model: Drawing,
+						as: "roundDrawings",
+						include: {
+							model: DrawingVote,
+							as: "drawingVotes"
+						}
+					}
+				},
+				{
+					model: User,
+					as: "players",
+					include: {
+						model: DrawingVote,
+						as: "playerVotes",
+						where: {
+							gameId
+						},
+						attributes: ["id", "drawingId"],
+						required: false
+					}
+				}
+			]
+		});
+		return res.json(pastGame);
+	}
+);
+
 // POST create new game
 router.post("/", requireAuthentication, async (req, res, next) => {
 	const creatorId = req.user.id;

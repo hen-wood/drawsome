@@ -1,18 +1,16 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { thunkStartGame } from "../../store/games";
 import { SocketContext } from "../../context/Socket";
 import { copyCode, waitingMessage } from "./utils/lobbyTools";
 import "./Game.css";
-import { getLocalAsObj } from "./utils/localFunctions";
 
 export default function GameLobby() {
 	const dispatch = useDispatch();
 	const socket = useContext(SocketContext);
 	const {
 		game: { numPlayers, creatorId, code, id },
-		players,
-		isPaused
+		players
 	} = useSelector(state => state.gameState);
 	const user = useSelector(state => state.session.user);
 
@@ -56,7 +54,7 @@ export default function GameLobby() {
 					<button
 						onClick={() => {
 							dispatch(thunkStartGame(id)).then(() => {
-								socket.emit("host-started-round", code);
+								socket.emit("host-started-round", 0, code);
 							});
 						}}
 					>

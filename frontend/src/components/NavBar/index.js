@@ -9,7 +9,7 @@ import { Timer } from "../Game/utils/Timer";
 
 export default function NavBar({ theme, setTheme }) {
 	const user = useSelector(state => state.session.user);
-	const { game, section } = useSelector(state => state.gameState);
+	const { game, currentRound, section } = useSelector(state => state.gameState);
 	const timeLimit = useSelector(state => state.gameState.currentTimeLimit);
 
 	const history = useHistory();
@@ -77,26 +77,14 @@ export default function NavBar({ theme, setTheme }) {
 					setTheme={setTheme}
 				/>
 			</div>
-			{game && section === "round" ? (
+			{game && section !== "lobby" && (
 				<div className="nav-bottom">
-					<p className="round-info round-info--left">Round 1</p>
+					<p className="round-info round-info--left">
+						Round {game.gameRounds[currentRound].roundNumber}
+					</p>
 					<div className="nav-bottom__center"></div>
 					<Timer />
 				</div>
-			) : section === "vote" ? (
-				<div className="nav-bottom">
-					<p className="round-info round-info--left">Round 1</p>
-					<div className="nav-bottom__center"></div>
-					<Timer />
-				</div>
-			) : section === "leaderboard" ? (
-				<div className="nav-bottom">
-					<p className="round-info round-info--left">Round 1</p>
-					<div className="nav-bottom__center"></div>
-					<Timer />
-				</div>
-			) : (
-				<></>
 			)}
 		</div>
 	);

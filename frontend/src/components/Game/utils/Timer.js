@@ -3,15 +3,14 @@ import { useSelector, useDispatch } from "react-redux";
 import formatTime from "../../../utils/formatTime";
 import {
 	actionSetTimesUpTrue,
-	actionSetTimesUpFalse,
 	actionSetCurrentTimeLimit
 } from "../../../store/gameState";
 export const Timer = () => {
 	const dispatch = useDispatch();
-	const { currentTimeLimit, timesUp } = useSelector(state => state.gameState);
-	const isPaused = useSelector(state => state.gameState.isPaused);
-	const [time, setTime] = useState(5);
-	// const [time, setTime] = useState(currentTimeLimit * 10);
+	const { currentTimeLimit, isPaused, section } = useSelector(
+		state => state.gameState
+	);
+	const [time, setTime] = useState(currentTimeLimit * 10);
 
 	useEffect(() => {
 		const intervalId = setInterval(() => {
@@ -39,8 +38,9 @@ export const Timer = () => {
 	}, [time]);
 
 	useEffect(() => {
-		setTime(currentTimeLimit);
-	}, [currentTimeLimit]);
+		console.log("CURRENT TIME LIMIT CHANGED", currentTimeLimit);
+		setTime(currentTimeLimit * 10);
+	}, [currentTimeLimit, section]);
 
 	return (
 		<p className="round-info round-info--right">

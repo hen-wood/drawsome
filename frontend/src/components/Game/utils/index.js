@@ -9,7 +9,11 @@ import {
 	actionAddGameDrawing,
 	actionAddVote,
 	actionSetGameSection,
-	actionSetCurrentTimeLimit
+	actionSetCurrentTimeLimit,
+	actionSyncDrawings,
+	actionSetTimesUpFalse,
+	actionSyncVotes,
+	actionUpdateCurrentRound
 } from "../../../store/gameState";
 import { useParams } from "react-router-dom";
 export default function useSocketListeners(gameState) {
@@ -32,13 +36,25 @@ export default function useSocketListeners(gameState) {
 			dispatch(actionSyncWithHost(gameState));
 		}
 
-		function handleStartRound() {
-			dispatch(actionSetGameSection("round"));
+		function handleStartRound(updatedRound) {
+			dispatch(actionSetTimesUpFalse());
 			dispatch(actionSetCurrentTimeLimit(gameState.game.timeLimit));
+			dispatch(actionUpdateCurrentRound(updatedRound));
+			dispatch(actionSetGameSection("round"));
 		}
-		function handleStartVote() {
-			dispatch(actionSetGameSection("vote"));
+
+		function handleStartVote(drawings) {
+			dispatch(actionSetTimesUpFalse());
+			dispatch(actionSyncDrawings(drawings));
 			dispatch(actionSetCurrentTimeLimit(1));
+			dispatch(actionSetGameSection("vote"));
+		}
+
+		function handleStartRoundWinner(votes) {
+			dispatch(actionSetTimesUpFalse());
+			dispatch(actionSyncVotes(votes));
+			dispatch(actionSetCurrentTimeLimit(1));
+			dispatch(actionSetGameSection("round-winner"));
 		}
 
 		function handleAddDrawing(drawingData) {
@@ -55,6 +71,7 @@ export default function useSocketListeners(gameState) {
 			socket.on("start-round", handleStartRound);
 			socket.on("start-vote", handleStartVote);
 			socket.on("player-drawing-to-host", handleAddDrawing);
+			socket.on("start-round-winner", handleStartRoundWinner);
 			socket.on("player-vote-to-host", handleAddVote);
 		}
 
@@ -65,6 +82,7 @@ export default function useSocketListeners(gameState) {
 			socket.off("start-round", handleStartRound);
 			socket.off("start-vote", handleStartVote);
 			socket.off("player-drawing-to-host", handleAddDrawing);
+			socket.off("start-round-winner", handleStartRoundWinner);
 			socket.off("player-vote-to-host", handleAddVote);
 			socket.disconnect();
 			dispatch(actionResetGameState());

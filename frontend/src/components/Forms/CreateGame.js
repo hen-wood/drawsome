@@ -1,8 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
-import { csrfFetch } from "../../store/csrf";
-import { setLocalFromObj } from "../Game/utils/localFunctions";
 import { thunkCreateGame } from "../../store/gameState";
 import getPrompt from "../../utils/randomPrompt";
 

@@ -1,15 +1,14 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory, useParams } from "react-router-dom";
-import { SocketContext } from "../../context/Socket";
+import { useParams } from "react-router-dom";
 import GameLobby from "./GameLobby";
 import GameVote from "./GameVote";
 import GameRound from "./GameRound";
-import GameLeaderboard from "./GameLeaderboard";
 import "./Game.css";
 import loadingGif from "../../images/loading.gif";
 import useSocketListeners from "./utils";
-import { actionResetGameState, thunkJoinGame } from "../../store/gameState";
+import { thunkJoinGame } from "../../store/gameState";
+import RoundWinner from "./RoundWinner";
 
 export default function Game() {
 	const dispatch = useDispatch();
@@ -40,8 +39,8 @@ export default function Game() {
 				<GameRound />
 			) : gameState.section === "vote" ? (
 				<GameVote />
-			) : gameState.section === "leaderboard" ? (
-				<GameLeaderboard />
+			) : gameState.section === "round-winner" ? (
+				<RoundWinner />
 			) : (
 				<img src={loadingGif} alt="loading" />
 			)}

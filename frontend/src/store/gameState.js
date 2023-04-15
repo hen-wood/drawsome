@@ -14,6 +14,9 @@ const SET_CURRENT_TIME_LIMIT = "gameState/SET_CURRENT_TIME_LIMIT";
 const RESET_DRAWINGS = "gameState/RESET_DRAWINGS";
 const SYNC_WITH_HOST = "gameState/SYNC_WITH_HOST";
 const RESET_GAME_STATE = "gameState/RESET_GAME_STATE";
+const SYNC_DRAWINGS = "gameState/SYNC_DRAWINGS";
+const RESET_VOTES = "gameState/RESET_VOTES";
+const SYNC_VOTES = "gameState/SYNC_VOTES";
 
 export const actionSetGame = game => {
 	return {
@@ -94,8 +97,8 @@ export const actionAddVote = playerVotedFor => {
 	};
 };
 
-export const actionUpdateCurrentRound = () => {
-	return { type: UPDATE_CURRENT_ROUND };
+export const actionUpdateCurrentRound = roundIdx => {
+	return { type: UPDATE_CURRENT_ROUND, roundIdx };
 };
 
 export const actionResetDrawings = () => {
@@ -108,6 +111,24 @@ export const actionResetGameState = () => {
 	return {
 		type: RESET_GAME_STATE
 	};
+};
+
+export const actionSyncDrawings = drawings => {
+	return {
+		type: SYNC_DRAWINGS,
+		drawings
+	};
+};
+
+export const actionSyncVotes = votes => {
+	return {
+		type: SYNC_VOTES,
+		votes
+	};
+};
+
+export const actionResetVotes = () => {
+	return { type: RESET_VOTES };
 };
 
 export const thunkCreateGame = (newGame, user) => async dispatch => {
@@ -144,7 +165,7 @@ const initialState = {
 	currentRound: 0,
 	players: {},
 	drawings: {},
-	numVotes: 0,
+	votes: {},
 	section: "lobby",
 	timesUp: false,
 	isPaused: false,
@@ -222,32 +243,35 @@ const gameStateReducer = (state = initialState, action) => {
 				}
 			};
 		case ADD_VOTE:
-			return {
-				...state,
-				drawings: {
-					...state.drawings,
-					[action.payload]: {
-						...state.drawings[action.payload],
-						votes: state.drawings[action.payload].votes + 1
-					}
-				},
-				players: {
-					...state.players,
-					[action.payload]: {
-						...state.players[action.payload],
-						score: state.players[action.payload].score + 100
-					}
-				},
-				numVotes: state.numVotes + 1
-			};
+			return state.votes[action.payload]
+				? {
+						...state,
+						votes: {
+							...state.votes,
+							[action.payload]: state.votes[action.payload] + 1
+						}
+				  }
+				: {
+						...state,
+						votes: {
+							...state.votes,
+							[action.payload]: 1
+						}
+				  };
 		case UPDATE_CURRENT_ROUND: {
 			return {
 				...state,
-				currentRound: state.currentRound + 1
+				currentRound: action.roundIdx
 			};
 		}
 		case RESET_DRAWINGS:
 			return { ...state, drawings: {} };
+		case RESET_VOTES:
+			return { ...state, votes: {} };
+		case SYNC_DRAWINGS:
+			return { ...state, drawings: action.drawings };
+		case SYNC_VOTES:
+			return { ...state, votes: action.votes };
 		case RESET_GAME_STATE:
 			return initialState;
 		default:
