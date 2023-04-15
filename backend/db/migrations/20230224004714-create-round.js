@@ -20,7 +20,8 @@ module.exports = {
 					type: Sequelize.INTEGER,
 					references: {
 						model: "Games"
-					}
+					},
+					onDelete: "CASCADE"
 				},
 				prompt: {
 					type: Sequelize.STRING,

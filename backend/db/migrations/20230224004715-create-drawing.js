@@ -35,7 +35,8 @@ module.exports = {
 					references: {
 						model: "Rounds"
 					},
-					allowNull: true
+					allowNull: true,
+					onDelete: "CASCADE"
 				},
 				createdAt: {
 					allowNull: false,

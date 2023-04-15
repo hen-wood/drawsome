@@ -24,7 +24,8 @@ module.exports = {
 					type: Sequelize.INTEGER,
 					references: {
 						model: "Users"
-					}
+					},
+					onDelete: "CASCADE"
 				},
 				numRounds: {
 					type: Sequelize.INTEGER,
@@ -63,7 +64,7 @@ module.exports = {
 		);
 	},
 	async down(queryInterface, Sequelize) {
-		options.tableName = 'Games'
+		options.tableName = "Games";
 		await queryInterface.dropTable(options);
 	}
 };
