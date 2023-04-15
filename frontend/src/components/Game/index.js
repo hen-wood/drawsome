@@ -31,6 +31,7 @@ export default function Game() {
 			setIsLoaded(true);
 		}
 	}, [gameState.game]);
+
 	return isLoaded ? (
 		<>
 			{gameState.section === "lobby" ? (

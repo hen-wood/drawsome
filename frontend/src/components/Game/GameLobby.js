@@ -17,9 +17,9 @@ export default function GameLobby() {
 	return (
 		<div className="lobby-container">
 			<h1>Let's play Drawsome! 🧑‍🎨</h1>
-			<p className="copy-code" onClick={() => copyCode(code)}>
-				copy game code: {code} 🔗
-			</p>
+			<button className="copy-code" onClick={() => copyCode(code)}>
+				Copy game code: {code} 🔗
+			</button>
 			<div className="divider"></div>
 			{waitingMessage(
 				Object.values(players).length,
@@ -48,8 +48,8 @@ export default function GameLobby() {
 					</p>
 				);
 			})}
-			{/* Object.values(players).length === numPlayers && */}
-			{Object.values(players).every(player => player.isConnected) &&
+			{Object.values(players).length === numPlayers &&
+				Object.values(players).every(player => player.isConnected) &&
 				user.id === creatorId && (
 					<button
 						onClick={() => {

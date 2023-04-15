@@ -34,6 +34,8 @@
     box-sizing: border-box;
 }
 
+
+
 .player-info-container{
     padding: 5px;
     border-radius: 10px;
@@ -42,7 +44,7 @@
     box-sizing: border-box;
     margin: 5px;
     overflow-y: auto;
-    height: 50%;
+    height: fit-content;
 }
 
 .past-game-player-card{
@@ -97,7 +99,6 @@
     flex-direction: column;
     box-sizing: border-box;
     height: fit-content;
-    height: 50%;
     max-width: 100%;
     overflow-y: auto;
 }
@@ -170,4 +171,20 @@
 
 .drawing-stats__vote-count{
     font-style: italic;
+}
+
+@media (min-width:920px) {
+    .game-info-container {
+        flex-direction: row;
+    }
+
+    .player-info-container {
+        width: 40%;
+        min-height: 100%;
+    }
+
+    .round-info-container {
+        width: 100%;
+        min-height: 100%;
+    }
 }

@@ -2,12 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { SocketContext } from "../../context/Socket";
 import { csrfFetch } from "../../store/csrf";
-import {
-	actionResetVotes,
-	actionSetCurrentTimeLimit,
-	actionSetGameSection,
-	actionSetTimesUpFalse
-} from "../../store/gameState";
+import { actionResetVotes } from "../../store/gameState";
 
 export default function GameVote() {
 	const dispatch = useDispatch();
@@ -47,7 +42,8 @@ export default function GameVote() {
 	useEffect(() => {
 		if (
 			timesUp &&
-			Object.values(votes).length === Object.values(players).length &&
+			Object.values(votes).reduce((acc, curr) => acc + curr, 0) ===
+				Object.values(players).length &&
 			game.creatorId === user.id
 		) {
 			socket.emit("host-started-round-winner", votes, game.code);
@@ -55,30 +51,35 @@ export default function GameVote() {
 	}, [votes, players, timesUp]);
 
 	return (
-		<div id="vote-container-outer">
-			<div id="drawing-vote-container">
-				{Object.values(drawings).map(drawing => {
+		<div className="game-vote-container">
+			{Object.values(drawings)
+				.filter(d => d.userId !== user.id)
+				.map(drawing => {
 					const { drawingUrl, userId } = drawing;
 					const isUser = user.id === userId;
 					return (
-						<img
-							key={drawing.id}
-							src={drawingUrl}
-							alt={round.prompt}
+						<div
+							className={
+								userId === playerVotedFor
+									? "drawing-vote__card drawing-vote--choice"
+									: "drawing-vote__card"
+							}
 							onClick={() => {
 								if (!isUser) setPlayerVotedFor(userId);
 							}}
-							className={
-								isUser
-									? "disable-vote-drawing"
-									: userId === playerVotedFor
-									? "vote-drawing choice"
-									: "vote-drawing"
-							}
-						/>
+						>
+							<img
+								key={drawing.id}
+								src={drawingUrl}
+								alt={round.prompt}
+								className="drawing-vote__image"
+							/>
+							{userId === playerVotedFor && (
+								<i className="fa-regular fa-circle-check drawing-vote__check"></i>
+							)}
+						</div>
 					);
 				})}
-			</div>
 		</div>
 	);
 }

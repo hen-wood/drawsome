@@ -3,14 +3,12 @@ import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 
 import UserMenu from "./UserMenu";
-import HowToPlay from "./HowToPlay";
 import "./NavBar.css";
 import { Timer } from "../Game/utils/Timer";
 
 export default function NavBar({ theme, setTheme }) {
 	const user = useSelector(state => state.session.user);
 	const { game, currentRound, section } = useSelector(state => state.gameState);
-	const timeLimit = useSelector(state => state.gameState.currentTimeLimit);
 
 	const history = useHistory();
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -80,7 +78,14 @@ export default function NavBar({ theme, setTheme }) {
 			{game && section !== "lobby" && (
 				<div className="nav-bottom">
 					<p className="round-info round-info--left">
-						Round {game.gameRounds[currentRound].roundNumber}
+						{section === "round" &&
+							`Round ${game.gameRounds[currentRound].roundNumber}`}
+						{section === "vote" &&
+							`Vote for the best "${game.gameRounds[currentRound].prompt}"`}
+						{section === "round-winner" &&
+							(game.gameRounds[currentRound + 1]
+								? "Next round starts in"
+								: "Game ending in")}
 					</p>
 					<div className="nav-bottom__center"></div>
 					<Timer />

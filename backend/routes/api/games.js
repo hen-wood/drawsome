@@ -46,11 +46,17 @@ router.get("/:gameCode", requireAuthentication, async (req, res, next) => {
 	) {
 		await Player.create({ gameId: game.id, userId: req.user.id });
 	} else if (
+		game.Players.length === game.numPlayers &&
+		!game.Players.some(player => player.userId === req.user.id)
+	) {
+		return res.status(401).json({
+			message: "That game is full..."
+		});
+	} else if (
 		game.hasStarted &&
 		!game.Players.some(player => player.userId === req.user.id)
 	) {
-		console.log(game.Players);
-		return res.status(403).json({
+		return res.status(401).json({
 			message: "That game started without you..."
 		});
 	}

@@ -29,10 +29,14 @@ export default function RoundWinner() {
 	}, [timesUp]);
 
 	return (
-		<div className="round-winner-container">
-			<h1>This round's winner is...</h1>
-			<p>{players[winnerId].username}</p>
-			<img src={drawings[winnerId].drawingUrl} alt="winner" />
+		<div className="round-winner__container">
+			<h2 className="round-winner__title">This round's winner is...</h2>
+			<p className="round-winner__name">{players[winnerId].username} 🥳</p>
+			<img
+				src={drawings[winnerId].drawingUrl}
+				alt="winner"
+				className="round-winner__drawing"
+			/>
 		</div>
 	);
 }
