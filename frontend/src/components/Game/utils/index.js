@@ -46,14 +46,14 @@ export default function useSocketListeners(gameState) {
 		function handleStartVote(drawings) {
 			dispatch(actionSetTimesUpFalse());
 			dispatch(actionSyncDrawings(drawings));
-			dispatch(actionSetCurrentTimeLimit(1));
+			dispatch(actionSetCurrentTimeLimit(0.1));
 			dispatch(actionSetGameSection("vote"));
 		}
 
 		function handleStartRoundWinner(votes) {
 			dispatch(actionSetTimesUpFalse());
 			dispatch(actionSyncVotes(votes));
-			dispatch(actionSetCurrentTimeLimit(1));
+			dispatch(actionSetCurrentTimeLimit(0.05));
 			dispatch(actionSetGameSection("round-winner"));
 		}
 

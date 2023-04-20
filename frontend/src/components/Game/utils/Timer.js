@@ -10,7 +10,7 @@ export const Timer = () => {
 	const { currentTimeLimit, isPaused, section } = useSelector(
 		state => state.gameState
 	);
-	const [time, setTime] = useState(currentTimeLimit * 10);
+	const [time, setTime] = useState(currentTimeLimit * 60);
 
 	useEffect(() => {
 		const intervalId = setInterval(() => {
@@ -23,7 +23,7 @@ export const Timer = () => {
 			}
 		}, 1000);
 		if (isPaused) {
-			dispatch(actionSetCurrentTimeLimit(time / 10));
+			dispatch(actionSetCurrentTimeLimit(time / 60));
 		}
 
 		return () => {
@@ -38,8 +38,7 @@ export const Timer = () => {
 	}, [time]);
 
 	useEffect(() => {
-		console.log("CURRENT TIME LIMIT CHANGED", currentTimeLimit);
-		setTime(currentTimeLimit * 10);
+		setTime(currentTimeLimit * 60);
 	}, [currentTimeLimit, section]);
 
 	return (
