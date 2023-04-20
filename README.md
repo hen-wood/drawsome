@@ -57,22 +57,48 @@ Drawsome is a a multiplayer drawing game inspired by pictionary and cards agains
 
 ## Installation
 
-1. git clone this repo
-2. Install dependencies from the root directory
-3. From the backend directory, rename .env.example to .env
-
-- **Note**: AWS Image uploads will not work without `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environment variables set
-
-4. From the backend directory, run the "dbreset" script to initalize the database and populate it with seed data. (This script can be used any time you want to reset the database)
+(paste this into the terminal to skip steps 1-5)
 
 ```
 git clone https://github.com/hen-wood/drawsome.git && cd drawsome && npm install && cd backend && mv .env.example .env && npm run dbreset && npm start
 ```
 
+1. git clone this repo
+
+```
+git clone https://github.com/hen-wood/drawsome.git
+```
+
+2. Install dependencies from the root directory
+
+```
+cd drawsome && npm install
+```
+
+3. From the backend directory, rename .env.example to .env
+
+- **Note**: AWS Image uploads will not work without `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environment variables set. Follow [these instructions](https://aws.amazon.com/s3/getting-started/) to set up your own account.
+
+```
+cd backend && mv .env.example .env
+```
+
+4. From the backend directory, run the "dbreset" script to initalize the database and populate it with seed data. (This script can be used any time you want to reset the database)
+
+```
+npm run dbreset
+```
+
+5. Start the server from the backend directory
+
+```
+npm start
+```
+
 6. In another terminal, start React from the frontend directory
 
 ```
-cd frontend && npm start
+npm start
 ```
 
 7. Navigate to http://localhost:3000
