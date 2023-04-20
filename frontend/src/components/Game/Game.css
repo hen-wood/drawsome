@@ -105,6 +105,24 @@
     overflow: hidden;
 }
 
+.disconnect-warning{
+    background-color: rgba(0, 0, 0, 0.527);
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.disconnect-warning__inner{
+    background-color: #00000081;
+    padding: 10px;
+    width: 100%;
+    text-align: center;
+}
+
 @media (min-width:600px){
     .round-winner__container{
         max-width: fit-content;

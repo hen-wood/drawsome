@@ -96,6 +96,9 @@ export default function useSocketListeners(gameState) {
 			if (isHost) {
 				socket.emit("sync-host-one-player", gameState, socketId);
 			}
+			if (player.id === gameState.game.creatorId) {
+				socket.emit("sync-host-one-player", gameState, socketId);
+			}
 		}
 
 		socket.on("player-connected", handlePlayerConnected);

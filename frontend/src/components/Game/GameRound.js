@@ -3,12 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { SocketContext } from "../../context/Socket";
 import Canvas from "../Canvas";
 import { thunkAddDrawing } from "../../store/drawings";
-import {
-	actionResetDrawings,
-	actionSetCurrentTimeLimit,
-	actionSetGameSection,
-	actionSetTimesUpFalse
-} from "../../store/gameState";
+import { actionResetDrawings } from "../../store/gameState";
 
 export default function GameRound() {
 	const dispatch = useDispatch();

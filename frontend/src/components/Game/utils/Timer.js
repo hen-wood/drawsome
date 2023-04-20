@@ -44,7 +44,11 @@ export const Timer = () => {
 
 	return (
 		<p className="round-info round-info--right">
-			{time > 0 ? `${formatTime(time)}` : "Loading..."}
+			{isPaused
+				? "Game paused..."
+				: time > 0
+				? `${formatTime(time)}`
+				: "Loading..."}
 		</p>
 	);
 };

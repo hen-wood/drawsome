@@ -147,6 +147,7 @@
     box-sizing: border-box;
     height: 78%;
     border-radius: 8px;
+    touch-action: none;
     -webkit-tap-highlight-color: transparent;
     -webkit-user-select: none;
     -moz-user-select: none;
