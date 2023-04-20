@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import GameLobby from "./GameLobby";
 import GameVote from "./GameVote";
 import GameRound from "./GameRound";
+import { PausedWarning } from "./PausedWarning";
 import "./Game.css";
 import loadingGif from "../../images/loading.gif";
 import useSocketListeners from "./utils";
@@ -45,6 +46,7 @@ export default function Game() {
 			) : (
 				<img src={loadingGif} alt="loading" />
 			)}
+			{gameState.section !== "lobby" && gameState.isPaused && <PausedWarning />}
 		</>
 	) : (
 		<img src={loadingGif} alt="loading" />
