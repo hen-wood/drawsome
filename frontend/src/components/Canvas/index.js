@@ -4,6 +4,7 @@ import CanvasToolKit from "./CanvasToolKit";
 import "./Canvas.css";
 import CanvasColorOptions from "./CanvasColorOptions";
 import BrushOptions from "./BrushOptions";
+import { useTouchPrevention } from "./useTouchPrevention";
 
 export default function Canvas({
 	canvasRef,
@@ -13,6 +14,8 @@ export default function Canvas({
 	title,
 	setTitle
 }) {
+	useTouchPrevention();
+
 	const [showBrushOptions, setShowBrushOptions] = useState(false);
 	const [showCanvasColors, setShowCanvasColors] = useState(false);
 
