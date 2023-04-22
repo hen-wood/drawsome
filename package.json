@@ -14,13 +14,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hen-wood/API-project.git"
+    "url": "git+https://github.com/hen-wood/drawsome.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/hen-wood/API-project/issues"
+    "url": "https://github.com/hen-wood/drawsome/issues"
   },
-  "homepage": "https://github.com/hen-wood/API-project#readme"
+  "homepage": "https://github.com/hen-wood/drawsome#readme"
 }
